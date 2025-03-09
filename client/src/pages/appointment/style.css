@@ -1,0 +1,56 @@
+.appointment-view{
+  padding-left: 10%;
+}
+
+.appointment-card-wrap{
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .06);
+  margin-bottom: 8px;
+  margin-right: 10%;
+  padding: 1.5rem;
+  min-height: 100px;
+  border-radius: 5px;
+  border: 1px solid #ebeef5;
+  background-color: #fff;
+  overflow: hidden;
+  color: #303133;
+  transition: .3s;
+}
+
+.appointment-card-wrap:hover{
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, .06);
+}
+
+.appointment-card-info-wrap{
+  position: relative;
+  display: flex;
+}
+
+.appointment-card-info-wrap::before{
+  content: "";
+  display: block;
+  width: 150px;
+}
+
+.appointment-card-info-wrap .card-img{
+  height: 110px;
+  width: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}
+
+.appointment-card-info-wrap .card-img img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.appointment-card-content .prov-name-wrap h2 .prov-name{
+  color: #000;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 26px;
+  margin: 0;
+}
