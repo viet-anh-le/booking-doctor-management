@@ -1,8 +1,9 @@
 import LayoutDefault from "../pages/layouts/LayoutDefault";
 import Dashboard from "../pages/dashboard";
 import LogIn from "../pages/login"
-import ListDoctor from "../pages/layouts/list";
+import List from "../pages/layouts/list";
 import Appointment from "../pages/appointment";
+import ListDoctor from "../pages/listDoctor";
 
 export const routes = [
   {
@@ -18,8 +19,14 @@ export const routes = [
         element: <Dashboard/>
       },
       {
-        path: "list",
-        element: <ListDoctor/>
+        path: "doctor",
+        element: <List/>,
+        children: [
+          {
+            path: ":spec",
+            element: <ListDoctor/>
+          }
+        ]
       },
       {
         path: "appointment",

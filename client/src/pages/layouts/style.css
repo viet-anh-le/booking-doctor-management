@@ -276,6 +276,7 @@ footer{
 }
 
 .card-info-wrap{
+  width: 65%;
   padding-right: 20px;
   position: relative;
   display: flex;
@@ -405,7 +406,7 @@ footer{
 }
 
 .card-body .schedule-examination{
-  width: 50%;
+  width: 35%;
   margin-left: 10px;
 }
 

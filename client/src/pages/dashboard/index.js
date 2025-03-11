@@ -116,27 +116,27 @@ function Dashboard() {
             <div className="spec-details">
               <div>
                 <img alt="PRIMARY CARE" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/PrimaryCare.svg" />
-                <Link className="spec-name" to="/list">PRIMARY CARE</Link>
+                <Link className="spec-name" to={`/doctor/primary-care`}>PRIMARY CARE</Link>
               </div>
               <div>
                 <img alt="DENTIST" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Dentist.svg"/>
-                <a className="spec-name" href="/results?q=Dentist&amp;sids=29245">DENTIST</a>
+                <Link className="spec-name" to={`/doctor/dentist`}>DENTIST</Link>
               </div>
               <div>
                 <img alt="OB-GYN" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Obgyn.svg"/>
-                <a className="spec-name" href="/results?q=Obstetrician-Gynecologist&amp;sids=29285">OB-GYN</a>
+                <Link className="spec-name" to={`/doctor/ob-gyn`}>OB-GYN</Link>
               </div>
               <div>
                 <img alt="DERMATOLOGIST" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Dermatologist.svg"/>
-                <a className="spec-name" href="/results?q=Dermatologist&amp;sids=29244">DERMATOLOGIST</a>
+                <Link className="spec-name" to={`/doctor/dermatologist`}>DERMATOLOGIST</Link>
               </div>
               <div>
                 <img alt="PSYCHIATRIST" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Psychiatrist.svg" />
-                <a className="spec-name" href="/results?q=Psychiatrist&amp;sids=29314">PSYCHIATRIST</a>
+                <Link className="spec-name" to={`/doctor/psychiatrist`}>PSYCHIATRIST</Link>
               </div>
               <div>
                 <img alt="EYE DOCTOR" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/EyeDoc.svg" />
-                <a className="spec-name" href="/results?q=Eye%20Doctor&amp;sids=29292,29293">EYE DOCTOR</a>
+                <Link className="spec-name" to={`/doctor/eye`}>EYE DOCTOR</Link>
               </div>
             </div>
           </div>
