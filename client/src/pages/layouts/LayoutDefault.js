@@ -1,7 +1,22 @@
 import "./style.css"
-import { Outlet } from "react-router-dom"
+import { Outlet, Link } from "react-router-dom"
 
 function LayoutDefault() {
+  const handleClick =  () => {
+    const fetchApi = async () => {
+      const response = await fetch("http://localhost:3002/auth/logout",
+        {
+          method: "GET",
+          credentials: "include"
+        }
+      );
+      const result = await response.json();
+      if (result.status === 200){
+        console.log("Log out thanh cong");
+      }
+    }
+    fetchApi();
+  }
   return (
     <>
       <header className="sc-ciSkZP bwSYJA">
@@ -44,8 +59,13 @@ function LayoutDefault() {
               </ul>
             </nav>
           </div>
-          <div className="header-flex-item-3 text-align-right"><button aria-label="Sign in to Livewell. Opens modal."
-            className="sc-dPaNzc fqbJCS"><span>Sign out</span></button></div>
+          <div className="header-flex-item-3 text-align-right">
+            <button className="sc-dPaNzc fqbJCS" onClick={handleClick}>
+              <span>
+                <Link to="/">Sign out</Link>
+              </span>
+            </button>
+          </div>
       </div>
     </header >
 

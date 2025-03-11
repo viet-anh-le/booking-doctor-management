@@ -1,8 +1,22 @@
 import "./style.css"
 import { CiSearch } from "react-icons/ci";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Dashboard() {
+  const [result, setResult] = useState({});
+  useEffect(() => {
+    const fetchApi = async () => {
+      const response = await fetch("http://localhost:3002/dashboard", {
+        method: "GET",
+        credentials: "include"
+      });
+      const result1 = await response.json();
+      setResult(result1);
+    }
+    fetchApi();
+  }, [])
+  if (result.status === 200)
   return (
     <>
       <main>
@@ -130,6 +144,9 @@ function Dashboard() {
 
       </main>
     </>
+  )
+  else return(
+    <>404 not found</>
   )
 }
 
