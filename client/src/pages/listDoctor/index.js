@@ -1,32 +1,32 @@
+import "./style.css"
 import { Select } from 'antd';
-import { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom"
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { generateSevenDay } from '../../utils/generateSevenday';
+import { useDispatch } from "react-redux";
+import { sendData } from "../../actions/appointment";
 
 function ListDoctor() {
   const [doctors, setDoctors] = useState([]);
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
+  const [schedule, setSchedule] = useState([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const specName = location.state?.specName || "Unknown";
+  const appointment = useRef({}); 
+  const dispatch = useDispatch();
+  const handleChange = (doctor, value) => {
+    const [day, date] = value.split(" - ");
+    const selected_slot = doctor.availableSlots.find((slot) => {
+      return slot.date === date;
+    });
+    if (selected_slot) setSchedule(selected_slot.time);
+    appointment.current.day = day;
+    appointment.current.date = date;
   };
 
-  const sevenDay = [
-    {
-      day: "Monday",
-      date: "09/03/2025"
-    },
-    {
-      day: "Tuesday",
-      date: "10/03/2025"
-    },
-    {
-      day: "Wednesday",
-      date: "11/03/2025"
-    },
-    {
-      day: "Thursday",
-      date: "12/03/2025"
-    }
-  ]
+  const sevenDay = generateSevenDay();
   const params = useParams();
+  appointment.current.spec = specName;
   useEffect(() => {
     const fetchApi = async () => {
       const response = await fetch(`http://localhost:3002/doctor/${params.spec}`,
@@ -40,6 +40,13 @@ function ListDoctor() {
     };
     fetchApi();
   }, [params.spec])
+
+  const handleClick = (time, doctor) => {
+    appointment.current.time = time;
+    appointment.current.doctor = doctor;
+    dispatch(sendData(appointment.current));
+    navigate("/appointment");
+  }
 
   return (
     <>
@@ -117,8 +124,8 @@ function ListDoctor() {
                           </div>
                           <Select
                             className="schedule-select"
-                            defaultValue={`${sevenDay[0].day} - ${sevenDay[0].date}`}
-                            onChange={handleChange}
+                            placeholder="Select examination day"
+                            onChange={(value) => handleChange(doctor, value)}
                             options={sevenDay.map(obj => {
                               return {
                                 value: `${obj.day} - ${obj.date}`,
@@ -126,6 +133,10 @@ function ListDoctor() {
                               }
                             })}
                           />
+                          {schedule && 
+                          <div className="schedule-modal">
+                            {schedule.map((time, index) => <span key={index} className="time-span" onClick={() => handleClick(time, doctor)}>{time}</span>)}
+                          </div>}
                         </div>
                       </div>
                     </div>

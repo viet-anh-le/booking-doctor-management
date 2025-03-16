@@ -1,0 +1,23 @@
+.schedule-modal{
+  margin-top: 5%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px 20px;
+}
+
+.schedule-modal .time-span{
+  display: inline-block;
+  width: 20%;
+  height: 20%;
+  padding: 5px;
+  text-align: center;
+  border: 2px solid rgb(17, 117, 167);
+  color: rgb(17, 117, 167);
+  cursor: pointer
+}
+
+.schedule-modal .time-span:hover{
+  background-color: rgb(17, 117, 167);
+  color: #fff;
+}

@@ -1,5 +1,6 @@
 import "./style.css"
 import { Button, Form, Input, InputNumber } from "antd";
+import { useSelector } from "react-redux";
 
 const layout = {
   labelCol: {
@@ -15,6 +16,9 @@ const onFinish = (values) => {
 };
 
 function Appointment() {
+  const appointmentData = useSelector (state => state.appointmentReducer);
+  console.log(appointmentData);
+  const doctor = appointmentData.doctor;
   return (
     <>
       <div className="appointment-view">
@@ -25,16 +29,16 @@ function Appointment() {
           <div className="card-body">
             <article className="appointment-card-info-wrap">
               <div className="card-img">
-                <img src="https://img.lb.wbmdstatic.com/lhd/provider_prod/1874343_31e598c6-86e5-45bf-ae4b-915a1d51b13b.jpg" alt="Dr. Aleksandr  Kovalskiy - Beverly Hills, CA - Family Medicine" />
+                <img src={doctor.avatar} alt={doctor.fullName} />
               </div>
               <div className="appointment-card-content">
                 <div className="prov-name-wrap">
                   <h2>
-                    <a className="prov-name" href="/">Dr. Aleksandr  Kovalskiy, MD</a>
+                    <a className="prov-name" href="/">{doctor.fullName}</a>
                   </h2>
                 </div>
-                <div className="appointment-time">Monday, Mar 10, 2025 - 9h30 PM</div>
-                <div className="appointment-spec">Primary care</div>
+                <div className="appointment-time">{`${appointmentData.day}, ${appointmentData.date} - ${appointmentData.time} ${appointmentData.time <= 12 ? "AM" : "PM"}`}</div>
+                <div className="appointment-spec">{appointmentData.spec}</div>
               </div>
             </article>
           </div>

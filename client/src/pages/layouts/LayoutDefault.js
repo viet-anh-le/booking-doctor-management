@@ -22,7 +22,7 @@ function LayoutDefault() {
       <header className="sc-ciSkZP bwSYJA">
         <div className="sc-carFqZ hBWCUB">
           <div className="header-flex-item-1">
-            <a href="https://www.livewellaah.org/">
+            <a href="/dashboard">
               <img src="/assets/img/SimpleLogo.bdf7548cca4415e95dbc.png" alt="Livewell"/>
             </a>
           </div>
@@ -30,8 +30,7 @@ function LayoutDefault() {
             <nav>
               <ul className="sc-iTVJFM oxVOu nav-list hide">
                 <li className="nav-item-main">
-                  <a href="https://livewell.aah.org/chart/Authentication/Login" target="_blank" rel="noreferrer"
-                    aria-label="MyChart. Link opens in a new tab">
+                  <a href="https://livewell.aah.org/chart/Authentication/Login" target="_blank" rel="noreferrer">
                     <span>
                       <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
