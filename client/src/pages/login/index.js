@@ -1,6 +1,6 @@
 import "./style.css"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 function LogIn() {
   const [email, setEmail] = useState("");
@@ -35,9 +35,12 @@ function LogIn() {
           <div className="auth-bg-wrapper login"></div>
           <div className="auth-form-wrapper">
             <p className="signin-signup-section"> Don't have an account? 
-              <button className="auth-form-login-sign-btn" type="button">
+              <Link 
+                className="auth-form-login-sign-btn"
+                to="/signup"
+              >
                 <span>Sign Up</span>
-              </button>
+              </Link>
             </p>
             <h3>Log In</h3>
             <form onSubmit={handleSubmit}>
