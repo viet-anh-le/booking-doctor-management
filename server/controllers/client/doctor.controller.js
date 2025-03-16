@@ -1,4 +1,4 @@
-const Doctor = require("../../models/doctor.model")
+const Doctor = require("../../models/doctor.model");
 
 // [GET] /doctor
 module.exports.index = async (req, res) => {

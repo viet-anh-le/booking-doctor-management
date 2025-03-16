@@ -17,6 +17,6 @@ const doctorSchema = new mongoose.Schema(
   }
 )
 
-const Account = mongoose.model('Schedule', doctorSchema, "schedules");
+const Schedule = mongoose.model('Schedule', doctorSchema, "schedules");
 
 module.exports = Account;
