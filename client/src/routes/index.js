@@ -9,6 +9,9 @@ import SignUp from "../pages/client/login/signup";
 import DoctorLogIn from "../pages/doctor/login";
 import DoctorDashboard from "../pages/doctor/dashboard";
 import DoctorLayoutDefault from "../pages/doctor/layouts/LayoutDefault";
+import DoctorAppointment from "../pages/doctor/appointment";
+import DoctorSchedule from "../pages/doctor/schedule";
+import DoctorScheduleCreate from "../pages/doctor/schedule/create";
 
 export const routes = [
   //Client
@@ -56,6 +59,18 @@ export const routes = [
       {
         path: "dashboard",
         element: React.createElement(DoctorDashboard)
+      },
+      {
+        path: "appointment",
+        element: React.createElement(DoctorAppointment)
+      },
+      {
+        path: "schedule",
+        element: React.createElement(DoctorSchedule)
+      },
+      {
+        path: "schedule/create",
+        element: React.createElement(DoctorScheduleCreate),
       }
     ]
   }
