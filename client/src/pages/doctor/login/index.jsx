@@ -1,17 +1,20 @@
 import "./style.css"
 import { useState } from "react"
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"
+import { fetchDoctorAccountData } from "../../../actions/doctor_account";
 
 function DoctorLogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/auth/login", {
+      const response = await fetch("http://localhost:3002/doctor/auth/login", {
         method: "POST",
         headers: {"Content-type": "application/json"},
         body: JSON.stringify({
@@ -23,7 +26,8 @@ function DoctorLogIn() {
       })
       const result = await response.json();
       if (result.message === "SUCCESS"){
-        navigate("/dashboard");
+        dispatch(fetchDoctorAccountData(result.user));
+        navigate("dashboard");
       }
     } 
     fetchApi();

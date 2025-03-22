@@ -1,5 +1,7 @@
 import { SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const items = [
   {
@@ -19,15 +21,53 @@ const items = [
 ];
 
 function NavBar() {
+  const doctor = useSelector(state => state.doctorAccountReducer);
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    const fetchApi = async () => {
+      const response = await fetch("http://localhost:3002/doctor/auth/logout",
+        {
+          method: "GET",
+          credentials: "include"
+        }
+      );
+      const result = await response.json();
+      if (result.status === 200){
+        console.log("Log out thanh cong");
+        
+      }
+    }
+    fetchApi();
+  }
+
+  const handleMenuClick = (e) => {
+    switch (e.key){
+      case "1":
+        console.log("hihi");
+        break;
+      case "2":
+        console.log("hehe");
+        break;
+      case "3":
+        handleLogOut();
+        navigate("/doctor");
+        break;
+      default:
+        console.log("hihihihihi");
+        break;
+    }
+  }
   return (
     <>
         <nav className="bg-white w-full">
           <div className="nav-item ml-auto w-1/6">
             <div className="nav-avatar flex pt-4 pb-4 items-center">
-              <span>Doctor - Evan</span>
+              <span className='inline-block flex-[1]'>{doctor.fullName}</span>
               <Dropdown
                 menu={{
-                  items
+                  items,
+                  onClick: handleMenuClick
                 }}
                 dropdownRender={(menu) => {
                   return (
@@ -36,6 +76,7 @@ function NavBar() {
                     </div>
                   )
                 }}
+                className='flex-[1]'
               >
                 <a onClick={(e) => e.preventDefault()}>
                   <img

@@ -375,14 +375,14 @@ footer{
   display: block;
   width: 18px;
   height: 18px;
-  background-image: url("http://localhost:3000/assets/img/star-on.8189231d.svg");
+  background-image: url("http://localhost:5173/assets/img/star-on.8189231d.svg");
 }
 
 .star-rate.star-off{
   display: block;
   width: 18px;
   height: 18px;
-  background-image: url("http://localhost:3000/assets/img/star-off.7d121f8f.svg");
+  background-image: url("http://localhost:5173/assets/img/star-off.7d121f8f.svg");
 }
 
 .card-wrap .has-icon{

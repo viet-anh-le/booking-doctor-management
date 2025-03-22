@@ -10,7 +10,7 @@ module.exports = (app) => {
     dashboardRoutes
   );
 
-  app.use("/doctor", 
+  app.use("/listdoctor", 
     authMiddleware.requireAuth,
     doctorRoutes
   );

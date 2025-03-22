@@ -29,7 +29,7 @@ function ListDoctor() {
   appointment.current.spec = specName;
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch(`http://localhost:3002/doctor/${params.spec}`,
+      const response = await fetch(`http://localhost:3002/listdoctor/${params.spec}`,
         {
           method: "GET",
           credentials: "include"

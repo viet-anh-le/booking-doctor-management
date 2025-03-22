@@ -4,6 +4,11 @@ const doctorSchema = new mongoose.Schema(
   {
     fullName: String,
     email: String,
+    password: String,
+    token: {
+      type: String,
+      default: () => generate.generateRandomString(20)
+    },
     rating: Number,
     exp: Number,
     address: String,
@@ -23,6 +28,6 @@ const doctorSchema = new mongoose.Schema(
   }
 )
 
-const Account = mongoose.model('Doctor', doctorSchema, "doctors");
+const DoctorAccount = mongoose.model('Doctor', doctorSchema, "doctors");
 
-module.exports = Account;
+module.exports = DoctorAccount;
