@@ -1,9 +1,0 @@
-.form-item{
-  margin-top: auto;
-  position: relative
-}
-
-.form-item.btn-form-item{
-  position: absolute;
-  bottom: 0;
-}

@@ -6,6 +6,7 @@ import { createStore } from 'redux';
 import allReducers from './reducers';
 import App from './App';
 import './index.css'
+import '@ant-design/v5-patch-for-react-19';
 
 const store = createStore(allReducers);
 
