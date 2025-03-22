@@ -1,0 +1,196 @@
+* {
+  box-sizing: border-box;
+}
+
+:root{
+  --auth-form-light-blue: rgb(17, 117, 167);
+}
+
+body{
+  padding: 0;
+  margin: 0;
+}
+
+.webmd-modal__body {
+  padding: 30px 20px;
+  color: #606266;
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  position: relative;
+  min-height: 640px;
+  background: linear-gradient(rgb(226, 244, 255) 0%, rgb(255, 255, 255) 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
+
+.auth-container {
+  min-height: 640px;
+  display: flex;
+  position: absolute;
+  min-width: 80%;
+  left: 20%;
+  top: 10%;
+}
+
+.auth-container .auth-bg-wrapper.login {
+  background-image: url(https://img.webmd.com/vim/live/webmd/consumer_assets/images/care-header/family_bg.jpg);
+  border-top-left-radius: 5%;
+  border-bottom-left-radius: 5%;
+}
+
+.auth-container .auth-bg-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 512px;
+  padding: 36px 62px;
+  min-height: 640px;
+  height: 100%;
+  background: var(--auth-form-bg-gray) url(https://img.webmd.com/vim/live/webmd/consumer_assets/images/care-header/bg_pattern.svg) no-repeat center / cover;
+}
+
+.auth-container .auth-form-wrapper {
+  width: 100%;
+  max-width: 512px;
+  padding: 88px 51px;
+  background-color: white;
+  border-top-right-radius: 5%;
+  border-bottom-right-radius: 5%;
+}
+
+.auth-container .auth-form-wrapper .signin-signup-section {
+  text-align: center;
+  line-height: 20px;
+  font-size: 1rem;
+  margin: 0;
+  color: var(--auth-form-black);
+}
+
+.auth-container .auth-form-wrapper .auth-form-login-sign-btn {
+  font-weight: 600;
+  padding: 0;
+  color: var(--auth-form-light-blue);
+  border: transparent;
+  background-color: #fff;
+}
+
+.auth-container .auth-form-wrapper h3 {
+  font-weight: 600;
+  line-height: 1;
+  font-size: 24px;
+  color: var(--auth-form-black);
+  text-align: center;
+  margin-bottom: 45px;
+  margin-top: 10px;
+}
+
+.auth-container .auth-form-wrapper form .webmd-input--medium {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.webmd-input--medium:nth-child(n){
+  margin-bottom: 30px;
+}
+
+.auth-container .auth-form-wrapper form .webmd-input--medium input {
+  height: 50px;
+  border-radius: 3px;
+}
+
+.webmd-input__inner {
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #444;
+  font-size: 16px;
+  font-weight: 400;
+  height: 40px;
+  line-height: 1;
+  padding: 0 .9375rem 0 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.forgot-password-btn {
+  display: block;
+  text-decoration: none;
+  margin-top: 10px;
+  padding: 10px;
+  margin-bottom: 30px;
+  color: var(--auth-form-light-blue);
+}
+
+.auth-form-submit-btn {
+  background-color: var(--auth-form-light-blue);
+  border: transparent;
+}
+
+.webmd-button.is-stretch {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.webmd-button--large {
+  font-size: 18px;
+  padding: 14px 24px;
+}
+
+.webmd-button--primary {
+  color: #fff;
+}
+
+.webmd-checkbox {
+  display: block;
+  padding: 10px;
+  position: relative;
+}
+
+.webmd-checkbox__original {
+  appearance: none; 
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc; /* Màu xám nhạt */
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Tạo dấu tích xanh */
+input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 6px;
+  height: 10px;
+  border: solid #007bff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  display: none;
+}
+
+/* Hiện dấu tích khi được chọn */
+input[type="checkbox"]:checked::after {
+  display: block;
+}
+
+.webmd-checkbox__label{
+  display: inline-block;
+  position: absolute;
+  top: 30%;
+  padding-left: 5px;
+}
+
+.form-account{
+  margin-top: 20px;
+}
+
+.form-account .form-account-text{
+  font-size: 16px;
+}

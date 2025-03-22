@@ -1,41 +1,61 @@
-import LayoutDefault from "../pages/layouts/LayoutDefault";
-import Dashboard from "../pages/dashboard";
-import LogIn from "../pages/login"
-import List from "../pages/layouts/list";
-import Appointment from "../pages/appointment";
-import ListDoctor from "../pages/listDoctor";
-import SignUp from "../pages/login/signup";
+import React from "react";
+import LayoutDefault from "../pages/client/layouts/LayoutDefault";
+import Dashboard from "../pages/client/dashboard";
+import LogIn from "../pages/client/login/index"
+import List from "../pages/client/layouts/list";
+import Appointment from "../pages/client/appointment";
+import ListDoctor from "../pages/client/listDoctor";
+import SignUp from "../pages/client/login/signup";
+import DoctorLogIn from "../pages/doctor/login";
+import DoctorDashboard from "../pages/doctor/dashboard";
+import DoctorLayoutDefault from "../pages/doctor/layouts/LayoutDefault";
 
 export const routes = [
+  //Client
   {
     path: "/",
-    element: <LogIn/>
+    element: React.createElement(LogIn)
   },
   {
     path: "/signup",
-    element: <SignUp/>
+    element: React.createElement(SignUp)
   },
   {
     path: "/",
-    element: <LayoutDefault/>,
+    element: React.createElement(LayoutDefault),
     children: [
       {
         path: "dashboard",
-        element: <Dashboard/>
+        element: React.createElement(Dashboard)
       },
       {
-        path: "doctor",
-        element: <List/>,
+        path: "listdoctor",
+        element: React.createElement(List),
         children: [
           {
             path: ":spec",
-            element: <ListDoctor/>
+            element: React.createElement(ListDoctor)
           }
         ]
       },
       {
         path: "appointment",
-        element: <Appointment/>
+        element: React.createElement(Appointment)
+      }
+    ]
+  },
+  //Doctor
+  {
+    path: "/doctor",
+    element: React.createElement(DoctorLogIn)
+  },
+  {
+    path: "/doctor",
+    element: React.createElement(DoctorLayoutDefault),
+    children: [
+      {
+        path: "dashboard",
+        element: React.createElement(DoctorDashboard)
       }
     ]
   }

@@ -2,9 +2,9 @@ import "./style.css"
 import { Select } from 'antd';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { generateSevenDay } from '../../utils/generateSevenday';
+import { generateSevenDay } from '../../../utils/generateSevenday';
 import { useDispatch } from "react-redux";
-import { sendData } from "../../actions/appointment";
+import { sendData } from "../../../actions/appointment";
 
 function ListDoctor() {
   const [doctors, setDoctors] = useState([]);

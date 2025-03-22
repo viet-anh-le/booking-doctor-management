@@ -118,7 +118,7 @@ function Dashboard() {
                   <img alt="PRIMARY CARE" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/PrimaryCare.svg" />
                   <Link
                     className="spec-name"
-                    to="/doctor/primary-care"
+                    to="/listdoctor/primary-care"
                     state={{ specName: "Primary care" }}
                   >PRIMARY CARE</Link>
                 </div>
@@ -126,35 +126,35 @@ function Dashboard() {
                   <img alt="DENTIST" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Dentist.svg" />
                   <Link 
                     className="spec-name" 
-                    to={`/doctor/dentist`}
+                    to={`/listdoctor/dentist`}
                     state={{ specName: "Dentist"}}>DENTIST</Link>
                 </div>
                 <div>
                   <img alt="OB-GYN" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Obgyn.svg" />
                   <Link 
                     className="spec-name" 
-                    to={`/doctor/ob-gyn`}
+                    to={`/listdoctor/ob-gyn`}
                     state={{ specName: "OB-GYN"}}>OB-GYN</Link>
                 </div>
                 <div>
                   <img alt="DERMATOLOGIST" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Dermatologist.svg" />
                   <Link 
                     className="spec-name" 
-                    to={`/doctor/dermatologist`}
+                    to={`/listdoctor/dermatologist`}
                     state={{ specName: "Dermatologist"}}>DERMATOLOGIST</Link>
                 </div>
                 <div>
                   <img alt="PSYCHIATRIST" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/Psychiatrist.svg" />
                   <Link 
                     className="spec-name" 
-                    to={`/doctor/psychiatrist`}
+                    to={`/listdoctor/psychiatrist`}
                     state={{ specName: "Psychiatrist"}}>PSYCHIATRIST</Link>
                 </div>
                 <div>
                   <img alt="EYE DOCTOR" src="https://img.webmd.com/vim/live/webmd/consumer_assets/site_images/physician_directory/images/homepage/EyeDoc.svg" />
                   <Link 
                     className="spec-name" 
-                    to={`/doctor/eye`}
+                    to={`/listdoctor/eye`}
                     state={{ specName: "Eye Doctor"}}>EYE DOCTOR</Link>
                 </div>
               </div>

@@ -169,7 +169,7 @@ input[type="checkbox"]::after {
   top: 1px;
   width: 6px;
   height: 10px;
-  border: solid #007bff;;
+  border: solid #007bff;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
   display: none;
