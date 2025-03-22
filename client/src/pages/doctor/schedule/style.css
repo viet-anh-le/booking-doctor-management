@@ -1,0 +1,13 @@
+.time-btn{
+  padding: 10px;
+  border: 1px solid #1677FF;
+  border-radius: 8px;
+  color: #1677FF;
+  background-color: #E6F4FF;
+  margin: 0 15px 15px;
+}
+
+.time-btn-active{
+  color: #FFFFFF;
+  background-color: #1677FF;
+}
