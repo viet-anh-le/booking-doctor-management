@@ -4,7 +4,7 @@ const doctorSchema = new mongoose.Schema(
   {
     doctor_id: String,
     date: String,
-    time: Number,
+    time: String,
     maxBooking: Number,
     sumBooking: Number,
     deleted: {
@@ -19,4 +19,4 @@ const doctorSchema = new mongoose.Schema(
 
 const Schedule = mongoose.model('Schedule', doctorSchema, "schedules");
 
-module.exports = Account;
+module.exports = Schedule;

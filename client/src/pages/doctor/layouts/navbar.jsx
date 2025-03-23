@@ -1,20 +1,17 @@
 import { SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { logOut } from '../../../actions/doctor_account';
 
 const items = [
   {
     key: '1',
-    label: 'Profile',
-  },
-  {
-    key: '2',
     label: 'Settings',
     icon: <SettingOutlined />,
   },
   {
-    key: '3',
+    key: '2',
     label: 'Log out',
     icon: <LogoutOutlined />
   }
@@ -23,6 +20,7 @@ const items = [
 function NavBar() {
   const doctor = useSelector(state => state.doctorAccountReducer);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogOut = () => {
     const fetchApi = async () => {
@@ -34,8 +32,8 @@ function NavBar() {
       );
       const result = await response.json();
       if (result.status === 200){
+        dispatch(logOut());
         console.log("Log out thanh cong");
-        
       }
     }
     fetchApi();
@@ -44,12 +42,9 @@ function NavBar() {
   const handleMenuClick = (e) => {
     switch (e.key){
       case "1":
-        console.log("hihi");
-        break;
-      case "2":
         console.log("hehe");
         break;
-      case "3":
+      case "2":
         handleLogOut();
         navigate("/doctor");
         break;

@@ -3,6 +3,7 @@ import { Button, Form, Table, Space, Tag } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { generateSevenDay } from '../../../utils/generateSevenday';
 
 const columns = [
   {
@@ -82,7 +83,7 @@ function DoctorAppointment() {
         </div>
         <div className="appointment-content bg-white shadow-sm">
           <div className="appointment-header p-5 bg-gray-50">
-            <h6 className='font-medium text-blue-400'>Plan created (3 days)</h6>
+            <h6 className='font-medium text-blue-400'>Plan created (7 days)</h6>
           </div>
           <div className="appointment-body bg-white">
             <Table columns={columns} dataSource={data} />

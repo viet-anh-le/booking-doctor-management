@@ -4,3 +4,10 @@ export const fetchDoctorAccountData = (doctorAccountData) => {
     payload: doctorAccountData
   }
 }
+
+export const logOut = () => {
+  return ({
+    type: "LOG OUT"
+  }
+  )
+}

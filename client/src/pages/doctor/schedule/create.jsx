@@ -1,15 +1,15 @@
+import "./style.css"
 import { DatePicker } from 'antd';
 import { Button, Form, Table, Space, Tag, Input } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
-import "./style.css"
+import { useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import dayjs from "dayjs"
 
 function DoctorScheduleCreate() {
   const [form] = Form.useForm();
-
-  const handleClick = (e) => {
-    e.target.classList.toggle("time-btn-active");
-  }
-
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [scheduleArr, setScheduleArr] = useState([]);
   const columns = [
     {
       title: 'Range',
@@ -23,19 +23,65 @@ function DoctorScheduleCreate() {
     }
   ];
 
-  const dataSource = [
-    {
-      key: '1',
-      range: '08:00 - 09:00',
-      date: "23/03/2025"
-    },
-    {
-      key: '2',
-      range: "09:00 - 10:00",
-      date: "23/03/2025"
-    },
-  ];
+  const [dataSource, setDataSource] = useState([]);
 
+  const handleClick = (e) => {
+    const range = e.target.value;
+    e.target.classList.toggle("time-btn-active");
+    setScheduleArr(
+      scheduleArr.includes(range) ? scheduleArr.filter(item => item !== range) : [...scheduleArr, range]
+    );
+    const date = new Date(selectedDate);
+    const formattedDate = dayjs(date).format("DD/MM/YYYY");
+    setDataSource(prevDataSource => {
+      if (scheduleArr.includes(range)) {
+        return prevDataSource.filter(item => {
+          if (item.range == range && item.date == formattedDate) return false;
+          return true;
+        }).map((item, index) => ({ ...item, key: index + 1 }));
+      }
+      return [...prevDataSource, {
+        key: prevDataSource.length + 1,
+        range: range,
+        date: formattedDate
+      }];
+    });
+  }
+
+  const maxBooking = 2;
+
+  const doctorAccount = useSelector(state => state.doctorAccountReducer);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const fetchApi = async () => {
+      const response = await fetch("http://localhost:3002/doctor/schedule/create",
+        {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            doctorId: doctorAccount._id,
+            maxBooking: maxBooking,
+            sumBooking: 0,
+            plan: dataSource
+          }),
+          credentials: "include"
+        }
+      )
+      const result = await response.json();
+      console.log(result);
+    }
+    fetchApi();
+  }
+
+  const handleDateChange = (e) => {
+    setSelectedDate(e.$d);
+    setScheduleArr([]);
+    const allTimeBtns = [...document.querySelectorAll(".time-btn")];
+    allTimeBtns.map((button) => {
+      button.classList.remove("time-btn-active");
+    })
+  }
   return (
     <>
       <div className="create-schedule-content p-5">
@@ -49,7 +95,7 @@ function DoctorScheduleCreate() {
               layout='inline'
               initialValues={
                 {
-                  fullName: "Doctor - Evan"
+                  fullName: doctorAccount.fullName
                 }
               }
             >
@@ -58,7 +104,13 @@ function DoctorScheduleCreate() {
                 label="Select Date:"
                 style={{ width: "50%" }}
               >
-                <DatePicker style={{ width: "100%" }} />
+                <DatePicker
+                  name="date"
+                  style={{ width: "100%" }}
+                  onChange={handleDateChange}
+                  format="DD/MM/YYYY"
+                  defaultValue={dayjs()}
+                />
               </FormItem>
               <FormItem
                 layout='vertical'
@@ -120,7 +172,7 @@ function DoctorScheduleCreate() {
                   22:00 - 23:00
                 </button>
                 <div className='flex justify-center mt-4'>
-                  <Button type="primary">Save</Button>
+                  <Button type="primary" onClick={handleSubmit}>Save</Button>
                 </div>
               </div>
             </div>
@@ -128,7 +180,7 @@ function DoctorScheduleCreate() {
           <div className='m-4'>
             <span className='block m-4'>Selected Range:</span>
             <div>
-              <Table dataSource={dataSource} columns={columns} style={{width: "100%"}}/>
+              <Table dataSource={dataSource} columns={columns} style={{ width: "100%" }} />
             </div>
           </div>
         </div>
