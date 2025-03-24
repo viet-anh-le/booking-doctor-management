@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const doctorSchema = new mongoose.Schema(
   {
     doctor_id: String,
-    date: String,
+    date: Date,
     time: String,
     maxBooking: Number,
     sumBooking: Number,

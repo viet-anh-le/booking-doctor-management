@@ -72,6 +72,11 @@ function DoctorScheduleCreate() {
       console.log(result);
     }
     fetchApi();
+    setDataSource([]);
+    const allTimeBtns = [...document.querySelectorAll(".time-btn")];
+    allTimeBtns.map((button) => {
+      button.classList.remove("time-btn-active");
+    })
   }
 
   const handleDateChange = (e) => {
