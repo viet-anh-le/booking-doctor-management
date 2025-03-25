@@ -12,13 +12,21 @@ module.exports.index = async (req, res) => {
   const doctorId = req.params.doctorId;
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
+  const selectedDate = req.query.date
 
   let find = {
     doctor_id: doctorId,
-    date: {
+  }
+
+  if (startDate && endDate){
+    find.date = {
       $gte: dayjs(startDate, "DD/MM/YYYY").toDate(),
       $lte: dayjs(endDate, "DD/MM/YYYY").toDate()
     }
+  }
+
+  if (selectedDate){
+    find.date = dayjs(selectedDate, "DD/MM/YYYY").toDate()
   }
   const plan = await Schedule.find(find);
   return res.json(plan)

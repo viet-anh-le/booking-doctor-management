@@ -1,8 +1,22 @@
 import "./style.css"
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function LayoutDefault() {
-  const handleClick =  () => {
+  const [result, setResult] = useState({});
+  useEffect(() => {
+    const fetchApi = async () => {
+      const response = await fetch("http://localhost:3002/dashboard", {
+        method: "GET",
+        credentials: "include"
+      });
+      const result1 = await response.json();
+      setResult(result1);
+      console.log(result1);
+    }
+    fetchApi();
+  }, [])
+  const handleLogout = () => {
     const fetchApi = async () => {
       const response = await fetch("http://localhost:3002/auth/logout",
         {
@@ -11,7 +25,7 @@ function LayoutDefault() {
         }
       );
       const result = await response.json();
-      if (result.status === 200){
+      if (result.status === 200) {
         console.log("Log out thanh cong");
       }
     }
@@ -23,7 +37,7 @@ function LayoutDefault() {
         <div className="sc-carFqZ hBWCUB">
           <div className="header-flex-item-1">
             <a href="/dashboard">
-              <img src="/assets/img/SimpleLogo.bdf7548cca4415e95dbc.png" alt="Livewell"/>
+              <img src="/assets/img/SimpleLogo.bdf7548cca4415e95dbc.png" alt="Livewell" />
             </a>
           </div>
           <div className="header-flex-item-2 text-align-right">
@@ -59,26 +73,31 @@ function LayoutDefault() {
             </nav>
           </div>
           <div className="header-flex-item-3 text-align-right">
-            <button className="sc-dPaNzc fqbJCS" onClick={handleClick}>
+            {result.status !== 200 && <button className="fqbJCS login">
               <span>
-                <Link to="/">Sign out</Link>
+                <Link to="/login">Log In</Link>
+              </span>
+            </button>}
+            <button className="fqbJCS" onClick={handleLogout}>
+              <span>
+                <Link to="/login">Sign out</Link>
               </span>
             </button>
           </div>
-      </div>
-    </header >
+        </div>
+      </header >
 
-    <Outlet/>
+      <Outlet />
 
-    <footer className="footer-container">
-      <div className="logo">
-        <a className="link-main" aria-label="Livewell home page" href="/"><img src="/assets/img/Logo.d9c86d1987e7d369437c.png"
-            alt="Livewell"/></a>
-      </div>
-      <div className="copyright">
-        © 2025 Copyright of Viet Anh
-      </div>
-    </footer>
+      <footer className="footer-container">
+        <div className="logo">
+          <a className="link-main" aria-label="Livewell home page" href="/"><img src="/assets/img/Logo.d9c86d1987e7d369437c.png"
+            alt="Livewell" /></a>
+        </div>
+        <div className="copyright">
+          © 2025 Copyright of Viet Anh
+        </div>
+      </footer>
     </>
   )
 }

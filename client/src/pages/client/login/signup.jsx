@@ -85,7 +85,7 @@ function SignUp() {
               <div className="form-account">
                 <p className="form-account-text">
                   Already have an account?
-                  <Link to="/"> Log in </Link>
+                  <Link to="/login"> Log in </Link>
                 </p>
               </div>
             </form>

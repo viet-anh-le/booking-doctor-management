@@ -12,11 +12,12 @@ import DoctorLayoutDefault from "../pages/doctor/layouts/LayoutDefault";
 import DoctorAppointment from "../pages/doctor/appointment";
 import DoctorSchedule from "../pages/doctor/schedule";
 import DoctorScheduleCreate from "../pages/doctor/schedule/create";
+import { Navigate } from "react-router-dom";
 
 export const routes = [
   //Client
   {
-    path: "/",
+    path: "/login",
     element: React.createElement(LogIn)
   },
   {
@@ -27,6 +28,10 @@ export const routes = [
     path: "/",
     element: React.createElement(LayoutDefault),
     children: [
+      {
+        path: "",
+        element: React.createElement(Navigate, { to: "/dashboard", replace: true })
+      },
       {
         path: "dashboard",
         element: React.createElement(Dashboard)

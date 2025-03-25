@@ -1,12 +1,15 @@
 import "./style.css"
 import { useState } from "react"
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom"
+import { fetchAccountData } from "../../../actions/account";
 
 function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,6 +26,12 @@ function LogIn() {
       })
       const result = await response.json();
       if (result.message === "SUCCESS"){
+        const response1 = await fetch(`http://localhost:3002/accounts/${email}`, {
+          method: "GET",
+          credentials: "include"
+        })
+        const result1 = await response1.json();
+        dispatch(fetchAccountData(result1));
         navigate("/dashboard");
       }
     } 

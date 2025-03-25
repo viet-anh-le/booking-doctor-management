@@ -1,6 +1,10 @@
 import { DatePicker } from 'antd';
 import { Button, Form, Table, Space, Tag } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { generateSevenDay } from '../../../utils/generateSevenday';
+import dayjs from "dayjs"
 
 const columns = [
   {
@@ -25,24 +29,17 @@ const columns = [
     key: 'gender',
   },
   {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: (_, { tags }) => (
-      <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
+    title: 'Tag',
+    key: 'tag',
+    dataIndex: 'tag',
+    render: (tag, _, index) => {
+      let color = tag.length > 5 ? 'geekblue' : 'green';
+      return (
+        <Tag color={color} key={index}>
+          {tag.toUpperCase()}
+        </Tag>
+      );
+    },
   },
   {
     title: 'Action',
@@ -92,6 +89,32 @@ const data = [
 
 function DoctorAppointment() {
   const [form] = Form.useForm();
+  const doctorAccount = useSelector(state => state.doctorAccountReducer);
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchApi = async () => {
+      const response = await fetch(`http://localhost:3002/doctor/appointment/${doctorAccount._id}`);
+      const result = await response.json();
+      const newArr = result.map((appointment, index) => {
+        const app = appointment.appointment;
+        const date = dayjs(app.date).format("DD/MM/YYYY");
+        const time = `${app.time} ${date}`;
+        const gender = app.client_gender.charAt(0).toUpperCase() + app.client_gender.slice(1);
+        const tag = app.spec;
+        return {
+          key: index,
+          time: time,
+          name: appointment.client_name,
+          age: app.client_age,
+          gender: gender,
+          tag: tag
+        }
+      })
+      setAppointments(newArr);
+    }
+    fetchApi();
+  }, [])
   return (
     <>
       <div className="list-appointment-content p-5">
@@ -113,7 +136,7 @@ function DoctorAppointment() {
             </Form>
           </div>
           <div className="appointment-body bg-white">
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={appointments} />
           </div>
         </div>
       </div>

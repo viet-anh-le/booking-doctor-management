@@ -3,11 +3,13 @@ const Account = require("../../models/account.model")
 
 // [GET] /accounts
 module.exports.index = async (req, res) => {
+  console.log(email);
   let find = {
+    email: email,
     deleted: false
   }
 
-  const records = await Account.find(find).select("-password -token");
+  const records = await Account.findOne(find).select("-password -token");
 
   res.json(records);
 }

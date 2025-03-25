@@ -1,6 +1,6 @@
 import "./style.css"
 import { DatePicker } from 'antd';
-import { Button, Form, Table, Space, Tag, Input } from 'antd';
+import { Button, Form, Table, Input, Alert } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -69,7 +69,10 @@ function DoctorScheduleCreate() {
         }
       )
       const result = await response.json();
-      console.log(result);
+      if (result.status === 200){
+        const alert = document.querySelector(".alert");
+        alert.classList.remove("hidden");
+      }
     }
     fetchApi();
     setDataSource([]);
@@ -93,7 +96,16 @@ function DoctorScheduleCreate() {
         <div className="title mb-4">
           <h1 className="text-xl">Add a clinic schedule</h1>
         </div>
-        <div className='mx-auto'>
+        <div className="relative">
+          <div className="alert absolute -right-0 z-2 hidden">
+            <Alert
+              message="Success"
+              description="Create new schedule successful!"
+              type="success"
+              showIcon
+              closable
+            />
+          </div>
           <div className='schedule-form-row'>
             <Form
               form={form}

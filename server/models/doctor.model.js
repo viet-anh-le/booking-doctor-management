@@ -17,7 +17,6 @@ const doctorSchema = new mongoose.Schema(
     avatar: String,
     specialization: Array,
     providerGender: String,
-    availableSlots:	Array,
     deleted: {
       type: Boolean,
       default: false

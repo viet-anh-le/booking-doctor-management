@@ -1,6 +1,6 @@
 export const fetchAccountData = (accountData) => {
   return {
-    type: "SEND DATA",
+    type: "SEND ACCOUNT",
     payload: accountData
   }
 }

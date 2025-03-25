@@ -16,10 +16,21 @@ function ListDoctor() {
   const dispatch = useDispatch();
   const handleChange = (doctor, value) => {
     const [day, date] = value.split(" - ");
-    const selected_slot = doctor.availableSlots.find((slot) => {
-      return slot.date === date;
-    });
-    if (selected_slot) setSchedule(selected_slot.time);
+    const fetchApi = async () => {
+      const response = await fetch(`http://localhost:3002/doctor/schedule/${doctor._id}?date=${date}`);
+      const result = await response.json();
+      console.log(result);
+      const newArr = result.filter((item) => {
+        return item.sumBooking < item.maxBooking;
+      }).map((item) => {
+        return {
+          id: item._id,
+          time: item.time
+        }
+      })
+      setSchedule(newArr);
+    }
+    fetchApi();
     appointment.current.day = day;
     appointment.current.date = date;
   };
@@ -41,8 +52,9 @@ function ListDoctor() {
     fetchApi();
   }, [params.spec])
 
-  const handleClick = (time, doctor) => {
-    appointment.current.time = time;
+  const handleClick = (item, doctor) => {
+    appointment.current.scheduleId = item.id;
+    appointment.current.time = item.time;
     appointment.current.doctor = doctor;
     dispatch(sendData(appointment.current));
     navigate("/appointment");
@@ -135,7 +147,7 @@ function ListDoctor() {
                           />
                           {schedule && 
                           <div className="schedule-modal">
-                            {schedule.map((time, index) => <span key={index} className="time-span" onClick={() => handleClick(time, doctor)}>{time}</span>)}
+                            {schedule.map((item, index) => <span key={index} className="time-span" onClick={() => handleClick(item, doctor)}>{item.time}</span>)}
                           </div>}
                         </div>
                       </div>

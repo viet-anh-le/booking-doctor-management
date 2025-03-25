@@ -11,7 +11,6 @@ module.exports = (app) => {
   );
 
   app.use("/listdoctor", 
-    authMiddleware.requireAuth,
     doctorRoutes
   );
 
