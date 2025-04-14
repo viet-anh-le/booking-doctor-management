@@ -27,7 +27,12 @@ module.exports.login = async (req, res) => {
     return;
   }
 
-  res.cookie("token", user.token); //Lưu token vào cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true, // 🔥 BẮT BUỘC khi chạy trên HTTPS (ví dụ Vercel)
+    sameSite: "None", // 🔥 BẮT BUỘC khi frontend và backend khác domain
+    maxAge: 24 * 60 * 60 * 1000 // ví dụ: 1 ngày
+  });
   res.json({
     status: 200,
     message: "SUCCESS"
