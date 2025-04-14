@@ -19,18 +19,18 @@ const frontendURL = process.env.FRONTEND_URL
 
 const server = http.createServer(app);
 
-const socketIO = require('socket.io')(server, {
-  cors: {
-    origin: frontendURL
-  }
-});
+// const socketIO = require('socket.io')(server, {
+//   cors: {
+//     origin: frontendURL
+//   }
+// });
 
-socketIO.on('connection', (socket) => {
-  console.log(`⚡: ${socket.id} user just connected!`);
-  socket.on('disconnect', () => {
-    console.log('🔥: A user disconnected');
-  });
-});
+// socketIO.on('connection', (socket) => {
+//   console.log(`⚡: ${socket.id} user just connected!`);
+//   socket.on('disconnect', () => {
+//     console.log('🔥: A user disconnected');
+//   });
+// });
 
 //parse application json
 app.use(express.json());
@@ -48,6 +48,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 route(app);
 doctorRoute(app);
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })
