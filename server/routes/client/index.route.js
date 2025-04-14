@@ -6,23 +6,23 @@ const accountRoutes = require("./account.route");
 const appointmentRoutes = require("./appointment.route")
 
 module.exports = (app) => {
-  app.use("/dashboard", 
+  app.use("/api/dashboard", 
     authMiddleware.requireAuth,
     dashboardRoutes
   );
 
-  app.use("/listdoctor", 
+  app.use("/api/listdoctor", 
     doctorRoutes
   );
 
-  app.use("/appointments", 
+  app.use("/api/appointments", 
     appointmentRoutes
   );
 
-  app.use("/accounts", 
+  app.use("/api/accounts", 
     authMiddleware.requireAuth,
     accountRoutes
   );
 
-  app.use("/auth", authRoutes);
+  app.use("/api/auth", authRoutes);
 }

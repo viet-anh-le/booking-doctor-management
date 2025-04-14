@@ -95,7 +95,7 @@ function Appointment() {
       formData.append(`images`, file.originFileObj);
     });
 
-    const response = await fetch(`http://localhost:3002/doctor/appointment/create/${doctor._id}`, {
+    const response = await fetch(`http://localhost:3002/api/doctor/appointment/create/${doctor._id}`, {
       method: "POST",
       body: formData,
       credentials: "include"

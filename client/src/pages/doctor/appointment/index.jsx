@@ -73,7 +73,7 @@ function DoctorAppointment() {
 
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch(`http://localhost:3002/doctor/appointment/${doctorAccount._id}`);
+      const response = await fetch(`http://localhost:3002/api/doctor/appointment/${doctorAccount._id}`);
       const result = await response.json();
       dispatch(fetchDoctorAppointments(result));
       const newArr = result.map((appointment, index) => {

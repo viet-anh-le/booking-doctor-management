@@ -14,7 +14,7 @@ function DoctorLogIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/doctor/auth/login", {
+      const response = await fetch("http://localhost:3002/api/doctor/auth/login", {
         method: "POST",
         headers: {"Content-type": "application/json"},
         body: JSON.stringify({

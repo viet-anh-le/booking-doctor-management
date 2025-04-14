@@ -17,7 +17,7 @@ function ListDoctor() {
   const handleChange = (doctor, value) => {
     const [day, date] = value.split(" - ");
     const fetchApi = async () => {
-      const response = await fetch(`http://localhost:3002/doctor/schedule/${doctor._id}?date=${date}`);
+      const response = await fetch(`http://localhost:3002/api/doctor/schedule/${doctor._id}?date=${date}`);
       const result = await response.json();
       console.log(result);
       const newArr = result.filter((item) => {
@@ -40,7 +40,7 @@ function ListDoctor() {
   appointment.current.spec = specName;
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch(`http://localhost:3002/listdoctor/${params.spec}`,
+      const response = await fetch(`http://localhost:3002/api/listdoctor/${params.spec}`,
         {
           method: "GET",
           credentials: "include"

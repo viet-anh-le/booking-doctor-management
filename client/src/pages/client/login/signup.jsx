@@ -12,7 +12,7 @@ function SignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/accounts/create", {
+      const response = await fetch("http://localhost:3002/api/accounts/create", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({

@@ -6,7 +6,7 @@ function LayoutDefault() {
   const [result, setResult] = useState({});
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/dashboard", {
+      const response = await fetch("http://localhost:3002/api/dashboard", {
         method: "GET",
         credentials: "include"
       });
@@ -18,7 +18,7 @@ function LayoutDefault() {
   }, [])
   const handleLogout = () => {
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/auth/logout",
+      const response = await fetch("http://localhost:3002/api/auth/logout",
         {
           method: "GET",
           credentials: "include"

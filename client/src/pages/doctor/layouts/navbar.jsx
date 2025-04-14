@@ -24,7 +24,7 @@ function NavBar() {
 
   const handleLogOut = () => {
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/doctor/auth/logout",
+      const response = await fetch("http://localhost:3002/api/doctor/auth/logout",
         {
           method: "GET",
           credentials: "include"

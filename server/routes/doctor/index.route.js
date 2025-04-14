@@ -3,9 +3,9 @@ const scheduleDoctorRoutes = require("./schedule.route");
 const appointmentRoutes = require("./appointment.route");
 
 module.exports = (app) => {
-  app.use("/doctor/auth", authDoctorRoutes);
+  app.use("/api/doctor/auth", authDoctorRoutes);
 
-  app.use("/doctor/schedule", scheduleDoctorRoutes);
+  app.use("/api/doctor/schedule", scheduleDoctorRoutes);
 
-  app.use("/doctor/appointment", appointmentRoutes);
+  app.use("/api/doctor/appointment", appointmentRoutes);
 }

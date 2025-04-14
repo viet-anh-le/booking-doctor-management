@@ -55,7 +55,7 @@ function DoctorScheduleCreate() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/doctor/schedule/create",
+      const response = await fetch("http://localhost:3002/api/doctor/schedule/create",
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
