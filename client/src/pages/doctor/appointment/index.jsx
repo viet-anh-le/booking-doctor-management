@@ -8,6 +8,8 @@ import { useDispatch } from 'react-redux';
 import dayjs from "dayjs";
 import { fetchDoctorAppointments } from '../../../actions/doctor_appointments';
 
+const serverURL = import.meta.env.VITE_SERVER_URL
+
 function DoctorAppointment() {
   const columns = [
     {
@@ -73,7 +75,7 @@ function DoctorAppointment() {
 
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch(`http://localhost:3002/api/doctor/appointment/${doctorAccount._id}`);
+      const response = await fetch(`${serverURL}/api/doctor/appointment/${doctorAccount._id}`);
       const result = await response.json();
       dispatch(fetchDoctorAppointments(result));
       const newArr = result.map((appointment, index) => {

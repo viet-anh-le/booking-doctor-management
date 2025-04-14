@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from "dayjs"
 
+const serverURL = import.meta.env.VITE_SERVER_URL
+
 function DoctorScheduleCreate() {
   const [form] = Form.useForm();
   const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -55,7 +57,7 @@ function DoctorScheduleCreate() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/doctor/schedule/create",
+      const response = await fetch(`${serverURL}/api/doctor/schedule/create`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },

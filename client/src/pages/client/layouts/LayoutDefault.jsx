@@ -1,12 +1,13 @@
 import "./style.css"
 import { Outlet, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+const serverURL = import.meta.env.VITE_SERVER_URL
 
 function LayoutDefault() {
   const [result, setResult] = useState({});
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/dashboard", {
+      const response = await fetch(`${serverURL}/api/dashboard`, {
         method: "GET",
         credentials: "include"
       });
@@ -18,7 +19,7 @@ function LayoutDefault() {
   }, [])
   const handleLogout = () => {
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/auth/logout",
+      const response = await fetch(`${serverURL}/api/auth/logout`,
         {
           method: "GET",
           credentials: "include"

@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import { generateSevenDay } from '../../../utils/generateSevenday';
 import dayjs from "dayjs"
 
+const serverURL = import.meta.env.VITE_SERVER_URL
+
 function DoctorAppointment() {
   const columns = [
     {
@@ -74,7 +76,7 @@ function DoctorAppointment() {
 
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch(`http://localhost:3002/api/doctor/schedule/${doctorAccount._id}?startDate=${sevenDay[0].date}&endDate=${sevenDay[6].date}`);
+      const response = await fetch(`${serverURL}/api/doctor/schedule/${doctorAccount._id}?startDate=${sevenDay[0].date}&endDate=${sevenDay[6].date}`);
       const result = await response.json();
       const newArray = sevenDay.map((day, index) => {
         const schedules = result.filter((item) => {
@@ -104,7 +106,7 @@ function DoctorAppointment() {
   const handleSubmit = () => {
     setIsClosable(false);
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/doctor/schedule/delete",
+      const response = await fetch(`${serverURL}/api/doctor/schedule/delete`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -123,7 +125,7 @@ function DoctorAppointment() {
     const idsDeleted = record.schedules.map((schedule) => schedule.id);
     setScheduleDeleted(idsDeleted);
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/doctor/schedule/delete",
+      const response = await fetch(`${serverURL}/api/doctor/schedule/delete`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },

@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logOut } from '../../../actions/doctor_account';
 
+const serverURL = import.meta.env.VITE_SERVER_URL
+
 const items = [
   {
     key: '1',
@@ -24,7 +26,7 @@ function NavBar() {
 
   const handleLogOut = () => {
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/doctor/auth/logout",
+      const response = await fetch(`${serverURL}/api/doctor/auth/logout`,
         {
           method: "GET",
           credentials: "include"

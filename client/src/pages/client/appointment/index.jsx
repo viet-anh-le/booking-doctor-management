@@ -53,6 +53,7 @@ const layout = {
     span: 16,
   },
 };
+const serverURL = import.meta.env.VITE_SERVER_URL
 
 function Appointment() {
   //upload file
@@ -95,7 +96,7 @@ function Appointment() {
       formData.append(`images`, file.originFileObj);
     });
 
-    const response = await fetch(`http://localhost:3002/api/doctor/appointment/create/${doctor._id}`, {
+    const response = await fetch(`${serverURL}/api/doctor/appointment/create/${doctor._id}`, {
       method: "POST",
       body: formData,
       credentials: "include"

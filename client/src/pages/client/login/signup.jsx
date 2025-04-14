@@ -2,6 +2,8 @@ import { useRef } from "react";
 import "./style.css"
 import { Link } from "react-router-dom";
 
+const serverURL = import.meta.env.VITE_SERVER_URL
+
 function SignUp() {
   const nameRef = useRef("");
   const emailRef = useRef("");
@@ -12,7 +14,7 @@ function SignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/accounts/create", {
+      const response = await fetch(`${serverURL}/api/accounts/create`, {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({

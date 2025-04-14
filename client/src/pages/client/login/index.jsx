@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom"
 import { fetchAccountData } from "../../../actions/account";
 
+const serverURL = import.meta.env.VITE_SERVER_URL
+
 function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +16,7 @@ function LogIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/auth/login", {
+      const response = await fetch(`${serverURL}/api/auth/login`, {
         method: "POST",
         headers: {"Content-type": "application/json"},
         body: JSON.stringify({
@@ -26,7 +28,7 @@ function LogIn() {
       })
       const result = await response.json();
       if (result.message === "SUCCESS"){
-        const response1 = await fetch(`http://localhost:3002/api/accounts/${email}`, {
+        const response1 = await fetch(`${serverURL}/api/accounts/${email}`, {
           method: "GET",
           credentials: "include"
         })
