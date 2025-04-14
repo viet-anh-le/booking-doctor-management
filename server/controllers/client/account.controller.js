@@ -3,7 +3,7 @@ const Account = require("../../models/account.model")
 
 // [GET] /accounts
 module.exports.index = async (req, res) => {
-  console.log(email);
+  const email = req.params.email;
   let find = {
     email: email,
     deleted: false

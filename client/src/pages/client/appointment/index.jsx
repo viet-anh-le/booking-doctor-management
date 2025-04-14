@@ -1,9 +1,8 @@
 import "./style.css"
-import { Button, Form, Input, InputNumber } from "antd";
+import { Button, Form, Input, InputNumber, Image, Upload, Radio, Alert } from "antd";
 import { useSelector } from "react-redux";
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Image, Upload, Radio, Alert } from 'antd';
 import FormItem from "antd/es/form/FormItem";
 
 var __awaiter =

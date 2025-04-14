@@ -24,7 +24,7 @@ function Dashboard() {
             </div>
             <div className="sc-hBMUJo dzIbmb max-visible-5">
               <a
-                href="/" target="_blank" rel="noreferrer"
+                href="/chat" rel="noreferrer"
                 aria-label="Message your doctor. Link opens in a new tab">
                 <div className="icon-container">
                   <img className="icon"
@@ -44,7 +44,7 @@ function Dashboard() {
               </a>
             </div>
             <div className="sc-hBMUJo dzIbmb max-visible-5">
-              <a href="/" target="_blank" rel="noreferrer" aria-label="Manage appointments. Link opens in a new tab">
+              <a href="/all-appointment">
                 <div className="icon-container">
                   <img className="icon"
                     src="https://gemprodgeminiapp.blob.core.windows.net/storage/1642688710-calendar.png" alt="calendar"

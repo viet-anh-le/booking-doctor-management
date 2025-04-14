@@ -11,6 +11,7 @@ const appointmentSchema = new mongoose.Schema(
     time: String,
     reason: String,
     symptomImages: Array,
+    status: String,
     deleted: {
       type: Boolean,
       default: false

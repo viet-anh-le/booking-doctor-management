@@ -25,6 +25,7 @@ function LayoutDefault() {
         }
       );
       const result = await response.json();
+      localStorage.clear();
       if (result.status === 200) {
         console.log("Log out thanh cong");
       }

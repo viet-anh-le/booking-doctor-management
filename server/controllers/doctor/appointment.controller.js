@@ -22,7 +22,9 @@ module.exports.index = async (req, res) => {
     const client = await Account.findOne({ _id: appointment.client_id });
     return {
       appointment: appointment,
-      client_name: client.fullName
+      client_name: client.fullName,
+      client_phone: client.phone,
+      client_email: client.email
     }
   }))
   return res.json(appointmentsSend)
@@ -31,7 +33,7 @@ module.exports.index = async (req, res) => {
 
 // [POST] /doctor/appointment/create/:id
 module.exports.create = async (req, res) => {
-  const symptomImages = req.files.images ? req.files.images.map((item) => item.path) : [];
+  const symptomImages = req.files.images ? req.files.images.map((item) => `http://localhost:3002/uploads/${item.filename}`) : [];
   const record = new Appointment({
     doctor_id: req.body.doctor_id,
     client_id: req.body.client_id,
@@ -41,7 +43,8 @@ module.exports.create = async (req, res) => {
     date: dayjs(req.body.date, "DD/MM/YYYY").toDate(),
     time: req.body.time,
     reason: req.body.reason,
-    symptomImages: symptomImages
+    symptomImages: symptomImages,
+    status: "pending"
   });
   await record.save();
   const scheduleId = req.body.scheduleId;

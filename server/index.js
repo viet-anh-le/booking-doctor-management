@@ -3,6 +3,8 @@ const cors = require("cors");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const path = require("path");
+const http = require("http");
 
 const database = require("./config/database");
 
@@ -14,6 +16,21 @@ database.connect();
 const app = express();
 const port = process.env.PORT;
 
+const server = http.createServer(app);
+
+const socketIO = require('socket.io')(server, {
+  cors: {
+    origin: "http://localhost:5173"
+  }
+});
+
+socketIO.on('connection', (socket) => {
+  console.log(`⚡: ${socket.id} user just connected!`);
+  socket.on('disconnect', () => {
+    console.log('🔥: A user disconnected');
+  });
+});
+
 //parse application json
 app.use(express.json());
 app.use(bodyParser.json());
@@ -23,11 +40,13 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+// Cấu hình server phục vụ ảnh từ thư mục 'uploads'
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //Routes
 route(app);
 doctorRoute(app);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })

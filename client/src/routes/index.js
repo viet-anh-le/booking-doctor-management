@@ -13,6 +13,9 @@ import DoctorAppointment from "../pages/doctor/appointment";
 import DoctorSchedule from "../pages/doctor/schedule";
 import DoctorScheduleCreate from "../pages/doctor/schedule/create";
 import { Navigate } from "react-router-dom";
+import Detail from "../pages/doctor/appointment/detail";
+import AllAppointment from "../pages/client/allAppointment";
+import Chat from "../pages/client/chat";
 
 export const routes = [
   //Client
@@ -49,6 +52,14 @@ export const routes = [
       {
         path: "appointment",
         element: React.createElement(Appointment)
+      },
+      {
+        path: "all-appointment",
+        element: React.createElement(AllAppointment)
+      },
+      {
+        path: "chat",
+        element: React.createElement(Chat)
       }
     ]
   },
@@ -68,6 +79,10 @@ export const routes = [
       {
         path: "appointment",
         element: React.createElement(DoctorAppointment)
+      },
+      {
+        path: "appointment/detail/:id",
+        element: React.createElement(Detail)
       },
       {
         path: "schedule",
