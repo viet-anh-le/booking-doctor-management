@@ -15,12 +15,13 @@ database.connect();
 
 const app = express();
 const port = process.env.PORT;
+const frontendURL = process.env.FRONTEND_URL
 
 const server = http.createServer(app);
 
 const socketIO = require('socket.io')(server, {
   cors: {
-    origin: "http://localhost:5173"
+    origin: frontendURL
   }
 });
 

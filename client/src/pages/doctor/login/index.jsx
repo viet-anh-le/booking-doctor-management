@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"
 import { fetchDoctorAccountData } from "../../../actions/doctor_account";
 
+const serverURL = import.meta.env.VITE_SERVER_URL
+
 function DoctorLogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +16,7 @@ function DoctorLogIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fetchApi = async () => {
-      const response = await fetch("http://localhost:3002/api/doctor/auth/login", {
+      const response = await fetch(`${serverURL}/api/doctor/auth/login`, {
         method: "POST",
         headers: {"Content-type": "application/json"},
         body: JSON.stringify({
