@@ -1,8 +1,8 @@
 import { io } from 'socket.io-client';
 import React, { useState, useEffect, useRef } from "react";
 
-const host = "http://localhost:3002";
-const socket = io.connect(host);
+// const host = "http://localhost:3002";
+// const socket = io.connect(host);
 
 function Chat() {
   // const socketRef = useRef();
