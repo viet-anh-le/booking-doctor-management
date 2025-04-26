@@ -57,7 +57,7 @@ def get_health():
 
 
 @app.post("/object-to-json")
-async def detect_food_return_json_result(files: List[UploadFile] = File(...)):
+async def detect_disease_return_json_result(files: List[UploadFile] = File(...)):
     results_list = []  # Danh sách kết quả cho tất cả ảnh
 
     # Đọc và xử lý nhiều ảnh
@@ -76,8 +76,8 @@ async def detect_food_return_json_result(files: List[UploadFile] = File(...)):
 UPLOAD_DIR = Path("uploaded_images")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-@app.post("/object-to-img")
-async def detect_food_return_file_path(files: List[UploadFile] = File(...)):
+@app.post("/object-to-filepath")
+async def detect_disease_return_file_path(files: List[UploadFile] = File(...)):
     # Danh sách chứa các đường dẫn ảnh
     image_paths = []
 
