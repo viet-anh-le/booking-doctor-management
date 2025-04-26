@@ -1,11 +1,15 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
+
+const multer = require("multer");
+const uploadCloud = require("../../middlewares/client/uploadCloud.middleware");
+
+const upload = multer();
 
 const controller = require("../../controllers/doctor/appointment.controller");
-const fileUpload = require("../../middlewares/client/upload.middleware")
 
-router.get('/:id', fileUpload, controller.index);
-router.post('/create/:id', fileUpload, controller.create);
-router.patch('/edit/:id', fileUpload, controller.edit);
+router.get('/:id', upload.array("images", 10), uploadCloud.upload, controller.index);
+router.post('/create/:id', upload.array("images", 10), uploadCloud.upload, controller.create);
+router.patch('/edit/:id', upload.array("images", 10), uploadCloud.upload, controller.edit);
 
 module.exports = router

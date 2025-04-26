@@ -33,7 +33,6 @@ module.exports.index = async (req, res) => {
 
 // [POST] /doctor/appointment/create/:id
 module.exports.create = async (req, res) => {
-  const symptomImages = req.files.images ? req.files.images.map((item) => `http://localhost:3002/uploads/${item.filename}`) : [];
   const record = new Appointment({
     doctor_id: req.body.doctor_id,
     client_id: req.body.client_id,
@@ -43,7 +42,7 @@ module.exports.create = async (req, res) => {
     date: dayjs(req.body.date, "DD/MM/YYYY").toDate(),
     time: req.body.time,
     reason: req.body.reason,
-    symptomImages: symptomImages,
+    symptomImages: req.body.images,
     status: "pending"
   });
   await record.save();
