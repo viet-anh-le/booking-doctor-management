@@ -3,7 +3,9 @@ import { useParams } from "react-router-dom";
 import { Button, Form, Input, InputNumber, Radio, Image, Space, DatePicker, Table, Typography, Popconfirm, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const serverURL = import.meta.env.VITE_SERVER_URL
 
 const layout = {
   labelCol: {
@@ -14,37 +16,6 @@ const layout = {
   },
 };
 
-var __awaiter =
-  (this && this.__awaiter) ||
-  function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-      return value instanceof P
-        ? value
-        : new P(function (resolve) {
-          resolve(value);
-        });
-    }
-    return new (P || (P = Promise))(function (resolve, reject) {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function rejected(value) {
-        try {
-          step(generator['throw'](value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function step(result) {
-        result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-      }
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-  };
 var __rest =
   (this && this.__rest) ||
   function (s, e) {
@@ -98,25 +69,55 @@ function Detail() {
   const appointmentId = useParams().id;
   const currentAppointment = allDoctorAppointments.find(item => item.appointment._id === appointmentId);
   const images = currentAppointment.appointment.symptomImages || [];
-  console.log(currentAppointment);
+  console.log(currentAppointment.appointment);
+  const [data, setData] = useState([]);
+
+  useEffect (() => {
+    const fetchMedicines = async () => {
+      const response = await fetch(`${serverURL}/api/doctor/medicine/${currentAppointment.appointment._id}`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result) {
+        setData(result);
+        console.log(result);
+      }
+    }
+    fetchMedicines();
+  }, [])
   //Process table drug
   const [form] = Form.useForm();
-  const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
-  const isEditing = record => record.key === editingKey;
-  const edit = record => {
+  const isEditing = record => record._id === editingKey;
+  const edit = (record) => {
     form.setFieldsValue(Object.assign({ name: '', unit: '', quantity: '', usage: '' }, record));
-    setEditingKey(record.key);
+    setEditingKey(record._id);
   };
   const cancel = () => {
     setEditingKey('');
   };
-  const save = key =>
-    __awaiter(void 0, void 0, void 0, function* () {
+  const handleDelete = async (_id) => {
+    const newData = data.filter(item => item._id !== _id);
+    setData(newData);
+    setEditingKey('');
+    const response = await fetch(`${serverURL}/api/doctor/medicine/edit/${_id}`, {
+      method: "PATCH",
+      headers: {"Content-type": "application/json"},
+      body: JSON.stringify({deleted: true}),
+    })
+    const result = await response.json();
+    if (result.status === 200) {
+      console.log("Da xoa thanh cong")
+    }
+
+  };
+  const save = async (_id) =>
+    {
       try {
-        const row = yield form.validateFields();
+        const row = await form.validateFields();
         const newData = [...data];
-        const index = newData.findIndex(item => key === item.key);
+        const index = newData.findIndex(item => _id === item._id);
         if (index > -1) {
           const item = newData[index];
           newData.splice(index, 1, Object.assign(Object.assign({}, item), row));
@@ -127,10 +128,19 @@ function Detail() {
           setData(newData);
           setEditingKey('');
         }
+        const response = await fetch(`${serverURL}/api/doctor/medicine/edit/${_id}`, {
+          method: "PATCH",
+          headers: {"Content-type": "application/json"},
+          body: JSON.stringify(row),
+        })
+        const result = await response.json();
+        if (result.status === 200) {
+          console.log("Cap nhat thanh cong")
+        }
       } catch (errInfo) {
         console.log('Validate Failed:', errInfo);
       }
-    });
+    };
   const columns = [
     {
       title: 'Name/Content',
@@ -163,13 +173,13 @@ function Detail() {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <Typography.Link onClick={() => save(record.key)} style={{ marginInlineEnd: 8 }}>
+            <Typography.Link onClick={() => save(record._id)} style={{ marginInlineEnd: 8 }}>
               Save
             </Typography.Link>
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
               <a>Cancel</a>
             </Popconfirm>
-            <Popconfirm title="Sure to delete?" onConfirm={cancel}>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record._id)}>
               <a>Delete</a>
             </Popconfirm>
           </span>
@@ -196,9 +206,18 @@ function Detail() {
     });
   });
   const [count, setCount] = useState(0);
-  const handleAdd = () => {
+  const handleAdd = async () => {
+    const response = await fetch(`${serverURL}/api/doctor/medicine/create/${currentAppointment.appointment._id}`, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({}),
+      credentials: "include"
+    })
+    const result = await response.json();
+    console.log(result);
+
     const newData = {
-      key: count,
+      _id: result.id,
       name: '',
       unit: '',
       quantity: '',
@@ -206,6 +225,7 @@ function Detail() {
     };
     setData([...data, newData]);
     setCount(count + 1);
+
   };
   //End process table drub
 
@@ -236,9 +256,6 @@ function Detail() {
       value: "Minor eye surgery"
     }
   ]
-  const handleChange = value => {
-    console.log(`Selected: ${value}`);
-  };
   //End process select services
 
   //Process invoice
@@ -282,7 +299,29 @@ function Detail() {
     },
   ];
 
+  const handleFinish = async (values, appId) => {
+    console.log(values);
+    const formData = new FormData();
+
+    formData.append("services", values.services);
+    formData.append("result", values.result);
+    if (values.followUp) formData.append("followUp", values.followUp);
+    const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${appId}`, {
+      method: "PATCH",
+      body: formData,
+      credentials: "include"
+    })
+    const result = await response.json();
+    if (result.status === 200) {
+      console.log("Cap nhat thanh cong")
+    }
+  }
   //End process invoice
+
+  const handlePresFinish = async () => {
+    console.log(data);
+  }
+
   return (
     <>
       <div className="appointment-card-wrap">
@@ -403,16 +442,19 @@ function Detail() {
           {...layout}
           initialValues={
             {
-              date: dayjs("22/04/2025", "DD/MM/YYYY"),
-              services: ["Booking appointment"]
+              date: dayjs(currentAppointment.appointment.date),
+              services: ["Booking appointment"],
+              result: currentAppointment.appointment.result ? currentAppointment.appointment.result : "",
+              followUp: currentAppointment.appointment.followUp ? dayjs(currentAppointment.appointment.followUp) : undefined
             }
           }
+          onFinish={(values) => handleFinish(values, currentAppointment.appointment._id)}
         >
           <FormItem
             name="date"
             label="Date of appointment"
           >
-            <DatePicker />
+            <DatePicker format="DD/MM/YYYY" />
           </FormItem>
           <FormItem
             name="services"
@@ -422,7 +464,6 @@ function Detail() {
               mode="multiple"
               size="middle"
               placeholder="Please select services"
-              onChange={handleChange}
               style={{ width: '100%' }}
               options={options}
             />
@@ -437,7 +478,7 @@ function Detail() {
             name="followUp"
             label="Follow-up appointment"
           >
-            <DatePicker />
+            <DatePicker format="DD/MM/YYYY" />
           </FormItem>
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit">
@@ -451,6 +492,7 @@ function Detail() {
         <Form
           form={form}
           labelCol={{ span: 12 }}
+          onFinish={handlePresFinish}
         >
           <FormItem>
             <>
@@ -465,6 +507,7 @@ function Detail() {
                 dataSource={data}
                 columns={mergedColumns}
                 rowClassName="editable-row"
+                rowKey={(record) => record._id}
                 pagination={{ onChange: cancel }}
               />
             </>

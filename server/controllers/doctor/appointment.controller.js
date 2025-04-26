@@ -56,3 +56,15 @@ module.exports.create = async (req, res) => {
     message: "CREATE APPOINTMENT SUCCESS"
   })
 }
+
+// [PATCH] /doctor/appointment/edit/:id
+module.exports.edit = async (req, res) => {
+  await Appointment.updateOne({
+    _id: req.params.id
+  }, req.body);
+  console.log(req.params.id);
+  res.json({
+    status: 200
+  })
+}
+

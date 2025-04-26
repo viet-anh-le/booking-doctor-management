@@ -1,4 +1,0 @@
-train: /home/vietanh/Documents/VinXray/vinbigdata/train.txt
-val: /home/vietanh/Documents/VinXray/vinbigdata/val.txt
-nc: 16
-names: ['Aortic enlargement','Atelectasis','Calcification','Cardiomegaly','Consolidation','ILD','Infiltration','Lung Opacity','Nodule/Mass','Other lesion','Pleural effusion','Pleural thickening','Pneumothorax','Pulmonary fibrosis','No finding','Finding']

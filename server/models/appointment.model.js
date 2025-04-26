@@ -12,6 +12,10 @@ const appointmentSchema = new mongoose.Schema(
     reason: String,
     symptomImages: Array,
     status: String,
+    services: Array,
+    result: String,
+    followUp: Date,
+    prescription_id: String,
     deleted: {
       type: Boolean,
       default: false

@@ -57,10 +57,10 @@ export const routes = [
         path: "all-appointment",
         element: React.createElement(AllAppointment)
       },
-      // {
-      //   path: "chat",
-      //   element: React.createElement(Chat)
-      // }
+      {
+        path: "chat",
+        element: React.createElement(Chat)
+      }
     ]
   },
   //Doctor
