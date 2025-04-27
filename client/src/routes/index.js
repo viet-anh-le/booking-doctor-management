@@ -16,6 +16,7 @@ import { Navigate } from "react-router-dom";
 import Detail from "../pages/doctor/appointment/detail";
 import AllAppointment from "../pages/client/allAppointment";
 import Chat from "../pages/client/chat";
+import AIDiseaseDetection from "../pages/doctor/AIDisease";
 
 export const routes = [
   //Client
@@ -91,6 +92,10 @@ export const routes = [
       {
         path: "schedule/create",
         element: React.createElement(DoctorScheduleCreate),
+      },
+      {
+        path: "AIDisease",
+        element: React.createElement(AIDiseaseDetection),
       }
     ]
   }

@@ -1,5 +1,6 @@
 import "./style.css"
 import { Link } from "react-router-dom";
+import { OpenAIOutlined } from "@ant-design/icons"
 
 function SideBar() {
   return (
@@ -45,6 +46,12 @@ function SideBar() {
               </svg>
             </div>
             <Link to="#">Statistic</Link>
+          </div>
+          <div role="button" tabIndex="0" className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+            <div className="grid place-items-center mr-4">
+              <OpenAIOutlined style={{ fontSize: '150%'}}/>
+            </div>
+            <Link to="/doctor/AIDisease">AI Disease Detection</Link>
           </div>
         </nav>
       </div>
