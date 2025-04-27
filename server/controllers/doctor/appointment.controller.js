@@ -28,7 +28,24 @@ module.exports.index = async (req, res) => {
     }
   }))
   return res.json(appointmentsSend)
+}
 
+// [GET] /doctor/appointment/detail/:id
+module.exports.detail = async (req, res) => {
+  const id = req.params.id;
+  let find = {
+    _id: id,
+    deleted: false
+  }
+
+  const appointment = await Appointment.findOne(find);
+  const client = await Account.findOne({ _id: appointment.client_id });
+  return res.json({
+    appointment: appointment,
+    client_name: client.fullName,
+    client_phone: client.phone,
+    client_email: client.email
+  })
 }
 
 // [POST] /doctor/appointment/create/:id
@@ -61,7 +78,6 @@ module.exports.edit = async (req, res) => {
   await Appointment.updateOne({
     _id: req.params.id
   }, req.body);
-  console.log(req.params.id);
   res.json({
     status: 200
   })

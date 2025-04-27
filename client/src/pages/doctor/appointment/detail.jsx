@@ -1,5 +1,4 @@
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button, Form, Input, InputNumber, Radio, Image, Space, DatePicker, Table, Typography, Popconfirm, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import dayjs from "dayjs";
@@ -65,16 +64,32 @@ const EditableCell = _a => {
 };
 
 function Detail() {
-  const allDoctorAppointments = useSelector(state => state.doctorAppointmentsReducer);
+  const navigate = useNavigate();
+  const [isAccept, setIsAccept] = useState(false);
   const appointmentId = useParams().id;
-  const currentAppointment = allDoctorAppointments.find(item => item.appointment._id === appointmentId);
-  const images = currentAppointment.appointment.symptomImages || [];
-  console.log(currentAppointment.appointment);
+  const [currentAppointment, setCurrentAppointment] = useState({})
+  useEffect(() => {
+    const fetchCurrentAppointment = async () => {
+      const response = await fetch(`${serverURL}/api/doctor/appointment/detail/${appointmentId}`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result) {
+        setCurrentAppointment(result);
+        if (result.appointment.status == "resolve") setIsAccept(true);
+        console.log(result);
+      }
+    }
+    fetchCurrentAppointment();
+  }, [])
+  const images = currentAppointment.appointment?.symptomImages || [];
+  console.log(currentAppointment);
   const [data, setData] = useState([]);
 
-  useEffect (() => {
+  useEffect(() => {
     const fetchMedicines = async () => {
-      const response = await fetch(`${serverURL}/api/doctor/medicine/${currentAppointment.appointment._id}`, {
+      const response = await fetch(`${serverURL}/api/doctor/medicine/${appointmentId}`, {
         method: "GET",
         credentials: "include"
       })
@@ -103,8 +118,8 @@ function Detail() {
     setEditingKey('');
     const response = await fetch(`${serverURL}/api/doctor/medicine/edit/${_id}`, {
       method: "PATCH",
-      headers: {"Content-type": "application/json"},
-      body: JSON.stringify({deleted: true}),
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ deleted: true }),
     })
     const result = await response.json();
     if (result.status === 200) {
@@ -112,35 +127,34 @@ function Detail() {
     }
 
   };
-  const save = async (_id) =>
-    {
-      try {
-        const row = await form.validateFields();
-        const newData = [...data];
-        const index = newData.findIndex(item => _id === item._id);
-        if (index > -1) {
-          const item = newData[index];
-          newData.splice(index, 1, Object.assign(Object.assign({}, item), row));
-          setData(newData);
-          setEditingKey('');
-        } else {
-          newData.push(row);
-          setData(newData);
-          setEditingKey('');
-        }
-        const response = await fetch(`${serverURL}/api/doctor/medicine/edit/${_id}`, {
-          method: "PATCH",
-          headers: {"Content-type": "application/json"},
-          body: JSON.stringify(row),
-        })
-        const result = await response.json();
-        if (result.status === 200) {
-          console.log("Cap nhat thanh cong")
-        }
-      } catch (errInfo) {
-        console.log('Validate Failed:', errInfo);
+  const save = async (_id) => {
+    try {
+      const row = await form.validateFields();
+      const newData = [...data];
+      const index = newData.findIndex(item => _id === item._id);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, Object.assign(Object.assign({}, item), row));
+        setData(newData);
+        setEditingKey('');
+      } else {
+        newData.push(row);
+        setData(newData);
+        setEditingKey('');
       }
-    };
+      const response = await fetch(`${serverURL}/api/doctor/medicine/edit/${_id}`, {
+        method: "PATCH",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify(row),
+      })
+      const result = await response.json();
+      if (result.status === 200) {
+        console.log("Cap nhat thanh cong")
+      }
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo);
+    }
+  };
   const columns = [
     {
       title: 'Name/Content',
@@ -322,21 +336,62 @@ function Detail() {
     console.log(data);
   }
 
+  //Handle Accept Appointment
+  const handleAccept = async () => {
+    const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
+      method: "PATCH",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ status: "resolve" }),
+    })
+    const result = await response.json();
+    if (result.status === 200) {
+      window.location.reload();
+    }
+  }
+  //End handle Accept Appointment
+
+  //Handle Deny Appointment
+  const handleDeny = async () => {
+    const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
+      method: "PATCH",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ status: "reject" }),
+    })
+    const result = await response.json();
+    if (result.status === 200) {
+      navigate(-1);
+    }
+  }
+  //End handle Deny Appointment
+
+  const handleSend = async () => {
+    const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
+      method: "PATCH",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ status: "fulfilled" }),
+    })
+    const result = await response.json();
+    if (result.status === 200) {
+      navigate(-1);
+    }
+  }
+  if (!currentAppointment || !currentAppointment.appointment) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <div className="appointment-card-wrap">
         <h2>Patient information</h2>
         <Form
           {...layout}
-          onFinish={(values) => onFinish(values)}
           initialValues={
             {
               username: currentAppointment.client_name,
               email: currentAppointment.client_email,
               phone: currentAppointment.client_phone,
-              age: currentAppointment.appointment.client_age,
-              gender: currentAppointment.appointment.client_gender,
-              reason: currentAppointment.appointment.reason
+              age: currentAppointment.appointment?.client_age,
+              gender: currentAppointment.appointment?.client_gender,
+              reason: currentAppointment.appointment?.reason
             }
           }
         >
@@ -426,152 +481,163 @@ function Detail() {
           </FormItem>
           <Form.Item label={null}>
             <Space>
-              <Button type="primary" htmlType="submit">
-                Accept
-              </Button>
-              <Button type="primary" htmlType="submit">
-                Deny
-              </Button>
+              {
+                !isAccept &&
+                <Button type="primary" htmlType="submit" onClick={handleAccept}>
+                  Accept
+                </Button>
+              }
+              {!isAccept &&
+                <Button type="primary" htmlType="submit" onClick={handleDeny}>
+                  Deny
+                </Button>}
             </Space>
           </Form.Item>
         </Form>
       </div>
-      <div className="appointment-card-wrap">
-        <h2>Information to be filled completely in appointment</h2>
-        <Form
-          {...layout}
-          initialValues={
-            {
-              date: dayjs(currentAppointment.appointment.date),
-              services: ["Booking appointment"],
-              result: currentAppointment.appointment.result ? currentAppointment.appointment.result : "",
-              followUp: currentAppointment.appointment.followUp ? dayjs(currentAppointment.appointment.followUp) : undefined
-            }
-          }
-          onFinish={(values) => handleFinish(values, currentAppointment.appointment._id)}
-        >
-          <FormItem
-            name="date"
-            label="Date of appointment"
-          >
-            <DatePicker format="DD/MM/YYYY" />
-          </FormItem>
-          <FormItem
-            name="services"
-            label="Services"
-          >
-            <Select
-              mode="multiple"
-              size="middle"
-              placeholder="Please select services"
-              style={{ width: '100%' }}
-              options={options}
-            />
-          </FormItem>
-          <FormItem
-            name="result"
-            label="Results of examination diagnosis of current problem:"
-          >
-            <Input.TextArea style={{ minHeight: "100px" }}></Input.TextArea>
-          </FormItem>
-          <FormItem
-            name="followUp"
-            label="Follow-up appointment"
-          >
-            <DatePicker format="DD/MM/YYYY" />
-          </FormItem>
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-      <div className="appointment-card-wrap">
-        <h2>Prescription</h2>
-        <Form
-          form={form}
-          labelCol={{ span: 12 }}
-          onFinish={handlePresFinish}
-        >
-          <FormItem>
-            <>
-              <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                Add new drug
-              </Button>
-              <Table
-                components={{
-                  body: { cell: EditableCell },
-                }}
-                bordered
-                dataSource={data}
-                columns={mergedColumns}
-                rowClassName="editable-row"
-                rowKey={(record) => record._id}
-                pagination={{ onChange: cancel }}
-              />
-            </>
-          </FormItem>
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-      <div className="appointment-card-wrap">
-        <h2>Medical Invoice</h2>
-        <Form
-          labelCol={{ span: 12 }}
-        >
-          <FormItem>
-            <Table
-              dataSource={dataSource_invoice}
-              columns={columns_invoice}
-              pagination={false}
-              summary={() => (
-                <Table.Summary fixed>
-                  <Table.Summary.Row>
-                    <Table.Summary.Cell index={0}>Total amount</Table.Summary.Cell>
-                    <Table.Summary.Cell index={1}></Table.Summary.Cell>
-                    <Table.Summary.Cell index={2}></Table.Summary.Cell>
-                    <Table.Summary.Cell index={3}>This is a summary content</Table.Summary.Cell>
-                  </Table.Summary.Row>
+      <>
+      </>
+      {
+        currentAppointment.appointment?.status === "resolve" &&
+        <>
+          <div className="appointment-card-wrap">
+            <h2>Information to be filled completely in appointment</h2>
+            <Form
+              {...layout}
+              initialValues={
+                {
+                  date: dayjs(currentAppointment.appointment?.date),
+                  services: ["Booking appointment"],
+                  result: currentAppointment.appointment?.result ? currentAppointment.appointment.result : "",
+                  followUp: currentAppointment.appointment?.followUp ? dayjs(currentAppointment.appointment.followUp) : undefined
+                }
+              }
+              onFinish={(values) => handleFinish(values, currentAppointment.appointment?._id)}
+            >
+              <FormItem
+                name="date"
+                label="Date of appointment"
+              >
+                <DatePicker format="DD/MM/YYYY" />
+              </FormItem>
+              <FormItem
+                name="services"
+                label="Services"
+              >
+                <Select
+                  mode="multiple"
+                  size="middle"
+                  placeholder="Please select services"
+                  style={{ width: '100%' }}
+                  options={options}
+                />
+              </FormItem>
+              <FormItem
+                name="result"
+                label="Results of examination diagnosis of current problem:"
+              >
+                <Input.TextArea style={{ minHeight: "100px" }}></Input.TextArea>
+              </FormItem>
+              <FormItem
+                name="followUp"
+                label="Follow-up appointment"
+              >
+                <DatePicker format="DD/MM/YYYY" />
+              </FormItem>
+              <Form.Item label={null}>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+          <div className="appointment-card-wrap">
+            <h2>Prescription</h2>
+            <Form
+              form={form}
+              labelCol={{ span: 12 }}
+              onFinish={handlePresFinish}
+            >
+              <FormItem>
+                <>
+                  <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                    Add new drug
+                  </Button>
+                  <Table
+                    components={{
+                      body: { cell: EditableCell },
+                    }}
+                    bordered
+                    dataSource={data}
+                    columns={mergedColumns}
+                    rowClassName="editable-row"
+                    rowKey={(record) => record._id}
+                    pagination={{ onChange: cancel }}
+                  />
+                </>
+              </FormItem>
+              <Form.Item label={null}>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+          <div className="appointment-card-wrap">
+            <h2>Medical Invoice</h2>
+            <Form
+              labelCol={{ span: 12 }}
+            >
+              <FormItem>
+                <Table
+                  dataSource={dataSource_invoice}
+                  columns={columns_invoice}
+                  pagination={false}
+                  summary={() => (
+                    <Table.Summary fixed>
+                      <Table.Summary.Row>
+                        <Table.Summary.Cell index={0}>Total amount</Table.Summary.Cell>
+                        <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                        <Table.Summary.Cell index={2}></Table.Summary.Cell>
+                        <Table.Summary.Cell index={3}>This is a summary content</Table.Summary.Cell>
+                      </Table.Summary.Row>
 
-                  <Table.Summary.Row>
-                    <Table.Summary.Cell index={0}>Status</Table.Summary.Cell>
-                    <Table.Summary.Cell index={1}></Table.Summary.Cell>
-                    <Table.Summary.Cell index={2}></Table.Summary.Cell>
-                    <Table.Summary.Cell index={3}>
-                      <>
-                        <Radio.Group value="unpaid" disabled
-                          options={[
-                            {
-                              value: "paid",
-                              label: "paid"
-                            },
-                            {
-                              value: "unpaid",
-                              label: "unpaid"
-                            }
-                          ]}
-                        ></Radio.Group>
-                      </>
-                    </Table.Summary.Cell>
-                  </Table.Summary.Row>
-                </Table.Summary>
-              )}
-            />
-          </FormItem>
-          <FormItem
-            label={null}
-          >
-            <Button type="primary" htmlType="submit">
-              Send
-            </Button>
-          </FormItem>
-        </Form>
-      </div>
+                      <Table.Summary.Row>
+                        <Table.Summary.Cell index={0}>Status</Table.Summary.Cell>
+                        <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                        <Table.Summary.Cell index={2}></Table.Summary.Cell>
+                        <Table.Summary.Cell index={3}>
+                          <>
+                            <Radio.Group value="unpaid" disabled
+                              options={[
+                                {
+                                  value: "paid",
+                                  label: "paid"
+                                },
+                                {
+                                  value: "unpaid",
+                                  label: "unpaid"
+                                }
+                              ]}
+                            ></Radio.Group>
+                          </>
+                        </Table.Summary.Cell>
+                      </Table.Summary.Row>
+                    </Table.Summary>
+                  )}
+                />
+              </FormItem>
+              <FormItem
+                label={null}
+              >
+                <Button type="primary" htmlType="submit" onClick={handleSend}>
+                  Send
+                </Button>
+              </FormItem>
+            </Form>
+          </div>
+        </>
+      }
     </>
   )
 }

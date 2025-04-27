@@ -46,7 +46,7 @@ function AIDiseaseDetection() {
   return (
     <>
       <Splitter style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
-        <Splitter.Panel defaultSize="40%" min="20%" max="70%">
+        <Splitter.Panel defaultSize="50%" min="20%" max="70%">
           <div>
             <Dragger
               {...props}

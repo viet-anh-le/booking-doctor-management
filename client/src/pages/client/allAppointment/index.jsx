@@ -1,70 +1,144 @@
 import "./style.css"
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag, Modal, Form, Input, DatePicker, List } from 'antd';
+import FormItem from "antd/es/form/FormItem";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-} from '@ant-design/icons';
+
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
+const layout = {
+  labelCol: {
+    span: 6,
+  },
+  wrapperCol: {
+    span: 18,
+  },
+};
 
 function AllAppointment() {
-  const data = [
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentRecord, setCurrentRecord] = useState(null);
+  const [dataPres, setDataPres] = useState([]);
+
+  const colums_pres = [
     {
-      key: 0,
-      date: dayjs("13/04/2025", "DD/MM/YYYY"),
+      title: 'Name/Content',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      key: 1,
-      date: dayjs("13/04/2025", "DD/MM/YYYY"),
-      time: "08:00 - 09:00",
-      speciality: "Psychiatrist",
-      doctor: "Dr. Michael Brown",
-      status: "Pending"
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
     },
     {
-      key: 2,
-      date: dayjs("13/04/2025", "DD/MM/YYYY"),
-      time: "10:00 - 11:00",
-      speciality: "Psychiatrist",
-      doctor: "Dr. Michael Brown",
-      status: "Unpaid"
+      title: 'Unit',
+      dataIndex: 'unit',
+      key: 'unit',
     },
     {
-      key: 3,
-      date: dayjs("13/04/2025", "DD/MM/YYYY"),
-      time: "11:00 - 12:00",
-      speciality: "Psychiatrist",
-      doctor: "Alex",
-      status: "Accept"
+      title: 'Usage',
+      dataIndex: 'usage',
+      key: 'usange',
     },
-    {
-      key: 4,
-      date: dayjs("14/04/2025", "DD/MM/YYYY"),
-    },
-    {
-      key: 5,
-      date: dayjs("14/04/2025", "DD/MM/YYYY"),
-      time: "08:00 - 09:00",
-      speciality: "Psychiatrist",
-      doctor: "Dr. Michael Brown",
-      status: "Paid"
-    },
-    {
-      key: 6,
-      date: dayjs("14/04/2025", "DD/MM/YYYY"),
-      time: "10:00 - 11:00",
-      speciality: "Psychiatrist",
-      doctor: "Dr. Michael Brown",
-      status: "Accept"
-    },
-    {
-      key: 7,
-      date: dayjs("14/04/2025", "DD/MM/YYYY"),
-      time: "11:00 - 12:00",
-      speciality: "Psychiatrist",
-      doctor: "Alex",
-      status: "Accept"
-    },
-  ]
+  ];
+
+  const showModal = (record) => {
+    // console.log(record);
+    setIsModalOpen(true);
+    setCurrentRecord(record);
+
+    const fetchMedicines = async () => {
+      const response = await fetch(`${serverURL}/api/doctor/medicine/${record.key}`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result) {
+        setDataPres(result);
+        console.log(result);
+      }
+    }
+    fetchMedicines();
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    setCurrentRecord(null);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setCurrentRecord(null);
+  };
+
+  const [data, setData] = useState([]);
+  const [filter, setFilter] = useState([]);
+  const [filterDoctor, setFilterDoctor] = useState([]);
+  const userAccount = useSelector(state => state.accountReducer);
+  useEffect(() => {
+    const fetchallAppointments = async () => {
+      const response = await fetch(`${serverURL}/api/appointments/${userAccount._id}`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result) {
+        const groupedData = result.reduce((acc, appointment) => {
+          const formattedDate = dayjs(appointment.appointment.date).format("DD/MM/YYYY"); // Định dạng lại ngày
+
+          if (!acc[formattedDate]) {
+            acc[formattedDate] = {
+              key: formattedDate, // Tạo key cho ngày
+              date: formattedDate,
+              appointments: []
+            };
+          }
+
+          acc[formattedDate].appointments.push({
+            appointment: appointment.appointment,
+            doctor_name: appointment.doctor_name
+          });
+
+          return acc;
+        }, {});
+
+        // Chuyển đối tượng thành mảng, mỗi phần tử là một nhóm theo ngày
+        const groupedArray = Object.values(groupedData);
+        const tempData = [];
+        const tempFilter = [];
+        const tempFilterDoctor = new Set();
+
+        groupedArray.forEach((item) => {
+          tempData.push({
+            key: item.key,
+            date: item.date
+          })
+          tempFilter.push({
+            text: item.date,
+            value: item.date
+          })
+          item.appointments.forEach((obj) => {
+            tempData.push({
+              key: obj.appointment._id,
+              ...obj.appointment,
+              doctor: obj.doctor_name
+            })
+            tempFilterDoctor.add(obj.doctor_name);
+          })
+        })
+        console.log(tempData);
+        setData(tempData);
+        setFilter(tempFilter);
+        setFilterDoctor(Array.from(tempFilterDoctor).map(name => ({
+          text: name,
+          value: name
+        })));
+      }
+    }
+    fetchallAppointments();
+  }, [])
 
   const columns = [
     {
@@ -72,24 +146,12 @@ function AllAppointment() {
       dataIndex: 'date',
       width: "15%",
       render: (date, record, _) => {
-        const currentDateStr = date.format("DD/MM/YYYY");
-        const isFirstOccurrence = data.findIndex(item =>
-          item.date.format("DD/MM/YYYY") === currentDateStr
-        ) === record.key;
-        return isFirstOccurrence ? <strong>{currentDateStr}</strong> : record.time;
+        const fieldCount = Object.keys(record).length;
+        return (fieldCount === 2) ? <strong>{date}</strong> : record.time;
       },
-      filters: [
-        {
-          text: "13/04/2025",
-          value: "13/04/2025",
-        },
-        {
-          text: "14/04/2025",
-          value: "14/04/2025",
-        },
-      ],
+      filters: filter,
       onFilter: (value, record) => {
-        const currentDateStr = record.date.format("DD/MM/YYYY");
+        const currentDateStr = dayjs(record.date).format("DD/MM/YYYY");
         if (currentDateStr.toLowerCase().includes(value.toLowerCase()))
           return true;
         return false
@@ -97,23 +159,14 @@ function AllAppointment() {
     },
     {
       title: 'Speciality',
-      dataIndex: 'speciality',
+      dataIndex: 'spec',
       width: "15%",
     },
     {
       title: 'Doctor',
       dataIndex: 'doctor',
       width: "25%",
-      filters: [
-        {
-          text: 'Dr. Aleksandr Kovalskiy',
-          value: 'Dr. Aleksandr Kovalskiy',
-        },
-        {
-          text: 'Dr. Michael Brown',
-          value: 'Dr. Michael Brown',
-        },
-      ],
+      filters: filterDoctor,
       onFilter: (value, record) => {
         if (!record.doctor || record.doctor.toLowerCase().includes(value.toLowerCase()))
           return true;
@@ -126,8 +179,8 @@ function AllAppointment() {
       width: "25%",
       filters: [
         {
-          text: 'Accept',
-          value: 'accept',
+          text: 'Resolve',
+          value: 'resolve',
         },
         {
           text: 'Pending',
@@ -138,13 +191,9 @@ function AllAppointment() {
           value: 'reject',
         },
         {
-          text: 'Unpaid',
-          value: 'unpaid'
-        },
-        {
-          text: 'Paid',
-          value: 'paid',
-        },
+          text: 'Fulfilled',
+          value: 'fulfilled',
+        }
       ],
       onFilter: (value, record) => {
         if (!record.status || record.status?.toLowerCase() === (value.toLowerCase()))
@@ -152,16 +201,15 @@ function AllAppointment() {
         return false
       },
       render: (status) => {
-        if (status == "Accept")
-          return <Tag color="processing">Accept</Tag>
-        if (status == "Pending") {
-          return <Tag color="warning">Pending</Tag>
+        if (status == "resolve")
+          return <Tag color="green">Resolve</Tag>
+        if (status == "pending") {
+          return <Tag color="yellow">Pending</Tag>
         }
-        if (status == "Reject")
-          return <Tag color="error">Reject</Tag>
-        if (status == "Paid")
-          return <Tag icon={<CheckCircleOutlined />} color="success">Paid</Tag>
-        if (status == "Unpaid") return <Tag icon={<CloseCircleOutlined />} color="red">Unpaid</Tag>
+        if (status == "reject")
+          return <Tag color="red">Reject</Tag>
+        if (status == "fulfilled")
+          return <Tag color="blue">Fulfilled</Tag>
       }
     },
     {
@@ -169,25 +217,16 @@ function AllAppointment() {
       key: 'action',
       width: "20%",
       render: (_, record, index) => {
-        const currentDateStr = record.date.format("DD/MM/YYYY");
-        const isFirstOccurrence = data.findIndex(item =>
-          item.date.format("DD/MM/YYYY") === currentDateStr
-        ) === record.key;
-        if (!isFirstOccurrence)
+        const fieldCount = Object.keys(record).length;
+        if (fieldCount !== 2 && record.status == "fulfilled") {
           return (
-            // <Space size="middle">
-            //   <a>Delete</a>
-            //   <a>
-            //     <Space>
-            //       More actions
-            //       <DownOutlined />
-            //     </Space>
-            //   </a>
-            // </Space>
-            <Button type="primary" ghost>
-              View appointment
-            </Button>
+            <>
+              <Button type="primary" ghost onClick={() => showModal(record)}>
+                View Result
+              </Button>
+            </>
           )
+        }
       },
     },
   ];
@@ -209,9 +248,93 @@ function AllAppointment() {
           />
         </div>
 
-        <div className="appointment-content">
+        {
+          currentRecord &&
+          <Modal
+            title="Appoitment Result"
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            width={1000}
+          >
+            <Form
+              {...layout}
+              initialValues={
+                {
+                  reason: currentRecord.reason
+                }
+              }
+            >
+              <Form.Item
+                name="reason"
+                label="Reason for examination"
+                rules={[
+                  {
+                    required: true
+                  }
+                ]}
+              >
+                <Input.TextArea readOnly />
+              </Form.Item>
+            </Form>
+            <div >
+              <h2 className="mb-4 font-bold text-base">Information to be filled completely in appointment</h2>
+              <Form
+                {...layout}
+                initialValues={
+                  {
+                    date: dayjs(currentRecord.date),
+                    services: currentRecord.services,
+                    result: currentRecord.result,
+                    followUp: currentRecord.followUp ? dayjs(currentRecord.followUp) : undefined
+                  }
+                }
+              >
+                <FormItem
+                  name="date"
+                  label="Date of appointment"
+                >
+                  <DatePicker format="DD/MM/YYYY" readOnly />
+                </FormItem>
+                <FormItem
+                  name="services"
+                  label="Services"
+                >
+                  <List
+                    bordered
+                    dataSource={currentRecord.services}
+                    renderItem={(item) => (
+                      <List.Item>
+                        {item}
+                      </List.Item>
+                    )}
+                  />
+                </FormItem>
+                <FormItem
+                  name="result"
+                  label="Results after diagnosis"
+                >
+                  <Input.TextArea style={{ minHeight: "100px" }} readOnly></Input.TextArea>
+                </FormItem>
+                <FormItem
+                  name="followUp"
+                  label="Follow-up appointment"
+                >
+                  <DatePicker format="DD/MM/YYYY" readOnly />
+                </FormItem>
+              </Form>
+            </div>
 
-        </div>
+            <div>
+              <h2 className="mb-4 font-bold text-base">Prescription</h2>
+              <Table
+                dataSource={dataPres}
+                columns={colums_pres}
+                rowKey={(record) => record._id}
+              />
+            </div>
+          </Modal>
+        }
       </div>
     </>
   )

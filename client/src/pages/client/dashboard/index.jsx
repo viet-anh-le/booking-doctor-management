@@ -33,7 +33,7 @@ function Dashboard() {
                   <span className="card-text-desktop">Message your doctor</span></div>
               </a>
             </div>
-            <div className="sc-hBMUJo dzIbmb max-visible-5">
+            {/* <div className="sc-hBMUJo dzIbmb max-visible-5">
               <a href="/"
                 target="_blank" rel="noreferrer" aria-label="Get your test results. Link opens in a new tab">
                 <div className="icon-container">
@@ -42,7 +42,7 @@ function Dashboard() {
                     title="Icon" aria-hidden="true" />
                   <span className="card-text-desktop">Get your test results</span></div>
               </a>
-            </div>
+            </div> */}
             <div className="sc-hBMUJo dzIbmb max-visible-5">
               <a href="/all-appointment">
                 <div className="icon-container">
