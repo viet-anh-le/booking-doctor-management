@@ -103,6 +103,21 @@ function Appointment() {
     })
     const result = await response.json();
     if (result.status === 200) {
+      const roomRes = await fetch(`${serverURL}/api/chat/createRoom`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          doctorId: doctor._id,
+          clientId: userAccount._id
+        }),
+        credentials: "include"
+      });
+    
+      const roomResult = await roomRes.json();
+      console.log("Room result:", roomResult);
+
       const alert = document.querySelector(".alert");
       alert.classList.remove("hidden");
     }

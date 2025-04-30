@@ -49,12 +49,12 @@ var __awaiter =
   };
 //End Preview Image
 
-function Chat() {
+function DoctorChat() {
   const [mess, setMess] = useState([]);
   const [message, setMessage] = useState('');
-  const userAccount = useSelector(state => state.accountReducer);
+  const doctorAccount = useSelector(state => state.doctorAccountReducer);
+  const [room_id, setRoomId] = useState(doctorAccount.friendList.length > 0 ? doctorAccount.friendList[0].room_id : undefined);
   const [friendList, setFriendList] = useState([]);
-  const [room_id, setRoomId] = useState(userAccount.friendList.length > 0 ? userAccount.friendList[0].room_id : undefined);
   const [currentFriend, setCurrentFriend] = useState(undefined);
 
   const socketRef = useRef();
@@ -66,6 +66,7 @@ function Chat() {
       })
       const result = await response.json();
       if (result) {
+        console.log(result);
         setMess(result);
         const scrollView = document.querySelector("div[name='scroll-view']");
         scrollView.scrollTop = scrollView.scrollHeight;
@@ -83,7 +84,7 @@ function Chat() {
       }])
     })
 
-    socketRef.current.emit('getFriendList', { user_id: userAccount._id, role: userAccount.role });
+    socketRef.current.emit('getFriendList', { user_id: doctorAccount._id, role: doctorAccount.role });
 
     socketRef.current.on("friendList", (friends) => {
       console.log("Danh sách bạn bè:", friends);
@@ -101,9 +102,10 @@ function Chat() {
     fileList.forEach((file, index) => {
       images.push(file.originFileObj);
     });
+    console.log(images)
     if ((message !== null && message !== "") || images.length > 0) {
       const msg = {
-        user_id: userAccount._id,
+        user_id: doctorAccount._id,
         content: message,
         images: images,
         room_id: room_id
@@ -122,16 +124,16 @@ function Chat() {
   const renderMess = mess.map((m, index) =>
     <div
       key={index}
-      className={`${m.user_id !== userAccount._id ? 'col-start-1 col-end-8 p-3 rounded-lg' : 'col-start-6 col-end-13 p-3 rounded-lg'} chat-item`}
+      className={`${m.user_id !== doctorAccount._id ? 'col-start-1 col-end-8 p-3 rounded-lg' : 'col-start-6 col-end-13 p-3 rounded-lg'} chat-item`}
     >
-      <div className={`flex items-center justify-start ${m.user_id === userAccount._id ? 'flex-row-reverse' : 'flex-row'}`}>
+      <div className={`flex items-center justify-start ${m.user_id === doctorAccount._id ? 'flex-row-reverse' : 'flex-row'}`}>
         <div
           className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0"
         >
           A
         </div>
         <div
-          className={`relative text-sm bg-white py-2 px-4 shadow rounded-xl ${m.user_id === userAccount._id ? "mr-3" : "ml-3"}`}
+          className={`relative text-sm bg-white py-2 px-4 shadow rounded-xl ${m.user_id === doctorAccount._id ? "mr-3" : "ml-3"}`}
         >
           <div>{m.content}</div>
           {m.images.length > 0 && (
@@ -354,4 +356,4 @@ function Chat() {
   )
 }
 
-export default Chat
+export default DoctorChat;

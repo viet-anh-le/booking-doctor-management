@@ -3,7 +3,8 @@ const authRoutes = require("./auth.route");
 const dashboardRoutes = require("./dashboard.route");
 const doctorRoutes = require("./doctor.route");
 const accountRoutes = require("./account.route");
-const appointmentRoutes = require("./appointment.route")
+const appointmentRoutes = require("./appointment.route");
+const chatRoutes = require("./chat.route");
 
 module.exports = (app) => {
   app.use("/api/dashboard", 
@@ -24,5 +25,8 @@ module.exports = (app) => {
     accountRoutes
   );
 
+  app.use("/api/chat", 
+    chatRoutes
+  );
   app.use("/api/auth", authRoutes);
 }

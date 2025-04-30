@@ -50,8 +50,10 @@ module.exports.create = async (req, res) => {
   const scheduleArr = req.body.plan;
   for (const schedule of scheduleArr) {
     let find = {
+      doctor_id: id,
       date: dayjs(schedule.date, "DD/MM/YYYY").toDate(),
-      time: schedule.range
+      time: schedule.range,
+      deleted: false
     }
     const scheduleExist = await Schedule.findOne(find);
     if (scheduleExist) {

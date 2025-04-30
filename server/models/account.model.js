@@ -12,8 +12,14 @@ const accountSchema = new mongoose.Schema(
     },
     phone: String,
     avatar: String,
-    role_id: String,
+    role: String,
     status: String,
+    friendList: [
+      {
+        user_id: String,
+        room_id: String
+      }
+    ],
     deleted: {
       type: Boolean,
       default: false

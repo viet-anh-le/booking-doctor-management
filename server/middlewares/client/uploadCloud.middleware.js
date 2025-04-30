@@ -40,11 +40,9 @@ module.exports.upload = async (req, res, next) => {
         } else {
           console.error("Upload thất bại:", result.reason);
         }
-      });
-      next();
-    } else {
-      next();
-    }
+      });  
+    } 
+    next();
   } catch (error) {
     console.error('Middleware Upload lỗi:', error);
     res.status(500).json({ message: "Upload lỗi", error });

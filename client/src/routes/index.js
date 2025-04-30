@@ -17,6 +17,7 @@ import Detail from "../pages/doctor/appointment/detail";
 import AllAppointment from "../pages/client/allAppointment";
 import Chat from "../pages/client/chat";
 import AIDiseaseDetection from "../pages/doctor/AIDisease";
+import DoctorChat from "../pages/doctor/chat";
 
 export const routes = [
   //Client
@@ -98,5 +99,9 @@ export const routes = [
         element: React.createElement(AIDiseaseDetection),
       }
     ]
+  },
+  {
+    path: "/doctor/chat",
+    element: React.createElement(DoctorChat)
   }
 ]

@@ -17,14 +17,21 @@ const doctorSchema = new mongoose.Schema(
     avatar: String,
     specialization: Array,
     providerGender: String,
+    role: String,
+    friendList: [
+      {
+        user_id: String,
+        room_id: String
+      }
+    ],
     deleted: {
       type: Boolean,
       default: false
     },
     deletedAt: Date
   }, {
-    timestamps: true
-  }
+  timestamps: true
+}
 )
 
 const DoctorAccount = mongoose.model('Doctor', doctorSchema, "doctors");
