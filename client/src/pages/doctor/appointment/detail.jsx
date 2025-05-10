@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Form, Input, InputNumber, Radio, Image, Space, DatePicker, Table, Typography, Popconfirm, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
@@ -65,9 +65,12 @@ const EditableCell = _a => {
 
 function Detail() {
   const navigate = useNavigate();
-  const [isAccept, setIsAccept] = useState(false);
+  const [isAccept, setIsAccept] = useState(true);
   const appointmentId = useParams().id;
-  const [currentAppointment, setCurrentAppointment] = useState({})
+  const [currentAppointment, setCurrentAppointment] = useState({});
+  const [services, setServices] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [currentInvoice, setCurrentInvoice] = useState(undefined);
   useEffect(() => {
     const fetchCurrentAppointment = async () => {
       const response = await fetch(`${serverURL}/api/doctor/appointment/detail/${appointmentId}`, {
@@ -77,16 +80,45 @@ function Detail() {
       const result = await response.json();
       if (result) {
         setCurrentAppointment(result);
-        if (result.appointment.status == "resolve") setIsAccept(true);
-        console.log(result);
+        if (result.appointment.status == "pending" || result.appointment.status == "reject") setIsAccept(false);
       }
     }
     fetchCurrentAppointment();
-  }, [])
-  const images = currentAppointment.appointment?.symptomImages || [];
-  console.log(currentAppointment);
-  const [data, setData] = useState([]);
 
+    const fetchService = async () => {
+      const response = await fetch(`${serverURL}/api/doctor/service`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result) {
+        setServices(result);
+      }
+    }
+    fetchService();
+
+    const fetchInvoice = async () => {
+      const response = await fetch(`${serverURL}/api/doctor/invoice/${appointmentId}`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result.status === 200) {
+        console.log(result);
+        setCurrentInvoice(result.invoice);
+        setTotalAmount(result.invoice.total);
+      }
+    }
+    fetchInvoice();
+  }, []);
+
+  const serviceIds = useMemo(() => {
+    return currentAppointment.appointment?.services?.flatMap((service_id) =>
+      service_id.split(','))
+  }, [currentAppointment]);
+
+  const images = currentAppointment.appointment?.symptomImages || [];
+  const [data, setData] = useState([]);
   useEffect(() => {
     const fetchMedicines = async () => {
       const response = await fetch(`${serverURL}/api/doctor/medicine/${appointmentId}`, {
@@ -96,7 +128,6 @@ function Detail() {
       const result = await response.json();
       if (result) {
         setData(result);
-        console.log(result);
       }
     }
     fetchMedicines();
@@ -241,76 +272,41 @@ function Detail() {
     setCount(count + 1);
 
   };
-  //End process table drub
+  //End process table drug
 
   //Process select services
-  const options = [
-    {
-      label: "Booking appointment",
-      value: "Booking appointment"
-    },
-    {
-      label: "Supersonic",
-      value: "Supersonic"
-    },
-    {
-      label: "X-ray",
-      value: "X-ray"
-    },
-    {
-      label: "Psychological counseling",
-      value: "Psychological counseling"
-    },
-    {
-      label: "Eye exam",
-      value: "Eye exam"
-    },
-    {
-      label: "Minor eye surgery",
-      value: "Minor eye surgery"
-    }
-  ]
+  const options = services.map((service) => ({
+    label: service.name,
+    value: service._id,
+  }))
   //End process select services
 
   //Process invoice
-  const dataSource_invoice = [
-    {
-      key: '1',
-      service: 'Booking appointment',
-      quantity: 1,
-      ppu: 60000,
-      amount: 60000
-    },
-    {
-      key: '2',
-      service: 'Psychological counseling',
-      quantity: 1,
-      ppu: 300000,
-      amount: 300000
-    },
-  ];
-
+  const [dataSource_invoice, setDataSource_invoice] = useState([]);
+  const serviceInvoice = serviceIds?.map((service_id, idx) => {
+    const serviceData = services.find((s) => s._id === service_id.trim());
+    return {
+      key: idx,
+      name: serviceData.name,
+      ppu: serviceData.ppu
+    }
+  })
+  useEffect(() => {
+    setDataSource_invoice(serviceInvoice);
+  }, [serviceIds])
   const columns_invoice = [
     {
       title: 'Service',
-      dataIndex: 'service',
-      key: 'service',
+      dataIndex: 'name',
+      key: 'name',
+      width: '50%'
     },
     {
-      title: 'Quantity',
-      dataIndex: 'quantity',
-      key: 'quantity',
-    },
-    {
-      title: 'Price/Unit',
+      title: 'Price',
       dataIndex: 'ppu',
       key: 'ppu',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-    },
+      width: '50%'
+    }
   ];
 
   const handleFinish = async (values, appId) => {
@@ -319,6 +315,21 @@ function Detail() {
 
     formData.append("services", values.services);
     formData.append("result", values.result);
+
+    const invoiceLen = dataSource_invoice.length;
+    let totalAmountTemp = 0;
+    const serviceInvoice = values.services.map((service, idx) => {
+      const serviceData = services.find((s) => s._id === service);
+      totalAmountTemp += serviceData.ppu;
+      return {
+        key: idx + invoiceLen,
+        name: serviceData.name,
+        ppu: serviceData.ppu
+      }
+    })
+    setDataSource_invoice(serviceInvoice);
+
+    setTotalAmount(totalAmountTemp);
     if (values.followUp) formData.append("followUp", values.followUp);
     const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${appId}`, {
       method: "PATCH",
@@ -331,10 +342,6 @@ function Detail() {
     }
   }
   //End process invoice
-
-  const handlePresFinish = async () => {
-    console.log(data);
-  }
 
   //Handle Accept Appointment
   const handleAccept = async () => {
@@ -373,6 +380,47 @@ function Detail() {
     const result = await response.json();
     if (result.status === 200) {
       navigate(-1);
+    }
+
+    if (!currentInvoice) {
+      const fetchInvoice = async () => {
+        console.log(serviceIds);
+        const response = await fetch(`${serverURL}/api/doctor/invoice/create`, {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            app_id: currentAppointment.appointment._id,
+            total: totalAmount,
+            serviceIds: serviceIds,
+            status: "unpaid"
+          }),
+          credentials: "include"
+        })
+        const result = await response.json();
+        if (result) {
+          console.log(result);
+        }
+      }
+      fetchInvoice();
+    }
+    else{
+      const fetchInvoice = async () => {
+        const response = await fetch(`${serverURL}/api/doctor/invoice/edit/${currentInvoice._id}`, {
+          method: "PATCH",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            app_id: currentAppointment.appointment._id,
+            serviceIds: serviceIds,
+            total: totalAmount
+          }),
+          credentials: "include"
+        })
+        const result = await response.json();
+        if (result) {
+          console.log(result);
+        }
+      }
+      fetchInvoice();
     }
   }
   if (!currentAppointment || !currentAppointment.appointment) {
@@ -498,7 +546,7 @@ function Detail() {
       <>
       </>
       {
-        currentAppointment.appointment?.status === "resolve" &&
+        (currentAppointment.appointment?.status == "resolve" || currentAppointment.appointment?.status == "fulfilled") &&
         <>
           <div className="appointment-card-wrap">
             <h2>Information to be filled completely in appointment</h2>
@@ -507,7 +555,7 @@ function Detail() {
               initialValues={
                 {
                   date: dayjs(currentAppointment.appointment?.date),
-                  services: ["Booking appointment"],
+                  services: serviceIds,
                   result: currentAppointment.appointment?.result ? currentAppointment.appointment.result : "",
                   followUp: currentAppointment.appointment?.followUp ? dayjs(currentAppointment.appointment.followUp) : undefined
                 }
@@ -556,7 +604,6 @@ function Detail() {
             <Form
               form={form}
               labelCol={{ span: 12 }}
-              onFinish={handlePresFinish}
             >
               <FormItem>
                 <>
@@ -576,11 +623,6 @@ function Detail() {
                   />
                 </>
               </FormItem>
-              <Form.Item label={null}>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
             </Form>
           </div>
           <div className="appointment-card-wrap">
@@ -597,18 +639,14 @@ function Detail() {
                     <Table.Summary fixed>
                       <Table.Summary.Row>
                         <Table.Summary.Cell index={0}>Total amount</Table.Summary.Cell>
-                        <Table.Summary.Cell index={1}></Table.Summary.Cell>
-                        <Table.Summary.Cell index={2}></Table.Summary.Cell>
-                        <Table.Summary.Cell index={3}>This is a summary content</Table.Summary.Cell>
+                        <Table.Summary.Cell index={1}>{totalAmount}</Table.Summary.Cell>
                       </Table.Summary.Row>
 
                       <Table.Summary.Row>
                         <Table.Summary.Cell index={0}>Status</Table.Summary.Cell>
-                        <Table.Summary.Cell index={1}></Table.Summary.Cell>
-                        <Table.Summary.Cell index={2}></Table.Summary.Cell>
-                        <Table.Summary.Cell index={3}>
+                        <Table.Summary.Cell index={1}>
                           <>
-                            <Radio.Group value="unpaid" disabled
+                            <Radio.Group value={currentInvoice ? currentInvoice.status : "unpaid"} disabled
                               options={[
                                 {
                                   value: "paid",
