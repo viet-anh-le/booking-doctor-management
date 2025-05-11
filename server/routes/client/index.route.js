@@ -5,6 +5,7 @@ const doctorRoutes = require("./doctor.route");
 const accountRoutes = require("./account.route");
 const appointmentRoutes = require("./appointment.route");
 const chatRoutes = require("./chat.route");
+const invoiceRoutes = require("./invoice.route");
 
 module.exports = (app) => {
   app.use("/api/dashboard", 
@@ -28,5 +29,10 @@ module.exports = (app) => {
   app.use("/api/chat", 
     chatRoutes
   );
+
+  app.use("/api/invoice", 
+    invoiceRoutes
+  );
+
   app.use("/api/auth", authRoutes);
 }

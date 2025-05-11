@@ -384,7 +384,8 @@ function Detail() {
 
     if (!currentInvoice) {
       const fetchInvoice = async () => {
-        console.log(serviceIds);
+        console.log("serviceIds = ", serviceIds);
+        const dueDate = dayjs(currentAppointment.appointment.date).add(30, 'day').toISOString();
         const response = await fetch(`${serverURL}/api/doctor/invoice/create`, {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -392,6 +393,7 @@ function Detail() {
             app_id: currentAppointment.appointment._id,
             total: totalAmount,
             serviceIds: serviceIds,
+            due: dueDate,
             status: "unpaid"
           }),
           credentials: "include"

@@ -5,6 +5,7 @@ const invoiceSchema = new mongoose.Schema(
     app_id: String,
     serviceIds: Array,
     total: Number,
+    due: Date,
     status: String
   }, {
     timestamps: true

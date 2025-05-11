@@ -18,6 +18,7 @@ import AllAppointment from "../pages/client/allAppointment";
 import Chat from "../pages/client/chat";
 import AIDiseaseDetection from "../pages/doctor/AIDisease";
 import DoctorChat from "../pages/doctor/chat";
+import ManageBills from "../pages/client/bills";
 
 export const routes = [
   //Client
@@ -62,6 +63,10 @@ export const routes = [
       {
         path: "chat",
         element: React.createElement(Chat)
+      },
+      {
+        path: "manage-billing",
+        element: React.createElement(ManageBills)
       }
     ]
   },

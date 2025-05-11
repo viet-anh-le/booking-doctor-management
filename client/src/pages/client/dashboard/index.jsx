@@ -12,8 +12,7 @@ function Dashboard() {
           </div>
           <div className="slides-container mask-image ">
             <div className="sc-hBMUJo dzIbmb max-visible-5">
-              <a href="/"
-                target="_blank" rel="noreferrer" aria-label="Manage billing. Link opens in a new tab">
+              <a href="/manage-billing">
                 <div className="icon-container">
                   <img className="icon"
                     src="https://gemprodgeminiapp.blob.core.windows.net/storage/1642688710-credit_card.png"
