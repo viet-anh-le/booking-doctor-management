@@ -1,7 +1,7 @@
 import "./style.css"
-import { Button, Form, Input, InputNumber, Image, Upload, Radio, Alert } from "antd";
+import { Button, Form, Input, InputNumber, Image, Upload, Radio, Alert, Card, List } from "antd";
 import { useSelector } from "react-redux";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import FormItem from "antd/es/form/FormItem";
 
@@ -56,6 +56,7 @@ const layout = {
 const serverURL = import.meta.env.VITE_SERVER_URL
 
 function Appointment() {
+  const [form] = Form.useForm();
   //upload file
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -114,7 +115,7 @@ function Appointment() {
         }),
         credentials: "include"
       });
-    
+
       const roomResult = await roomRes.json();
       console.log("Room result:", roomResult);
 
@@ -126,9 +127,52 @@ function Appointment() {
 
   const appointmentData = useSelector(state => state.appointmentReducer);
   const userAccount = useSelector(state => state.accountReducer);
-  // console.log(userAccount);
   console.log(appointmentData);
   const doctor = appointmentData.doctor;
+  const [profiles, setProfiles] = useState([]);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [isSelected, setIsSelected] = useState(false);
+  const [isAddNew, setIsAddNew] = useState(false);
+
+  const handleClickCard = (id) => {
+    setIsSelected(true);
+    setIsAddNew(false);
+    const selected = profiles.find(profile => profile._id === id);
+    setSelectedProfile(selected);
+
+    form.setFieldsValue({
+      username: selected.fullName,
+      email: userAccount.email,
+      phone: selected.phone,
+      bhyt: selected.bhyt
+    });
+  }
+
+  const handleAddNew = () => {
+    setIsAddNew(true);
+    setIsSelected(true);
+    form.setFieldsValue({
+      username: "",
+      email: "",
+      phone: "",
+      bhyt: ""
+    });
+  };
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      const response = await fetch(`${serverURL}/api/accounts/profile/${userAccount._id}`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result.status === 200) {
+        console.log(result);
+        setProfiles([...result.data, userAccount]);
+      }
+    }
+    fetchProfiles();
+  }, [])
   return (
     <>
       <div className="appointment-view relative">
@@ -163,122 +207,168 @@ function Appointment() {
           </div>
         </div>
         <div className="appointment-card-wrap">
-          <h2>Patient information</h2>
-          <Form
-            {...layout}
-            name="nest-messages"
-            onFinish={(values) => onFinish(values)}
-            initialValues={
-              {
-                username: userAccount.fullName,
-                email: userAccount.email,
-                phone: userAccount.phone
+          <List
+            grid={{ gutter: 16, column: 4 }}
+            dataSource={[...profiles, { isAddNew: true }]}
+            renderItem={(item, index) => (
+              <List.Item>
+                {item.isAddNew ? (
+                  <Card
+                    style={{
+                      marginRight: "5%",
+                      cursor: "pointer",
+                      textAlign: "center",
+                      border: "2px dashed #ccc",
+                      color: "#999"
+                    }}
+                    onClick={handleAddNew}
+                  >
+                    <div style={{ fontSize: "24px", fontWeight: "bold" }}>＋</div>
+                    <div>New Profile</div>
+                  </Card>
+                ) : (
+                  <Card
+                    title={item.fullName}
+                    style={{ marginRight: "5%", cursor: "pointer" }}
+                    onClick={() => handleClickCard(item._id)}
+                  >
+                    {item.bhyt}
+                  </Card>
+                )}
+              </List.Item>
+            )}
+          />
+        </div>
+        {isSelected && (
+          <div className="appointment-card-wrap">
+            <h2>Patient information</h2>
+            <Form
+              form={form}
+              {...layout}
+              name="nest-messages"
+              onFinish={(values) => onFinish(values)}
+              initialValues={
+                {
+                  username: selectedProfile?.fullName,
+                  email: userAccount?.email,
+                  phone: selectedProfile?.phone,
+                  bhyt: selectedProfile?.bhyt
+                }
               }
-            }
-          >
-            <Form.Item
-              name="username"
-              label="Name"
             >
-              <Input disabled />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[
-                {
-                  type: 'email',
-                },
-              ]}
-            >
-              <Input disabled />
-            </Form.Item>
-            <Form.Item
-              name="phone"
-              label="Phone Number"
-            >
-              <Input disabled />
-            </Form.Item>
-            <Form.Item
-              name="age"
-              label="Age"
-              rules={[
-                {
-                  type: 'number',
-                  min: 1,
-                  max: 110,
-                  required: true
-                },
-              ]}
-              required
-            >
-              <InputNumber />
-            </Form.Item>
-            <FormItem
-              name="gender"
-              label="Gender"
-              rules={[{ required: true }]}
-            >
-              <Radio.Group
-                options={[
+              <Form.Item
+                name="username"
+                label="Name"
+                required
+              >
+                <Input disabled={!isAddNew} />
+              </Form.Item>
+              {(selectedProfile?._id === userAccount._id) &&
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  rules={[
+                    {
+                      type: 'email',
+                    },
+                  ]}
+                >
+                  <Input disabled={!isAddNew} />
+                </Form.Item>}
+              <Form.Item
+                name="phone"
+                label="Phone Number"
+              >
+                <Input disabled={!isAddNew} />
+              </Form.Item>
+              <Form.Item
+                name="bhyt"
+                label="BHYT"
+                required
+              >
+                <Input disabled={!isAddNew} />
+              </Form.Item>
+              <Form.Item
+                name="age"
+                label="Age"
+                rules={[
                   {
-                    value: "male",
-                    label: "Male"
+                    type: 'number',
+                    min: 1,
+                    max: 110,
+                    required: true
                   },
+                ]}
+                required
+              >
+                <InputNumber />
+              </Form.Item>
+              <FormItem
+                name="gender"
+                label="Gender"
+                rules={[{ required: true }]}
+              >
+                <Radio.Group
+                  options={[
+                    {
+                      value: "male",
+                      label: "Male"
+                    },
+                    {
+                      value: "female",
+                      label: "Female"
+                    }
+                  ]}
+                ></Radio.Group>
+              </FormItem>
+              <Form.Item
+                name="reason"
+                label="Reason for examination"
+                rules={[
                   {
-                    value: "female",
-                    label: "Female"
+                    required: true
                   }
                 ]}
-              ></Radio.Group>
-            </FormItem>
-            <Form.Item
-              name="reason"
-              label="Reason for examination"
-              rules={[
-                {
-                  required: true
-                }
-              ]}
-            >
-              <Input.TextArea />
-            </Form.Item>
-            <FormItem
-              name="image"
-              label="Symptom Images"
-            >
-              <div>
-                <Upload
-                  listType="picture-card"
-                  fileList={fileList}
-                  onPreview={handlePreview}
-                  onChange={handleChange}
-                  beforeUpload={() => {
-                    return false;
-                  }}
-                >
-                  {fileList.length >= 8 ? null : uploadButton}
-                </Upload>
-                {previewImage && (
-                  <Image
-                    wrapperStyle={{ display: 'none' }}
-                    preview={{
-                      visible: previewOpen,
-                      onVisibleChange: visible => setPreviewOpen(visible),
-                      afterOpenChange: visible => !visible && setPreviewImage(''),
+              >
+                <Input.TextArea />
+              </Form.Item>
+              <FormItem
+                name="image"
+                label="Symptom Images"
+              >
+                <div>
+                  <Upload
+                    listType="picture-card"
+                    fileList={fileList}
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                    beforeUpload={() => {
+                      return false;
                     }}
-                    src={previewImage}
-                  />
-                )}
-              </div>
-            </FormItem>
-            <Form.Item label={null}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
+                  >
+                    {fileList.length >= 8 ? null : uploadButton}
+                  </Upload>
+                  {previewImage && (
+                    <Image
+                      wrapperStyle={{ display: 'none' }}
+                      preview={{
+                        visible: previewOpen,
+                        onVisibleChange: visible => setPreviewOpen(visible),
+                        afterOpenChange: visible => !visible && setPreviewImage(''),
+                      }}
+                      src={previewImage}
+                    />
+                  )}
+                </div>
+              </FormItem>
+              <Form.Item label={null}>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        )}
       </div>
     </>
   )

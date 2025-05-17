@@ -13,6 +13,9 @@ const accountSchema = new mongoose.Schema(
     phone: String,
     avatar: String,
     role: String,
+    bhyt: String,
+    dob: Date,
+    gender: String,
     status: String,
     friendList: [
       {
