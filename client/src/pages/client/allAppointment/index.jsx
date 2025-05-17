@@ -45,9 +45,9 @@ function AllAppointment() {
   ];
 
   const showModal = (record) => {
-    // console.log(record);
     setIsModalOpen(true);
     setCurrentRecord(record);
+    console.log(record);
 
     const fetchMedicines = async () => {
       const response = await fetch(`${serverURL}/api/doctor/medicine/${record.key}`, {
@@ -83,8 +83,10 @@ function AllAppointment() {
         method: "GET",
         credentials: "include"
       })
-      const result = await response.json();
-      if (result) {
+      let result = await response.json();
+      if (result.status === 200) {
+        result = result.data;
+        console.log(result);
         const groupedData = result.reduce((acc, appointment) => {
           const formattedDate = dayjs(appointment.appointment.date).format("DD/MM/YYYY"); // Định dạng lại ngày
 
@@ -284,7 +286,6 @@ function AllAppointment() {
                 initialValues={
                   {
                     date: dayjs(currentRecord.date),
-                    services: currentRecord.services,
                     result: currentRecord.result,
                     followUp: currentRecord.followUp ? dayjs(currentRecord.followUp) : undefined
                   }

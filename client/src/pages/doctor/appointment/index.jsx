@@ -85,6 +85,7 @@ function DoctorAppointment() {
   const dispatch = useDispatch();
   const doctorAccount = useSelector(state => state.doctorAccountReducer);
   const [appointments, setAppointments] = useState([]);
+  const [dateFilter, setDateFilter] = useState([]);
 
   useEffect(() => {
     const fetchApi = async () => {

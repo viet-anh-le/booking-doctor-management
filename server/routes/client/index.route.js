@@ -18,6 +18,7 @@ module.exports = (app) => {
   );
 
   app.use("/api/appointments", 
+    authMiddleware.requireAuth,
     appointmentRoutes
   );
 

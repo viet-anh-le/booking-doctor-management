@@ -113,8 +113,8 @@ function Detail() {
   }, []);
 
   const serviceIds = useMemo(() => {
-    return currentAppointment.appointment?.services?.flatMap((service_id) =>
-      service_id.split(','))
+    console.log("check servicesIds", currentAppointment.appointment?.services);
+    return currentAppointment.appointment?.services;
   }, [currentAppointment]);
 
   const images = currentAppointment.appointment?.symptomImages || [];
@@ -313,7 +313,8 @@ function Detail() {
     console.log(values);
     const formData = new FormData();
 
-    formData.append("services", values.services);
+    formData.append("services", JSON.stringify(values.services));
+    console.log("services = ", JSON.stringify(values.services));
     formData.append("result", values.result);
 
     const invoiceLen = dataSource_invoice.length;

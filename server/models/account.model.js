@@ -20,6 +20,7 @@ const accountSchema = new mongoose.Schema(
         room_id: String
       }
     ],
+    profiles: Array,
     deleted: {
       type: Boolean,
       default: false
