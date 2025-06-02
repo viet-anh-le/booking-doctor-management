@@ -1,9 +1,11 @@
 import "./style.css"
-import { Button, Table, Tag, Modal, Form, Input, DatePicker, List } from 'antd';
+import { Button, Table, Tag, Modal, Form, Input, DatePicker, List, Space } from 'antd';
 import FormItem from "antd/es/form/FormItem";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { CSVLink } from 'react-csv';
+import Papa from 'papaparse';
 
 const serverURL = import.meta.env.VITE_SERVER_URL;
 
@@ -18,6 +20,7 @@ const layout = {
 
 function AllAppointment() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalPresOpen, setIsModalPresOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [dataPres, setDataPres] = useState([]);
 
@@ -63,14 +66,45 @@ function AllAppointment() {
     fetchMedicines();
   };
 
+  const showPresModal = (record) => {
+    setIsModalPresOpen(true);
+    setCurrentRecord(record);
+    console.log(record);
+
+    const fetchMedicines = async () => {
+      const response = await fetch(`${serverURL}/api/doctor/medicine/${record.key}`, {
+        method: "GET",
+        credentials: "include"
+      })
+      const result = await response.json();
+      if (result) {
+        setDataPres(result);
+        console.log(result);
+      }
+    }
+    fetchMedicines();
+  };
+
   const handleOk = () => {
     setIsModalOpen(false);
     setCurrentRecord(null);
   };
 
+  const handlePresOk = () => {
+    setIsModalPresOpen(false);
+    setCurrentRecord(null);
+    setDataPres([]);
+  };
+
   const handleCancel = () => {
     setIsModalOpen(false);
     setCurrentRecord(null);
+  };
+
+  const handlePresCancel = () => {
+    setIsModalPresOpen(false);
+    setCurrentRecord(null);
+    setDataPres([]);
   };
 
   const [data, setData] = useState([]);
@@ -223,15 +257,42 @@ function AllAppointment() {
         if (fieldCount !== 2 && record.status == "fulfilled") {
           return (
             <>
-              <Button type="primary" ghost onClick={() => showModal(record)}>
-                View Result
-              </Button>
+              <Space size="middle">
+                <Button type="primary" ghost onClick={() => showModal(record)}>
+                  View Result
+                </Button>
+                <Button type="primary" ghost onClick={() => showPresModal(record)}>
+                  View Prescription
+                </Button>
+              </Space>
             </>
           )
         }
       },
     },
   ];
+  const handleExportCSV = () => {
+    if (!dataPres || dataPres.length === 0) return;
+
+    const filteredData = dataPres.map(item => ({
+      "Name/Content": item.name || '',     // Hoặc item.medicineName nếu khác tên
+      "Quantity": item.quantity || '',
+      "Unit": item.unit || '',
+      "Usage": item.usage || ''
+    }));
+
+    // Chuyển sang CSV và thêm BOM để Excel đọc đúng tiếng Việt
+    const csv = '\uFEFF' + Papa.unparse(filteredData);
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'prescription.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   return (
     <>
       <div className="allAppointment-wrap-card bg-blue-100">
@@ -325,9 +386,22 @@ function AllAppointment() {
                 </FormItem>
               </Form>
             </div>
+          </Modal>
+        }
 
+        {
+          dataPres.length !== 0 &&
+          <Modal
+            title="Prescription"
+            open={isModalPresOpen}
+            onOk={handlePresOk}
+            onCancel={handlePresCancel}
+            width={1000}
+            footer={[
+              <Button key="export" type="primary" onClick={handleExportCSV}>Export CSV</Button>,
+            ]}
+          >
             <div>
-              <h2 className="mb-4 font-bold text-base">Prescription</h2>
               <Table
                 dataSource={dataPres}
                 columns={colums_pres}
