@@ -25,3 +25,25 @@ module.exports.create = async (req, res) => {
     message: "CREATE DEPARTMENT SUCCESS"
   })
 }
+
+// [PATCH] /department/edit/:departmentId
+module.exports.edit = async (req, res) => {
+  await Department.updateOne({
+    _id: req.params.departmentId
+  }, req.body);
+  res.json({
+    status: 200,
+    message: "UPDATE DEPARTMENT SUCCESS"
+  })
+}
+
+// [PATCH] /department/delete/:departmentId
+module.exports.delete = async (req, res) => {
+  await Department.updateOne({
+    _id: req.params.departmentId
+  }, req.body);
+  res.json({
+    status: 200,
+    message: "DELETE DEPARTMENT SUCCESS"
+  })
+}

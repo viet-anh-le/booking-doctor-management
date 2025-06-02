@@ -150,6 +150,7 @@ export default function AddDoctor() {
     formData.append('fullName', values.name);
     formData.append('email', values.email);
     formData.append('password', values.password);
+    formData.append('cccd', values.cccd);
     formData.append('phone', values.phone);
     formData.append('dob', values.dob);
     formData.append('address', currentHospitalText);
@@ -158,7 +159,7 @@ export default function AddDoctor() {
     fileList.forEach((file, index) => {
       formData.append(`avatar`, file.originFileObj);
     });
-    formData.append('status', "active");
+    formData.append('status', "verified");
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/admin/accounts/create`, {
         method: "POST",

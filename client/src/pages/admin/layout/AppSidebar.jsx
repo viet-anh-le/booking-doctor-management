@@ -28,8 +28,13 @@ const navItems = [
     path: "doctor-infors"
   },
   {
+    icon: <UserCircleIcon />,
+    name: "Patients",
+    path: "patient-infors"
+  },
+  {
     icon: <HospitalIcon />,
-    name: "Hospitals & Clinic",
+    name: "Hospitals and Clinic",
     path: "hospitalList",
   },
   {

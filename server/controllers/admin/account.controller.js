@@ -7,6 +7,13 @@ module.exports.index = async (req, res) => {
   res.json(records);
 }
 
+// [GET] /accounts/doctorDetail/:doctorId
+module.exports.getDetail = async (req, res) => {
+  const doctorId = req.params.doctorId;
+  const records = await Doctor.findOne({_id: doctorId}).select("-token");
+  res.json(records);
+}
+
 // [POST] /accounts/create
 module.exports.create = async (req, res) => {
   const emailExist = await Doctor.findOne({
@@ -32,4 +39,27 @@ module.exports.create = async (req, res) => {
       message: "Create success"
     })
   }
+}
+
+// [PATCH] /accounts/doctorEdit/:doctorId
+module.exports.edit = async (req, res) => {
+  if (req.body.password) req.body.password = md5(req.body.password);
+  if (req.body.avatar) req.body.avatar = req.body.avatar[0];
+  if (req.body.specialization) req.body.specialization = JSON.parse(req.body.specialization);
+  await Doctor.updateOne({
+    _id: req.params.doctorId
+  }, req.body);
+  res.json({
+    status: 200
+  })
+}
+
+// [PATCH] /accounts/doctorDelete/:doctorId
+module.exports.delete = async (req, res) => {
+  await Doctor.updateOne({
+    _id: req.params.doctorId
+  }, req.body);
+  res.json({
+    status: 200
+  })
 }

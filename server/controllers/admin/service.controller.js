@@ -25,3 +25,26 @@ module.exports.create = async (req, res) => {
     message: "CREATE SERVICE SUCCESS"
   })
 }
+
+// [PATCH] /service/edit/:serviceId
+module.exports.edit = async (req, res) => {
+  await Service.updateOne({
+    _id: req.params.serviceId
+  }, req.body);
+  res.json({
+    status: 200,
+    message: "UPDATE SERVICE SUCCESS"
+  })
+}
+
+// [PATCH] /service/edit/:serviceId
+module.exports.delete = async (req, res) => {
+  await Service.updateOne({
+    _id: req.params.serviceId
+  }, req.body);
+  res.json({
+    status: 200,
+    message: "DELETE SERVICE SUCCESS"
+  })
+}
+

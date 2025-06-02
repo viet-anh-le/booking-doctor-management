@@ -12,6 +12,7 @@ const doctorSchema = new mongoose.Schema(
     },
     dob: Date,
     phone: String,
+    cccd: String,
     rating: Number,
     exp: Number,
     address: String,
