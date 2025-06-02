@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const generate = require("../helpers/generate");
 
 const doctorSchema = new mongoose.Schema(
   {
@@ -9,6 +10,8 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       default: () => generate.generateRandomString(20)
     },
+    dob: Date,
+    phone: String,
     rating: Number,
     exp: Number,
     address: String,

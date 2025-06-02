@@ -19,6 +19,17 @@ import Chat from "../pages/client/chat";
 import AIDiseaseDetection from "../pages/doctor/AIDisease";
 import DoctorChat from "../pages/doctor/chat";
 import ManageBills from "../pages/client/bills";
+//Admin
+import AppLayout from "../pages/admin/layout/AppLayout";
+import Home from "../pages/admin/Dashboard/Home";
+import AddDoctor from "../pages/admin/DoctorInfors/AddDoctor";
+import DoctorInfors from "../pages/admin/DoctorInfors/DoctorBasicTables"
+import Hospital from "../pages/admin/Hospital/Hospital";
+import AddHospital from "../pages/admin/Hospital/AddHospital";
+import AddClinic from "../pages/admin/Hospital/AddClinic";
+import Departments from "../pages/admin/Departments/Departments";
+import AddDepartment from "../pages/admin/Departments/AddDepartment";
+import Services from "../pages/admin/Services/Services";
 
 export const routes = [
   //Client
@@ -108,5 +119,48 @@ export const routes = [
   {
     path: "/doctor/chat",
     element: React.createElement(DoctorChat)
-  }
+  },
+  //Admin
+  {
+    path: "/admin",
+    element: React.createElement(AppLayout),
+    children: [
+      {
+        path: "",
+        element: React.createElement(Home)
+      },
+      {
+        path: "doctor-infors",
+        element: React.createElement(DoctorInfors)
+      },
+      {
+        path: "add-doctor",
+        element: React.createElement(AddDoctor)
+      },
+      {
+        path: "hospitalList",
+        element: React.createElement(Hospital)
+      },
+      {
+        path: "add-hospital",
+        element: React.createElement(AddHospital)
+      },
+      {
+        path: "add-clinic",
+        element: React.createElement(AddClinic)
+      },
+      {
+        path: "departments/:hospitalId",
+        element: React.createElement(Departments),
+      },
+      {
+        path: "add-department/:hospitalId",
+        element: React.createElement(AddDepartment),
+      },
+      {
+        path: "departments/:hostpitalId/services",
+        element: React.createElement(Services),
+      }
+    ]
+  },
 ]

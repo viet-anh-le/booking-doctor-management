@@ -83,7 +83,7 @@ function Appointment() {
 
     // Thêm thông tin bệnh nhân vào FormData
     formData.append("doctor_id", doctor._id);
-    formData.append("client_id", userAccount._id);
+    formData.append("client_id", selectedProfile._id);
     formData.append("client_age", values.age);
     formData.append("client_gender", values.gender);
     formData.append("spec", appointmentData.spec);

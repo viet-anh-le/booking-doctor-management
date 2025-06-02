@@ -16,6 +16,7 @@ const database = require("./config/database");
 
 const route = require("./routes/client/index.route");
 const doctorRoute = require("./routes/doctor/index.route");
+const adminRoute = require("./routes/admin/index.route");
 
 database.connect();
 
@@ -36,6 +37,7 @@ app.use(cors({
 //Routes
 route(app);
 doctorRoute(app);
+adminRoute(app);
 
 const server = http.createServer(app);
 

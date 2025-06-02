@@ -253,7 +253,7 @@ function AllAppointment() {
         {
           currentRecord &&
           <Modal
-            title="Appoitment Result"
+            title="Appointment Result"
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}

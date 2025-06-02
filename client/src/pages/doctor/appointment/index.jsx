@@ -12,6 +12,7 @@ const serverURL = import.meta.env.VITE_SERVER_URL
 
 function DoctorAppointment() {
   const [reload, setReload] = useState(false);
+  const [clientFilter, setClientFilter] = useState([]);
   const handleClick = (record) => {
     console.log(record);
   }
@@ -37,6 +38,13 @@ function DoctorAppointment() {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      filters: clientFilter,
+      onFilter: (value, record) => {
+        if (record.name.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        return false
+      },
+      filterSearch: true,
       render: (text) => <a>{text}</a>,
     },
     {
@@ -85,19 +93,20 @@ function DoctorAppointment() {
   const dispatch = useDispatch();
   const doctorAccount = useSelector(state => state.doctorAccountReducer);
   const [appointments, setAppointments] = useState([]);
-  const [dateFilter, setDateFilter] = useState([]);
 
   useEffect(() => {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/doctor/appointment/${doctorAccount._id}`);
       const result = await response.json();
       dispatch(fetchDoctorAppointments(result));
+      const tempFilterClient = new Set();
       const newArr = result.map((appointment, index) => {
         const app = appointment.appointment;
         const date = dayjs(app.date).format("DD/MM/YYYY");
         const time = `${app.time} ${date}`;
         const gender = app.client_gender.charAt(0).toUpperCase() + app.client_gender.slice(1);
         const tag = app.spec;
+        tempFilterClient.add(appointment.client_name);
         return {
           key: index,
           time: time,
@@ -110,6 +119,10 @@ function DoctorAppointment() {
         }
       })
       setAppointments(newArr);
+      setClientFilter(Array.from(tempFilterClient).map(name => ({
+        text: name,
+        value: name
+      })));
     }
     fetchApi();
   }, [reload])
