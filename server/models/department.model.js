@@ -4,6 +4,7 @@ const departmentScheme = new mongoose.Schema(
   {
     name: String,
     description: String,
+    address: String,
     phone: String,
     services: Array,
     deleted: {

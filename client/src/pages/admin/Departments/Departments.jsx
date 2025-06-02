@@ -39,7 +39,7 @@ const columns = [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        <Link to={`services`}>View</Link>
+        <Link to={`/admin/services/${record._id}`}>View</Link>
         <a>Update</a>
         <a>Delete</a>
       </Space>

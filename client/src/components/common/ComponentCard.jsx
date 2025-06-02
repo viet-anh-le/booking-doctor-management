@@ -50,7 +50,7 @@ export const ComponentCard = ({
           )}
 
           {button === "Add Service" && (
-            <Link to="/admin/add-department">
+            <Link to={`/admin/add-service/${id}`}>
               <Button type="primary">{button}</Button>
             </Link>
           )}

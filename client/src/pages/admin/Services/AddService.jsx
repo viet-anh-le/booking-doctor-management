@@ -1,9 +1,4 @@
-import {
-  Button,
-  Form,
-  Input,
-  Alert,
-} from 'antd';
+import { Button, Form, Input, Alert, InputNumber } from 'antd';
 import { useEffect, useState } from 'react';
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
@@ -23,18 +18,21 @@ const formItemLayout = {
   },
 };
 
-export default function AddDepartment() {
+export default function AddService() {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const hospitalId = useParams().hospitalId;
+  const departmentId = useParams().departmentId;
   const handleFinish = (values) => {
     const fetchApi = async () => {
-      const response = await fetch(`${serverURL}/api/admin/department/create/${hospitalId}`, {
+      const response = await fetch(`${serverURL}/api/admin/service/create/${departmentId}`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          status: "active"
+        }),
         credentials: "include"
       });
       const result = await response.json();
@@ -51,7 +49,7 @@ export default function AddDepartment() {
       <div className="alert absolute -right-0 hidden z-100">
         <Alert
           message="Success"
-          description="You have created department successful!"
+          description="You have created service successful!"
           type="success"
           showIcon
           closable
@@ -64,17 +62,20 @@ export default function AddDepartment() {
         style={{ maxWidth: 1000, margin: "auto" }}
         onFinish={handleFinish}
       >
-        <Form.Item label="Department Name" name="name" rules={[{ required: true, message: 'Please input!' }]}>
+        <Form.Item label="Service Name" name="name" rules={[{ required: true, message: 'Please input!' }]}>
           <Input style={{ minHeight: 40 }} />
         </Form.Item>
         <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input!' }]}>
-          <TextArea rows={4}  style={{ minHeight: 80 }} />
+          <TextArea rows={4} style={{ minHeight: 80 }} />
         </Form.Item>
-        <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please input!' }]}>
-          <Input style={{ minHeight: 40 }} />
-        </Form.Item>
-        <Form.Item label="Phone number" name="phone" rules={[{ required: true, message: 'Please input!' }]}>
-          <Input style={{ minHeight: 40 }} />
+        <Form.Item label="Price ($)" name="ppu" rules={[{ required: true, message: 'Please input!' }]}>
+          <InputNumber 
+            style={{ minHeight: 40, minWidth: "100%" }} 
+            formatter={(value) =>
+              value?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            }
+            parser={(value) => value?.replace(/\./g, '')}
+          />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
           <Button type="primary" htmlType="submit">

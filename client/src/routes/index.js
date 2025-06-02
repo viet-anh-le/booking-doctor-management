@@ -30,6 +30,7 @@ import AddClinic from "../pages/admin/Hospital/AddClinic";
 import Departments from "../pages/admin/Departments/Departments";
 import AddDepartment from "../pages/admin/Departments/AddDepartment";
 import Services from "../pages/admin/Services/Services";
+import AddService from "../pages/admin/Services/AddService";
 
 export const routes = [
   //Client
@@ -158,8 +159,12 @@ export const routes = [
         element: React.createElement(AddDepartment),
       },
       {
-        path: "departments/:hostpitalId/services",
+        path: "services/:departmentId",
         element: React.createElement(Services),
+      },
+      {
+        path: "add-service/:departmentId",
+        element: React.createElement(AddService),
       }
     ]
   },
