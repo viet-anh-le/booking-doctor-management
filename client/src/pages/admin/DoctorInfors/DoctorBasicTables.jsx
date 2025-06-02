@@ -2,9 +2,14 @@ import { Space, Table, Tag, List } from 'antd';
 import { ComponentCard } from "../../../components/common/ComponentCard.jsx";
 import { useEffect, useState } from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 const serverURL = import.meta.env.VITE_SERVER_URL;
 function DoctorBasicTables() {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const department = query.get("department");
+  const params = new URLSearchParams();
+  if (department) params.append('department', department);
   const handleDelete = (doctorId) => {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/admin/accounts/doctorDelete/${doctorId}`, {
@@ -99,7 +104,7 @@ function DoctorBasicTables() {
   const [doctorData, setDoctorData] = useState([]);
   useEffect(() => {
     const fetchApi = async () => {
-      const response = await fetch(`${serverURL}/api/admin/accounts/`, {
+      const response = await fetch(`${serverURL}/api/admin/accounts?${params.toString()}`, {
         method: "GET",
         credentials: "include"
       });

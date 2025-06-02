@@ -1,8 +1,16 @@
 const md5 = require("md5");
 const Doctor = require("../../models/doctor.model");
 
-// [GET] /accounts
+// [GET] /accounts?department=
 module.exports.index = async (req, res) => {
+  const department = req.query.department;
+  if (department){
+    const records = await Doctor.find({
+      address: department
+    }).select("-password -token");
+    res.json(records);
+    return;
+  }
   const records = await Doctor.find().select("-password -token");
   res.json(records);
 }

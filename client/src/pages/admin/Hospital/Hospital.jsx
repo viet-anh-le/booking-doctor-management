@@ -52,7 +52,9 @@ const columns = [
         <Link to={`/admin/departments/${record._id}`}>
           <Button color='primary' variant='outlined'>Departments</Button>
         </Link>
-        <Button color='primary' variant='outlined'>Doctors</Button>
+        <Link to={`/admin/doctor-infors?department=${record.name}`}>
+          <Button color='primary' variant='outlined'>Doctors</Button>
+        </Link>
       </Space>
     ),
   },
@@ -73,7 +75,7 @@ function Hospital() {
         }
       );
       const result = await response.json();
-      if (toggle){
+      if (toggle) {
         const tempData = result.data.map(item => ({
           ...item,
           key: item._id
@@ -81,7 +83,7 @@ function Hospital() {
         setClinicData(tempData);
         dispatch(fetchClinics(tempData));
       }
-      else{
+      else {
         const tempData = result.data.map(item => ({
           ...item,
           key: item._id
