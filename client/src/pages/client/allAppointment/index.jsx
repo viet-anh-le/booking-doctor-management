@@ -406,6 +406,7 @@ function AllAppointment() {
                 dataSource={dataPres}
                 columns={colums_pres}
                 rowKey={(record) => record._id}
+                pagination={false}
               />
             </div>
           </Modal>

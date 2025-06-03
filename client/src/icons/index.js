@@ -53,6 +53,7 @@ import { ReactComponent as MoreDotIcon } from "./moredot.svg?react";
 import { ReactComponent as ErrorHexaIcon } from "./info-hexa.svg?react";
 import { ReactComponent as DoctorIcon } from "./doctor.svg?react";
 import { ReactComponent as HospitalIcon } from "./hospital.svg?react";
+import { ReactComponent as InvoiceIcon } from "./invoice.svg?react";
 
 export {
   ErrorHexaIcon,
@@ -110,5 +111,6 @@ export {
   ChevronUpIcon,
   ChatIcon,
   DoctorIcon,
-  HospitalIcon
+  HospitalIcon,
+  InvoiceIcon
 };

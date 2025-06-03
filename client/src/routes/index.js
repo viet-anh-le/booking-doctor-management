@@ -33,6 +33,7 @@ import Services from "../pages/admin/Services/Services";
 import AddService from "../pages/admin/Services/AddService";
 import DoctorDetail from "../pages/admin/DoctorInfors/Detail";
 import EditDoctor from "../pages/admin/DoctorInfors/Edit";
+import SearchPatient from "../pages/admin/FeeManagement/SearchPatient";
 
 export const routes = [
   //Client
@@ -175,6 +176,10 @@ export const routes = [
       {
         path: "add-service/:departmentId",
         element: React.createElement(AddService),
+      },
+      {
+        path: "invoice",
+        element: React.createElement(SearchPatient),
       }
     ]
   },

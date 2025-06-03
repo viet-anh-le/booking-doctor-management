@@ -12,7 +12,8 @@ import {
   PlugInIcon,
   UserCircleIcon,
   DoctorIcon,
-  HospitalIcon
+  HospitalIcon,
+  InvoiceIcon
 } from "../../../icons";
 import { useSidebar } from "../../../context/SidebarContext";
 
@@ -36,6 +37,11 @@ const navItems = [
     icon: <HospitalIcon />,
     name: "Hospitals and Clinic",
     path: "hospitalList",
+  },
+  {
+    icon: <InvoiceIcon />,
+    name: "Invoices",
+    path: "invoice",
   },
   {
     name: "Pages",

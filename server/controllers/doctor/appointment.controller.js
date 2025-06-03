@@ -6,7 +6,6 @@ dayjs.extend(utc);
 
 const Appointment = require("../../models/appointment.model");
 const Account = require("../../models/account.model");
-const Schedule = require("../../models/schedule.model");
 
 // [GET] /doctor/appointment/:id
 module.exports.index = async (req, res) => {
@@ -63,12 +62,9 @@ module.exports.create = async (req, res) => {
     status: "pending"
   });
   await record.save();
-  const scheduleId = req.body.scheduleId;
-  await Schedule.updateOne({
-    _id: scheduleId
-  }, { $inc: { sumBooking: 1 } });
   res.json({
     status: 200,
+    _id: record._id,
     message: "CREATE APPOINTMENT SUCCESS"
   })
 }

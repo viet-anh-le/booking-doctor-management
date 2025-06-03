@@ -1,9 +1,4 @@
-import {
-  Button,
-  Form,
-  Input,
-  Alert,
-} from 'antd';
+import { Button, Form, Input, Alert, } from 'antd';
 import { useEffect, useState } from 'react';
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';

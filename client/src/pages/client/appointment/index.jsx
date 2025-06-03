@@ -91,19 +91,39 @@ function Appointment() {
     formData.append("time", appointmentData.time);
     formData.append("reason", values.reason);
     formData.append("scheduleId", appointmentData.scheduleId);
+    formData.append("statusPaid", false);
 
     // Thêm ảnh vào FormData
     fileList.forEach((file, index) => {
       formData.append(`images`, file.originFileObj);
     });
 
+    // dispatch(setFormData(formData));
     const response = await fetch(`${serverURL}/api/doctor/appointment/create/${doctor._id}`, {
       method: "POST",
       body: formData,
       credentials: "include"
     })
     const result = await response.json();
+    const _id = result._id;
     if (result.status === 200) {
+      const fetchApi = async () => {
+        const response = await fetch(`${serverURL}/api/vnpay/create-qr`, {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            orderId: _id,
+            amount: 60000,
+            scheduleId: appointmentData.scheduleId
+          }),
+          credentials: "include"
+        })
+        const result = await response.json();
+        console.log(result);
+        window.location.href = result.paymentUrl;
+
+      }
+      fetchApi();
       const roomRes = await fetch(`${serverURL}/api/chat/createRoom`, {
         method: "POST",
         headers: {

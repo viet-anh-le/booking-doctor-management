@@ -6,15 +6,6 @@ import dayjs from "dayjs";
 
 const serverURL = import.meta.env.VITE_SERVER_URL;
 
-const layout = {
-  labelCol: {
-    span: 6,
-  },
-  wrapperCol: {
-    span: 18,
-  },
-};
-
 function ManageBills() {
   const userAccount = useSelector(state => state.accountReducer);
   const [data, setData] = useState([]);
@@ -248,9 +239,7 @@ function ManageBills() {
                 )}
               />
               <div className='mt-5'>
-                <Alert message="Payment is due within 30 days. Late payments are subject to fees.
-                  Please make checks payable and mail to:
-                  admin@gmail.com" type="warning" />
+                <Alert message="Thank you for choosing our system" type="success" />
               </div>
             </div>
           </Modal>

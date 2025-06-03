@@ -12,6 +12,7 @@ const appointmentSchema = new mongoose.Schema(
     reason: String,
     symptomImages: Array,
     status: String,
+    statusPaid: Boolean,
     services: Array,
     result: String,
     followUp: Date,

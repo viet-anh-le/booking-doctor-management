@@ -329,6 +329,7 @@ function Detail() {
       }
     })
     setDataSource_invoice(serviceInvoice);
+    totalAmountTemp -= 60000;
 
     setTotalAmount(totalAmountTemp);
     if (values.followUp) formData.append("followUp", values.followUp);

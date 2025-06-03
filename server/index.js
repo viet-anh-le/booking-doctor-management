@@ -6,11 +6,11 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const http = require("http");
 const chatController = require("./controllers/client/chat.controller");
-// Import cron job
-const startCronJob = require('./cron/updateOverdueInvoices');
+// // Import cron job
+// const startCronJob = require('./cron/updateOverdueInvoices');
 
-// Start cron job
-startCronJob();
+// // Start cron job
+// startCronJob();
 
 const database = require("./config/database");
 
