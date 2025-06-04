@@ -65,10 +65,10 @@ export default function AddService() {
         <Form.Item label="Service Name" name="name" rules={[{ required: true, message: 'Please input!' }]}>
           <Input style={{ minHeight: 40 }} />
         </Form.Item>
-        <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input!' }]}>
+        <Form.Item label="Description" name="description">
           <TextArea rows={4} style={{ minHeight: 80 }} />
         </Form.Item>
-        <Form.Item label="Price ($)" name="ppu" rules={[{ required: true, message: 'Please input!' }]}>
+        <Form.Item label="Price (VND)" name="ppu" rules={[{ required: true, message: 'Please input!' }]}>
           <InputNumber 
             style={{ minHeight: 40, minWidth: "100%" }} 
             formatter={(value) =>

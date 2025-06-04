@@ -13,15 +13,6 @@ module.exports.index = async (req, res) => {
     return;
   }
   const records = await Doctor.find().select("-password -token");
-  // const result = [];
-
-  // for (const item of records) {
-  //   const hospital = await Hospital.findById(item.address).select("name");
-  //   result.push({
-  //     ...item.toObject(),
-  //     address: hospital ? hospital.name : null
-  //   });
-  // }
 
   res.json(records);
 }

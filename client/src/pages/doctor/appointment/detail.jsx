@@ -3,6 +3,7 @@ import { Button, Form, Input, InputNumber, Radio, Image, Space, DatePicker, Tabl
 import FormItem from "antd/es/form/FormItem";
 import dayjs from "dayjs";
 import { useEffect, useState, useMemo } from "react";
+import { useSelector } from 'react-redux';
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
@@ -64,6 +65,7 @@ const EditableCell = _a => {
 };
 
 function Detail() {
+  const doctorAccount = useSelector(state => state.doctorAccountReducer);
   const navigate = useNavigate();
   const [isAccept, setIsAccept] = useState(true);
   const appointmentId = useParams().id;
@@ -80,18 +82,21 @@ function Detail() {
       const result = await response.json();
       if (result) {
         setCurrentAppointment(result);
+        console.log("result = ", result);
         if (result.appointment.status == "pending" || result.appointment.status == "reject") setIsAccept(false);
+        setServices(result.appointment.services);
       }
     }
     fetchCurrentAppointment();
 
     const fetchService = async () => {
-      const response = await fetch(`${serverURL}/api/doctor/service`, {
+      const response = await fetch(`${serverURL}/api/doctor/service/${doctorAccount._id}`, {
         method: "GET",
         credentials: "include"
       })
       const result = await response.json();
       if (result) {
+        console.log(result);
         setServices(result);
       }
     }
@@ -283,17 +288,21 @@ function Detail() {
 
   //Process invoice
   const [dataSource_invoice, setDataSource_invoice] = useState([]);
-  const serviceInvoice = serviceIds?.map((service_id, idx) => {
-    const serviceData = services.find((s) => s._id === service_id.trim());
-    return {
-      key: idx,
-      name: serviceData.name,
-      ppu: serviceData.ppu
-    }
-  })
   useEffect(() => {
+    const serviceInvoice = serviceIds?.map((service_id, idx) => {
+      const serviceData = services.find((s) => s._id === service_id.trim());
+      if (serviceData){
+        return {
+          key: idx,
+          name: serviceData.name,
+          ppu: serviceData.ppu
+        }
+      }
+      return null;
+    })
     setDataSource_invoice(serviceInvoice);
-  }, [serviceIds])
+    console.log("serviceInvoice = ", serviceInvoice);
+  }, [serviceIds, services])
   const columns_invoice = [
     {
       title: 'Service',
@@ -387,7 +396,6 @@ function Detail() {
     if (!currentInvoice) {
       const fetchInvoice = async () => {
         console.log("serviceIds = ", serviceIds);
-        const dueDate = dayjs(currentAppointment.appointment.date).add(30, 'day').toISOString();
         const response = await fetch(`${serverURL}/api/doctor/invoice/create`, {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -395,7 +403,6 @@ function Detail() {
             app_id: currentAppointment.appointment._id,
             total: totalAmount,
             serviceIds: serviceIds,
-            due: dueDate,
             status: "unpaid"
           }),
           credentials: "include"

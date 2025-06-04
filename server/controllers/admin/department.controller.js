@@ -15,6 +15,7 @@ module.exports.index = async (req, res) => {
 
 // [POST] /department/create/:hospitalId
 module.exports.create = async (req, res) => {
+  req.body.services = JSON.parse(req.body.services);
   const record = new Department(req.body);
   const hospital = await Hospital.findById(req.params.hospitalId);
   hospital.departments.push(record._id);

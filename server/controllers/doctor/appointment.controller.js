@@ -74,15 +74,15 @@ module.exports.create = async (req, res) => {
 module.exports.edit = async (req, res) => {
   if (req.body.services) {
     const services = JSON.parse(req.body.services);
+    console.log(services);
     await Appointment.updateOne({
       _id: req.params.id
     }, {
       ...req.body,
       services: services,
     });
-    res.json({
-      status: 200
-    })
+    res.json({status: 200});
+    return;
   }
   await Appointment.updateOne({
     _id: req.params.id

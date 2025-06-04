@@ -29,7 +29,10 @@ export default function AddDepartment() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          services: ['683d4911cc0b92e7e08538ca']
+        }),
         credentials: "include"
       });
       const result = await response.json();
