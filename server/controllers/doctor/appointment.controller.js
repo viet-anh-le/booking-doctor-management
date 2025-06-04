@@ -13,6 +13,7 @@ module.exports.index = async (req, res) => {
 
   let find = {
     doctor_id: id,
+    statusPaid: true,
     deleted: false
   }
 

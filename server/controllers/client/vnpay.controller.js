@@ -15,7 +15,7 @@ module.exports.createQR = async (req, res) => {
   const tmnCode = 'D5P22Q56';
   const secretKey = 'ESVI6WXP384P2DYNSE8TLIO2IS4EKXB7';
   const vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-  const returnUrl = `http://localhost:3002/api/vnpay/check-payment-vnpay?scheduleId=${req.body.scheduleId}?appointmentId=${orderId}`;
+  const returnUrl = `http://localhost:3002/api/vnpay/check-payment-vnpay?scheduleId=${req.body.scheduleId}&appointmentId=${orderId}`;
 
   let locale = "vn";
   let currCode = "VND";
@@ -71,9 +71,8 @@ function sortParams(obj) {
 }
 
 module.exports.check = async (req, res) => {
-  const { vnp_ResponseCode, vnp_TxnRef} = req.query;
   try {
-    if (!vnp_ResponseCode || !vnp_TxnRef) {
+    if (!req.query.vnp_ResponseCode || !req.query.vnp_TxnRef) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -86,7 +85,7 @@ module.exports.check = async (req, res) => {
       await Schedule.updateOne({
         _id: scheduleId
       }, { $inc: { sumBooking: 1 } });
-      const appointmentId = req.query.orderId;
+      const appointmentId = req.query.appointmentId;
       await Appointment.updateOne({
         _id: appointmentId
       }, { statusPaid: true });

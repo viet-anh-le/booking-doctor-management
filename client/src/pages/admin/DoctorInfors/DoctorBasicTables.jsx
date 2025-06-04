@@ -7,9 +7,9 @@ const serverURL = import.meta.env.VITE_SERVER_URL;
 function DoctorBasicTables() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const department = query.get("department");
+  const hospital = query.get("hospital");
   const params = new URLSearchParams();
-  if (department) params.append('department', department);
+  if (hospital) params.append('hospital', hospital);
   const handleDelete = (doctorId) => {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/admin/accounts/doctorDelete/${doctorId}`, {

@@ -22,7 +22,7 @@ export default function DoctorDetail() {
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
   const doctorId = useParams().doctorId;
-  const [selectedDoctor, setSelectedDocotr] = useState(undefined);
+  const [selectedDoctor, setSelectedDoctor] = useState(undefined);
   useEffect(() => {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/admin/accounts/doctorDetail/${doctorId}`, {
@@ -30,7 +30,8 @@ export default function DoctorDetail() {
         credentials: "include"
       });
       const result = await response.json();
-      setSelectedDocotr(result);
+      console.log(result);
+      setSelectedDoctor(result);
 
       if (result.avatar) {
         setFileList([{

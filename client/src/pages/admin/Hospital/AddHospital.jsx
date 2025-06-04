@@ -5,6 +5,7 @@ import {
   Alert,
   Select,
   Upload,
+  Image
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
@@ -24,54 +25,6 @@ const formItemLayout = {
   },
 };
 
-var __awaiter =
-  (this && this.__awaiter) ||
-  function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-      return value instanceof P
-        ? value
-        : new P(function (resolve) {
-          resolve(value);
-        });
-    }
-    return new (P || (P = Promise))(function (resolve, reject) {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function rejected(value) {
-        try {
-          step(generator['throw'](value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function step(result) {
-        result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-      }
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-  };
-
-const getBase64 = file =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-
-const handlePreview = file =>
-  __awaiter(void 0, void 0, void 0, function* () {
-    if (!file.url && !file.preview) {
-      file.preview = yield getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  });
 
 export default function AddHospital() {
   const [form] = Form.useForm();
@@ -79,6 +32,55 @@ export default function AddHospital() {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewOpen, setPreviewOpen] = useState(false);
+  var __awaiter =
+    (this && this.__awaiter) ||
+    function (thisArg, _arguments, P, generator) {
+      function adopt(value) {
+        return value instanceof P
+          ? value
+          : new P(function (resolve) {
+            resolve(value);
+          });
+      }
+      return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+          try {
+            step(generator.next(value));
+          } catch (e) {
+            reject(e);
+          }
+        }
+        function rejected(value) {
+          try {
+            step(generator['throw'](value));
+          } catch (e) {
+            reject(e);
+          }
+        }
+        function step(result) {
+          result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+      });
+    };
+  const getBase64 = file =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+
+  const handlePreview = file =>
+    __awaiter(void 0, void 0, void 0, function* () {
+      if (!file.url && !file.preview) {
+        file.preview = yield getBase64(file.originFileObj);
+      }
+      setPreviewImage(file.url || file.preview);
+      setPreviewOpen(true);
+    });
   useEffect(() => {
     const fetchApi = async () => {
       const response = await fetch(`https://provinces.open-api.vn/api?depth=2`,
@@ -183,7 +185,7 @@ export default function AddHospital() {
             listType="picture-card"
             onPreview={handlePreview}
             onChange={({ fileList: newFileList }) => {
-              setFileList(newFileList.slice(-1)); 
+              setFileList(newFileList.slice(-1));
             }}
             beforeUpload={() => {
               return false;
@@ -199,6 +201,17 @@ export default function AddHospital() {
               </button>
             )}
           </Upload>
+          {previewImage && (
+            <Image
+              wrapperStyle={{ display: 'none' }}
+              preview={{
+                visible: previewOpen,
+                onVisibleChange: visible => setPreviewOpen(visible),
+                afterOpenChange: visible => !visible && setPreviewImage(''),
+              }}
+              src={previewImage}
+            />
+          )}
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
           <Button type="primary" htmlType="submit">

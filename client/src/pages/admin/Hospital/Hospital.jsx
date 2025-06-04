@@ -52,7 +52,7 @@ const columns = [
         <Link to={`/admin/departments/${record._id}`}>
           <Button color='primary' variant='outlined'>Departments</Button>
         </Link>
-        <Link to={`/admin/doctor-infors?department=${record.name}`}>
+        <Link to={`/admin/doctor-infors?hospital=${record._id}`}>
           <Button color='primary' variant='outlined'>Doctors</Button>
         </Link>
       </Space>

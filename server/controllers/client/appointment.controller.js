@@ -7,6 +7,7 @@ module.exports.index = async (req, res) => {
   const client_id = req.params.id;
   let find = {
     client_id: client_id,
+    statusPaid: true,
     deleted: false
   }
 

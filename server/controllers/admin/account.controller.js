@@ -1,25 +1,39 @@
 const md5 = require("md5");
 const Doctor = require("../../models/doctor.model");
+const Hospital = require("../../models/hospital.model");
 
-// [GET] /accounts?department=
+// [GET] /accounts?hospital=
 module.exports.index = async (req, res) => {
-  const department = req.query.department;
-  if (department){
+  const hospital = req.query.hospital;
+  if (hospital) {
     const records = await Doctor.find({
-      address: department
+      address: hospital
     }).select("-password -token");
     res.json(records);
     return;
   }
   const records = await Doctor.find().select("-password -token");
+  // const result = [];
+
+  // for (const item of records) {
+  //   const hospital = await Hospital.findById(item.address).select("name");
+  //   result.push({
+  //     ...item.toObject(),
+  //     address: hospital ? hospital.name : null
+  //   });
+  // }
+
   res.json(records);
 }
 
 // [GET] /accounts/doctorDetail/:doctorId
 module.exports.getDetail = async (req, res) => {
   const doctorId = req.params.doctorId;
-  const records = await Doctor.findOne({_id: doctorId}).select("-token");
-  res.json(records);
+  const records = await Doctor.findOne({ _id: doctorId }).select("-token");
+  const hospital = await Hospital.findById(records.address).select("name");
+  const result = records;
+  result.address = hospital.name;
+  res.json(result);
 }
 
 // [POST] /accounts/create

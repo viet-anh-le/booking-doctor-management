@@ -77,7 +77,6 @@ export default function EditDoctor() {
   const [optionsClinic, setOptionsClinic] = useState(useSelector(state => state.clinicReducer));
   const dispatch = useDispatch();
   const [currentHospital, setCurrentHospital] = useState(null);
-  const [currentHospitalText, setCurrentHospitalText] = useState(null);
   const [optionsDepartment, setOptionsDepartment] = useState([]);
   const [selectedOptions, setSeletedOptions] = useState([]);
   const [fileList, setFileList] = useState([]);
@@ -92,7 +91,6 @@ export default function EditDoctor() {
       });
       const result = await response.json();
       setSelectedDocotr(result);
-      setCurrentHospitalText(result.address);
       if (result.avatar) {
         setFileList([{
           uid: '-1',
@@ -178,7 +176,7 @@ export default function EditDoctor() {
       formData.append('password', values.password);
     formData.append('phone', values.phone);
     formData.append('dob', values.dob);
-    formData.append('address', currentHospitalText);
+    formData.append('address', currentHospital);
     const selectedLabel = selectedOptions.map(item => item.label);
     if (selectedLabel.length !== 0) formData.append('specialization', JSON.stringify(selectedLabel));
     fileList.forEach((file) => {
@@ -277,7 +275,6 @@ export default function EditDoctor() {
                 options={type === "clinic" ? optionsClinic : optionsHospital}
                 onChange={(value, option) => {
                   setCurrentHospital(value);
-                  setCurrentHospitalText(option.label);
                 }}
               />
             </Form.Item>

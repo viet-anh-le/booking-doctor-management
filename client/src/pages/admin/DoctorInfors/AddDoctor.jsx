@@ -58,15 +58,6 @@ const getBase64 = file =>
     reader.onerror = error => reject(error);
   });
 
-const handlePreview = file =>
-  __awaiter(void 0, void 0, void 0, function* () {
-    if (!file.url && !file.preview) {
-      file.preview = yield getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  });
-
 
 export default function AddDoctor() {
   const [type, setType] = useState("hospital");
@@ -76,10 +67,19 @@ export default function AddDoctor() {
   const [optionsClinic, setOptionsClinic] = useState(useSelector(state => state.clinicReducer));
   const dispatch = useDispatch();
   const [currentHospital, setCurrentHospital] = useState(null);
-  const [currentHospitalText, setCurrentHospitalText] = useState(null);
   const [optionsDepartment, setOptionsDepartment] = useState([]);
   const [selectedOptions, setSeletedOptions] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const handlePreview = file =>
+    __awaiter(void 0, void 0, void 0, function* () {
+      if (!file.url && !file.preview) {
+        file.preview = yield getBase64(file.originFileObj);
+      }
+      setPreviewImage(file.url || file.preview);
+      setPreviewOpen(true);
+    });
   useEffect(() => {
     if (type == "clinic" && optionsClinic.length === 0) {
       const fetchApi = async () => {
@@ -153,7 +153,7 @@ export default function AddDoctor() {
     formData.append('cccd', values.cccd);
     formData.append('phone', values.phone);
     formData.append('dob', values.dob);
-    formData.append('address', currentHospitalText);
+    formData.append('address', currentHospital);
     const selectedLabel = selectedOptions.map(item => item.label);
     formData.append('specialization', JSON.stringify(selectedLabel));
     fileList.forEach((file, index) => {
@@ -238,7 +238,6 @@ export default function AddDoctor() {
               options={type === "clinic" ? optionsClinic : optionsHospital}
               onChange={(value, option) => {
                 setCurrentHospital(value);
-                setCurrentHospitalText(option.label);
               }}
             />
           </Form.Item>
@@ -290,6 +289,17 @@ export default function AddDoctor() {
               </button>
             )}
           </Upload>
+          {previewImage && (
+            <Image
+              wrapperStyle={{ display: 'none' }}
+              preview={{
+                visible: previewOpen,
+                onVisibleChange: visible => setPreviewOpen(visible),
+                afterOpenChange: visible => !visible && setPreviewImage(''),
+              }}
+              src={previewImage}
+            />
+          )}
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
           <Button type="primary" htmlType="submit">

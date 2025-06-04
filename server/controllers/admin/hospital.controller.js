@@ -1,4 +1,4 @@
-const Hospital = require("../../models/hospitial.model");
+const Hospital = require("../../models/hospital.model");
 
 // [GET] /hospital/:type
 module.exports.index = async (req, res) => {

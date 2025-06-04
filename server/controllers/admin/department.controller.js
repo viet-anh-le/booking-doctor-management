@@ -1,5 +1,5 @@
 const Department = require("../../models/department.model");
-const Hospital = require("../../models/hospitial.model");
+const Hospital = require("../../models/hospital.model");
 
 // [GET] /department/:hostpitalId
 module.exports.index = async (req, res) => {
