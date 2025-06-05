@@ -14,7 +14,7 @@ function ListDoctor() {
   const navigate = useNavigate();
   const location = useLocation();
   const specName = location.state?.specName || "Unknown";
-  const appointment = useRef({}); 
+  const appointment = useRef({});
   const dispatch = useDispatch();
   const handleChange = (doctor, value) => {
     const [day, date] = value.split(" - ");
@@ -49,6 +49,7 @@ function ListDoctor() {
         }
       );
       const result = await response.json();
+      console.log(result);
       setDoctors(result);
     };
     fetchApi();
@@ -78,7 +79,7 @@ function ListDoctor() {
                       <div className="card-body">
                         <article className="card-info-wrap">
                           <div className="card-img">
-                            <img src={doctor.avatar} alt={doctor.fullName}/>
+                            <img src={doctor.avatar} alt={doctor.fullName} />
                           </div>
                           <div className="verified-text">
                             <i></i>
@@ -100,13 +101,18 @@ function ListDoctor() {
                                 <a href="/">
                                   <div className="overall-ratings">
                                     <span className="avg-ratings">{doctor.rating}</span>
-                                    <div className="webmd-rate on-desktop">
-                                      {[...Array(Math.round(doctor.rating))].map((_, index) => <span key={index} className="star-rate star-on"></span>)}
-                                      {[...Array(5 - Math.round(doctor.rating))].map((_, index) => <span key={index} className="star-rate star-off"></span>)}
-                                    </div>
-                                    <div className="webmd-rate--number">
-                                      ( 3 ratings )
-                                    </div>
+                                    {
+                                      doctor.rating &&
+                                      <>
+                                        <div className="webmd-rate on-desktop">
+                                          {[...Array(Math.round(doctor.rating))].map((_, index) => <span key={index} className="star-rate star-on"></span>)}
+                                          {[...Array(5 - Math.round(doctor.rating))].map((_, index) => <span key={index} className="star-rate star-off"></span>)}
+                                        </div>
+                                        <div className="webmd-rate--number">
+                                          ( 3 ratings )
+                                        </div>
+                                      </>
+                                    }
                                   </div>
                                 </a>
                               </div>
@@ -147,10 +153,10 @@ function ListDoctor() {
                               }
                             })}
                           />
-                          {schedule && 
-                          <div className="schedule-modal">
-                            {schedule.map((item, index) => <span key={index} className="time-span" onClick={() => handleClick(item, doctor)}>{item.time}</span>)}
-                          </div>}
+                          {schedule &&
+                            <div className="schedule-modal">
+                              {schedule.map((item, index) => <span key={index} className="time-span" onClick={() => handleClick(item, doctor)}>{item.time}</span>)}
+                            </div>}
                         </div>
                       </div>
                     </div>

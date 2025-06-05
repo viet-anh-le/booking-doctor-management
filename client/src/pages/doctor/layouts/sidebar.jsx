@@ -1,6 +1,6 @@
 import "./style.css"
 import { Link } from "react-router-dom";
-import { OpenAIOutlined, WechatWorkOutlined } from "@ant-design/icons"
+import { OpenAIOutlined, WechatWorkOutlined, CalendarOutlined } from "@ant-design/icons"
 
 function SideBar() {
   return (

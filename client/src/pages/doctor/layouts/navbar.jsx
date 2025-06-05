@@ -66,7 +66,7 @@ function NavBar() {
                   items,
                   onClick: handleMenuClick
                 }}
-                dropdownRender={(menu) => {
+                popupRender={(menu) => {
                   return (
                     <div className="w-48">
                       {menu}
