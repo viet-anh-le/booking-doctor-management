@@ -7,6 +7,7 @@ const appointmentRoutes = require("./appointment.route");
 const chatRoutes = require("./chat.route");
 const invoiceRoutes = require("./invoice.route");
 const vnpayRoutes = require("./vnpay.route");
+const reviewRoutes = require("./review.route");
 
 module.exports = (app) => {
   app.use("/api/dashboard", 
@@ -38,6 +39,10 @@ module.exports = (app) => {
 
   app.use("/api/vnpay", 
     vnpayRoutes
+  );
+
+  app.use("/api/reviews", 
+    reviewRoutes
   );
 
   app.use("/api/auth", authRoutes);

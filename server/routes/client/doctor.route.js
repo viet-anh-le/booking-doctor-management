@@ -3,7 +3,7 @@ const router = express.Router()
 
 const controller = require("../../controllers/client/doctor.controller");
 
-router.get('/', controller.index);
+router.get('/doctorInfo/:id', controller.index);
 
 router.get('/:spec', controller.getBySpec);
 

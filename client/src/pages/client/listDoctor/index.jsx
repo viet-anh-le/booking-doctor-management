@@ -1,17 +1,17 @@
 import "./style.css"
 import { Select } from 'antd';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, useOutletContext, Link } from "react-router-dom";
 import { generateSevenDay } from '../../../utils/generateSevenday';
 import { useDispatch } from "react-redux";
 import { sendData } from "../../../actions/appointment";
-import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
-import Typography from '@mui/material/Typography';
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
 function ListDoctor() {
+  const params = useParams();
+  const { setSelectedSpec, setListLen } = useOutletContext();
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
   const [schedule, setSchedule] = useState([]);
@@ -42,7 +42,7 @@ function ListDoctor() {
   };
 
   const sevenDay = generateSevenDay();
-  const params = useParams();
+
   appointment.current.spec = specName;
   useEffect(() => {
     const fetchApi = async () => {
@@ -53,6 +53,8 @@ function ListDoctor() {
         }
       );
       const result = await response.json();
+      setSelectedSpec(params.spec);
+      setListLen(result.length);
       console.log(result);
       const tempData = result.map(item => {
         if (item.address) {
@@ -97,7 +99,13 @@ function ListDoctor() {
                           <div className="card-content">
                             <div className="prov-name-wrap">
                               <h2>
-                                <a className="prov-name" href="/">{doctor.fullName}</a>
+                                <span
+                                  className="prov-name"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => navigate(`/doctorInfo/${doctor._id}`, { state: { doctor} })}
+                                >
+                                  {doctor.fullName}
+                                </span>
                               </h2>
                             </div>
                             <p className="prov-speciality">
@@ -105,9 +113,9 @@ function ListDoctor() {
                             </p>
                             <div className="prov-ratings-wrap">
                               <div className="prov-ratings flex">
-                                <Rating name="read-only" value={doctor.rating} readOnly />
-                                <div className="webmd-rate--number">
-                                  ( 3 ratings )
+                                {doctor.rating && <Rating name="read-only" value={doctor.rating} readOnly />}
+                                <div className={`webmd-rate--number ${doctor.rating ? "ml-2" : ""}`}>
+                                  {doctor.rating ? doctor.rating : "No reviews"}
                                 </div>
                               </div>
                             </div>
@@ -115,13 +123,6 @@ function ListDoctor() {
                               <address className="prov-address">
                                 <span className="addr-text">{doctor.address}</span>
                               </address>
-                            </div>
-                            <div className="prov-bio">
-                              <span className="bio-text">
-                                <section>
-                                  {doctor.review}
-                                </section>
-                              </span>
                             </div>
                           </div>
                         </article>

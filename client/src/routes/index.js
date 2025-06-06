@@ -34,6 +34,7 @@ import AddService from "../pages/admin/Services/AddService";
 import DoctorDetail from "../pages/admin/DoctorInfors/Detail";
 import EditDoctor from "../pages/admin/DoctorInfors/Edit";
 import SearchPatient from "../pages/admin/FeeManagement/SearchPatient";
+import DoctorInfo from "../pages/client/listDoctor/DoctorInfo";
 
 export const routes = [
   //Client
@@ -64,8 +65,12 @@ export const routes = [
           {
             path: ":spec",
             element: React.createElement(ListDoctor)
-          }
+          } 
         ]
+      },
+      {
+        path: "doctorInfo/:id",
+        element: React.createElement(DoctorInfo)
       },
       {
         path: "appointment",

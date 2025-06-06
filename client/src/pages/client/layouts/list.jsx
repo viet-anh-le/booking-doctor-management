@@ -1,17 +1,30 @@
 import { IoIosArrowDown } from "react-icons/io";
 import { Outlet } from "react-router-dom";
+import { useState } from "react";
+
+function capitalizeWords(str) {
+  if (!str) return "";
+  return str
+    .split("-")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 
 function List() {
+  const [selectedSpec, setSelectedSpec] = useState(null);
+  const [listLen, setListLen] = useState(0);
   return (
     <>
       <div className="toggle-component">
         <div className="search-heading">
-          <h1>
-            Primary Care
-            <label className="heading-subtxt"> near </label>
-            Los Angeles, CA
-          </h1>
-          <label className="count-txt">20 Results</label>
+          {
+            selectedSpec &&
+            <h1>
+              {capitalizeWords(selectedSpec)}
+            </h1>
+          }
+          <label className="count-txt">{listLen} Results</label>
         </div>
         <div className="filters-container">
           <button className="filter-btn is-icon">
@@ -28,7 +41,7 @@ function List() {
           </button>
         </div>
 
-        <Outlet/>
+        <Outlet context={{ setSelectedSpec, setListLen }}/>
       </div>
     </>
   )

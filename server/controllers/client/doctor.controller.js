@@ -1,15 +1,17 @@
 const Doctor = require("../../models/doctor.model");
 const Hospital = require("../../models/hospital.model");
 
-// [GET] /doctor
+// [GET] /listdoctor/doctorInfo/:id
 module.exports.index = async (req, res) => {
+  const doctor_id = req.params.id;
+  const doctor = await Doctor.findById(doctor_id).select("-token -password");
   res.json({
     status: 200,
-    message: "OK"
+    data: doctor
   })
 }
 
-// [GET] /doctor/:spec
+// [GET] /listdoctor/:spec
 module.exports.getBySpec = async (req, res) => {
   let find = {
     deleted: false
