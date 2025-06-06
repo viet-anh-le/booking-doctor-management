@@ -1,10 +1,9 @@
 import "./style.css"
-import { Button, Table, Tag, Modal, Form, Input, DatePicker, List, Space } from 'antd';
+import { Button, Table, Tag, Modal, Form, Input, DatePicker, List, Space, Select } from 'antd';
 import FormItem from "antd/es/form/FormItem";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { CSVLink } from 'react-csv';
 import Papa from 'papaparse';
 
 const serverURL = import.meta.env.VITE_SERVER_URL;
@@ -23,6 +22,7 @@ function AllAppointment() {
   const [isModalPresOpen, setIsModalPresOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [dataPres, setDataPres] = useState([]);
+  const [profiles, setProfiles] = useState([]);
 
   const colums_pres = [
     {
@@ -107,6 +107,8 @@ function AllAppointment() {
     setDataPres([]);
   };
 
+  const [allAppointments, setAllAppointments] = useState([]);
+  const [selectedProfiles, setSelectedProfiles] = useState([]);
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState([]);
   const [filterDoctor, setFilterDoctor] = useState([]);
@@ -119,62 +121,88 @@ function AllAppointment() {
       })
       let result = await response.json();
       if (result.status === 200) {
-        result = result.data;
-        console.log(result);
-        const groupedData = result.reduce((acc, appointment) => {
-          const formattedDate = dayjs(appointment.appointment.date).format("DD/MM/YYYY"); // Định dạng lại ngày
+        const resultData = result.data;
+        // Lấy danh sách profile name
+        const tempProfiles = new Set();
+        resultData.forEach((item) => {
+          tempProfiles.add(item.client_name);
+        });
 
-          if (!acc[formattedDate]) {
-            acc[formattedDate] = {
-              key: formattedDate, // Tạo key cho ngày
-              date: formattedDate,
-              appointments: []
-            };
-          }
-
-          acc[formattedDate].appointments.push({
-            appointment: appointment.appointment,
-            doctor_name: appointment.doctor_name
-          });
-
-          return acc;
-        }, {});
-
-        // Chuyển đối tượng thành mảng, mỗi phần tử là một nhóm theo ngày
-        const groupedArray = Object.values(groupedData);
-        const tempData = [];
-        const tempFilter = [];
-        const tempFilterDoctor = new Set();
-
-        groupedArray.forEach((item) => {
-          tempData.push({
-            key: item.key,
-            date: item.date
-          })
-          tempFilter.push({
-            text: item.date,
-            value: item.date
-          })
-          item.appointments.forEach((obj) => {
-            tempData.push({
-              key: obj.appointment._id,
-              ...obj.appointment,
-              doctor: obj.doctor_name
-            })
-            tempFilterDoctor.add(obj.doctor_name);
-          })
-        })
-        console.log(tempData);
-        setData(tempData);
-        setFilter(tempFilter);
-        setFilterDoctor(Array.from(tempFilterDoctor).map(name => ({
-          text: name,
-          value: name
+        setProfiles(Array.from(tempProfiles).map(item => ({
+          label: item,
+          value: item
         })));
+        setAllAppointments(resultData);
       }
     }
     fetchallAppointments();
   }, [])
+
+  useEffect(() => {
+    let filtered = [];
+
+    if (selectedProfiles.length === 0) {
+      // Không chọn profile nào -> chỉ hiển thị appointments của userAccount
+      filtered = allAppointments.filter(item =>
+        item.appointment.client_id === userAccount._id
+      );
+    } else {
+      // Hiển thị appointments của các profile được chọn
+      filtered = allAppointments.filter(item =>
+        selectedProfiles.includes(item.client_name)
+      );
+    }
+
+    const groupedData = filtered.reduce((acc, appointment) => {
+      const formattedDate = dayjs(appointment.appointment.date).format("DD/MM/YYYY");
+      if (!acc[formattedDate]) {
+        acc[formattedDate] = {
+          key: formattedDate,
+          date: formattedDate,
+          appointments: []
+        };
+      }
+
+      acc[formattedDate].appointments.push({
+        appointment: appointment.appointment,
+        doctor_name: appointment.doctor_name
+      });
+
+      return acc;
+    }, {});
+
+    const groupedArray = Object.values(groupedData);
+    const tempData = [];
+    const tempFilter = [];
+    const tempFilterDoctor = new Set();
+
+    groupedArray.forEach((item) => {
+      tempData.push({
+        key: item.key,
+        date: item.date
+      })
+      tempFilter.push({
+        text: item.date,
+        value: item.date
+      })
+      item.appointments.forEach((obj) => {
+        tempData.push({
+          key: obj.appointment._id,
+          ...obj.appointment,
+          doctor: obj.doctor_name
+        })
+        tempFilterDoctor.add(obj.doctor_name);
+      })
+    })
+
+    setData(tempData);
+    setFilter(tempFilter);
+    setFilterDoctor(Array.from(tempFilterDoctor).map(name => ({
+      text: name,
+      value: name
+    })));
+  }, [selectedProfiles, allAppointments]);
+
 
   const columns = [
     {
@@ -271,11 +299,14 @@ function AllAppointment() {
       },
     },
   ];
+  const handleChange = (value) => {
+    setSelectedProfiles(value);
+  }
   const handleExportCSV = () => {
     if (!dataPres || dataPres.length === 0) return;
 
     const filteredData = dataPres.map(item => ({
-      "Name/Content": item.name || '',     // Hoặc item.medicineName nếu khác tên
+      "Name/Content": item.name || '',
       "Quantity": item.quantity || '',
       "Unit": item.unit || '',
       "Usage": item.usage || ''
@@ -296,7 +327,16 @@ function AllAppointment() {
   return (
     <>
       <div className="allAppointment-wrap-card bg-blue-100">
-        <h2 className="ml-[5%] pb-5 pt-5 font-bold text-xl">Appointments</h2>
+        <div className="flex">
+          <h2 className="ml-[5%] pb-5 pt-5 font-bold text-xl">Appointments</h2>
+          <Select
+            size="middle"
+            placeholder="Select profiles"
+            style={{ width: '30%', marginTop: "auto", marginBottom: "auto", marginLeft: "20px" }}
+            options={profiles}
+            onChange={(value) => handleChange(value)}
+          />
+        </div>
         <div className="bg-opacity-50">
           <Table
             columns={columns}

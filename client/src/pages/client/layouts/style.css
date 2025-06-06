@@ -296,7 +296,9 @@ footer{
 .card-info-wrap::before{
   content: "";
   display: block;
-  width: 230px;
+  width: 150px;
+  height: 169.5px;
+  flex-shrink: 0;
 }
 
 .card-info-wrap .card-img{
@@ -421,6 +423,7 @@ footer{
 }
 
 .schedule-examination .schedule-select{
+  margin-top: 10px;
   width: 80%;
-  height: 20%;
+  height: 40px;
 }

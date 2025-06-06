@@ -23,14 +23,6 @@ function List() {
             <IoIosArrowDown />
           </button>
           <button className="filter-btn is-icon">
-            <span>Distance</span>
-            <IoIosArrowDown />
-          </button>
-          <button className="filter-btn is-icon">
-            <span>Years Exp</span>
-            <IoIosArrowDown />
-          </button>
-          <button className="filter-btn is-icon">
             <span>Provider Gender</span>
             <IoIosArrowDown />
           </button>

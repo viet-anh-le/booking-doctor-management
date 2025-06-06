@@ -5,11 +5,15 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { generateSevenDay } from '../../../utils/generateSevenday';
 import { useDispatch } from "react-redux";
 import { sendData } from "../../../actions/appointment";
+import Box from '@mui/material/Box';
+import Rating from '@mui/material/Rating';
+import Typography from '@mui/material/Typography';
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
 function ListDoctor() {
   const [doctors, setDoctors] = useState([]);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
   const [schedule, setSchedule] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,16 +25,16 @@ function ListDoctor() {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/doctor/schedule/${doctor._id}?date=${date}`);
       const result = await response.json();
-      console.log(result);
-      const newArr = result.filter((item) => {
-        return item.sumBooking < item.maxBooking;
-      }).map((item) => {
+      const newArr = result.map((item) => {
         return {
           id: item._id,
-          time: item.time
+          time: item.time,
+          sumBooking: item.sumBooking,
+          maxBooking: item.maxBooking
         }
       })
       setSchedule(newArr);
+      setSelectedDoctorId(doctor._id);
     }
     fetchApi();
     appointment.current.day = day;
@@ -50,7 +54,16 @@ function ListDoctor() {
       );
       const result = await response.json();
       console.log(result);
-      setDoctors(result);
+      const tempData = result.map(item => {
+        if (item.address) {
+          const address = `${item.address.name}, ${item.address.district}, ${item.address.province}`;
+          return {
+            ...item,
+            address: address
+          }
+        }
+      })
+      setDoctors(tempData);
     };
     fetchApi();
   }, [params.spec])
@@ -81,10 +94,6 @@ function ListDoctor() {
                           <div className="card-img">
                             <img src={doctor.avatar} alt={doctor.fullName} />
                           </div>
-                          <div className="verified-text">
-                            <i></i>
-                            <span>{doctor.status === "verified" ? "VERIFIED" : "NOT VERIFIED"}</span>
-                          </div>
                           <div className="card-content">
                             <div className="prov-name-wrap">
                               <h2>
@@ -92,39 +101,19 @@ function ListDoctor() {
                               </h2>
                             </div>
                             <p className="prov-speciality">
-                              {doctor.specialization.reduce((acc, spec) => {
-                                return acc = acc + spec + ", ";
-                              }, "")}
+                              {doctor.specialization.join(", ")}
                             </p>
                             <div className="prov-ratings-wrap">
-                              <div className="prov-ratings">
-                                <a href="/">
-                                  <div className="overall-ratings">
-                                    <span className="avg-ratings">{doctor.rating}</span>
-                                    {
-                                      doctor.rating &&
-                                      <>
-                                        <div className="webmd-rate on-desktop">
-                                          {[...Array(Math.round(doctor.rating))].map((_, index) => <span key={index} className="star-rate star-on"></span>)}
-                                          {[...Array(5 - Math.round(doctor.rating))].map((_, index) => <span key={index} className="star-rate star-off"></span>)}
-                                        </div>
-                                        <div className="webmd-rate--number">
-                                          ( 3 ratings )
-                                        </div>
-                                      </>
-                                    }
-                                  </div>
-                                </a>
+                              <div className="prov-ratings flex">
+                                <Rating name="read-only" value={doctor.rating} readOnly />
+                                <div className="webmd-rate--number">
+                                  ( 3 ratings )
+                                </div>
                               </div>
-                            </div>
-                            <div className="prov-exp has-icon">
-                              <i></i>
-                              <p className="prov-experience">{doctor.exp} Years Experience</p>
                             </div>
                             <div className="prov-addr-dist">
                               <address className="prov-address">
                                 <span className="addr-text">{doctor.address}</span>
-                                <span className="prov-dist">5.27 miles</span>
                               </address>
                             </div>
                             <div className="prov-bio">
@@ -153,10 +142,25 @@ function ListDoctor() {
                               }
                             })}
                           />
-                          {schedule &&
+                          {selectedDoctorId === doctor._id && schedule &&
                             <div className="schedule-modal">
-                              {schedule.map((item, index) => <span key={index} className="time-span" onClick={() => handleClick(item, doctor)}>{item.time}</span>)}
+                              {schedule.map((item, index) =>
+                                <span
+                                  key={index}
+                                  className={`time-span ${item.sumBooking == item.maxBooking ? "full" : ""}`}
+                                  onClick={() => {
+                                    if (item.sumBooking !== item.maxBooking) {
+                                      handleClick(item, doctor);
+                                    }
+                                  }}
+                                >
+                                  {item.time}
+                                </span>)}
                             </div>}
+                          {selectedDoctorId === doctor._id && !(schedule.length) &&
+                            <h2 className="ml-1">
+                              No schedule this day
+                            </h2>}
                         </div>
                       </div>
                     </div>
