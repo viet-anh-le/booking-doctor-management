@@ -81,7 +81,6 @@ export default function EditDoctor() {
   const [selectedOptions, setSeletedOptions] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [selectedDoctor, setSelectedDocotr] = useState(undefined);
-  const [changePassword, setChangePassword] = useState(false);
   const doctorId = useParams().doctorId;
   useEffect(() => {
     const fetchApi = async () => {
@@ -172,8 +171,6 @@ export default function EditDoctor() {
     formData.append('fullName', values.name);
     formData.append('email', values.email);
     formData.append('cccd', values.cccd);
-    if (changePassword)
-      formData.append('password', values.password);
     formData.append('phone', values.phone);
     formData.append('dob', values.dob);
     formData.append('address', currentHospital);
@@ -294,23 +291,6 @@ export default function EditDoctor() {
           </Form.Item>
           <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input!' }]}>
             <Input style={{ minHeight: 40 }} />
-          </Form.Item>
-
-          <Form.Item label="Password">
-            <Form.Item name="password" rules={[{ required: changePassword, message: 'Please input!' }]} style={{ display: 'inline-block', width: 'calc(80% - 8px)', marginRight: 8 }}>
-              <Input style={{ minHeight: 40 }} disabled={!changePassword} />
-            </Form.Item>
-            <Form.Item style={{ display: 'inline-block', width: 'calc(20% - 8px)' }}>
-              {!changePassword &&
-                <Button
-                  type="primary"
-                  style={{ minHeight: 40 }}
-                  onClick={() => setChangePassword(!changePassword)}
-                >
-                  Change Password
-                </Button>
-              }
-            </Form.Item>
           </Form.Item>
 
           <Form.Item label="Phone" name="phone" rules={[{ required: true, message: 'Please input!' }]}>

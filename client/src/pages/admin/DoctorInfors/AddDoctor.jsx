@@ -156,6 +156,7 @@ export default function AddDoctor() {
     formData.append('address', currentHospital);
     const selectedLabel = selectedOptions.map(item => item.label);
     formData.append('specialization', JSON.stringify(selectedLabel));
+    formData.append('role', "doctor");
     fileList.forEach((file, index) => {
       formData.append(`avatar`, file.originFileObj);
     });

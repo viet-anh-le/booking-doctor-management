@@ -44,7 +44,7 @@ function NavBar() {
   const handleMenuClick = (e) => {
     switch (e.key){
       case "1":
-        console.log("hehe");
+        navigate("/doctor/profile");
         break;
       case "2":
         handleLogOut();

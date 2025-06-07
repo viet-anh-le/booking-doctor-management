@@ -1,5 +1,6 @@
 const md5 = require("md5");
 const DoctorAccount = require("../../models/doctor.model");
+const Hospital = require("../../models/hospital.model");
 
 // [POST] /doctor/auth/login
 module.exports.login = async (req, res) => {
@@ -28,10 +29,12 @@ module.exports.login = async (req, res) => {
   }
 
   res.cookie("token", user.token); //Lưu token vào cookie
+  const hospital = await Hospital.findById(user.address);
   res.json({
     status: 200,
     message: "SUCCESS",
-    user: user
+    user: user,
+    hospital: hospital
   })
 }
 
@@ -43,3 +46,18 @@ module.exports.logout = (req, res) => {
     message: "Log out success"
   })
 }
+
+module.exports.edit = async (req, res) => {
+  const updateData = { ...req.body };
+  if (updateData.password === undefined) {
+    delete updateData.password;
+  }
+  await DoctorAccount.updateOne({
+    _id: req.params.id
+  }, updateData);
+  res.json({
+    status: 200,
+    message: "UPDATE ACCOUNT SUCCESS"
+  })
+}
+

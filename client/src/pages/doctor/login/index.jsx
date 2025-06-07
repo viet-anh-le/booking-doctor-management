@@ -28,7 +28,11 @@ function DoctorLogIn() {
       })
       const result = await response.json();
       if (result.message === "SUCCESS"){
-        dispatch(fetchDoctorAccountData(result.user));
+        const hospital = result.hospital;
+        dispatch(fetchDoctorAccountData({
+          ...result.user,
+          hospital: hospital
+        }));
         navigate("dashboard");
       }
     } 

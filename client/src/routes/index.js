@@ -35,6 +35,7 @@ import DoctorDetail from "../pages/admin/DoctorInfors/Detail";
 import EditDoctor from "../pages/admin/DoctorInfors/Edit";
 import SearchPatient from "../pages/admin/FeeManagement/SearchPatient";
 import DoctorInfo from "../pages/client/listDoctor/DoctorInfo";
+import Profile from "../pages/doctor/UserProfile/Profile";
 
 export const routes = [
   //Client
@@ -122,6 +123,10 @@ export const routes = [
       {
         path: "AIDisease",
         element: React.createElement(AIDiseaseDetection),
+      },
+      {
+        path: "profile",
+        element: React.createElement(Profile),
       }
     ]
   },
