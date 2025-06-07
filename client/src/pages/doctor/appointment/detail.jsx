@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { useEffect, useState, useMemo } from "react";
 import { useSelector } from 'react-redux';
 
-const serverURL = import.meta.env.VITE_SERVER_URL
+const serverURL = import.meta.env.VITE_SERVER_URL;
 
 const layout = {
   labelCol: {

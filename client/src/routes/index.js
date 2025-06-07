@@ -36,6 +36,8 @@ import EditDoctor from "../pages/admin/DoctorInfors/Edit";
 import SearchPatient from "../pages/admin/FeeManagement/SearchPatient";
 import DoctorInfo from "../pages/client/listDoctor/DoctorInfo";
 import Profile from "../pages/doctor/UserProfile/Profile";
+import PatientProfiles from "../pages/doctor/PatientProfiles/PatientProfiles";
+import PatientLog from "../pages/doctor/PatientProfiles/Log";
 
 export const routes = [
   //Client
@@ -127,6 +129,14 @@ export const routes = [
       {
         path: "profile",
         element: React.createElement(Profile),
+      },
+      {
+        path: "patient-profiles",
+        element: React.createElement(PatientProfiles),
+      },
+      {
+        path: "patient-profiles/:id",
+        element: React.createElement(PatientLog),
       }
     ]
   },

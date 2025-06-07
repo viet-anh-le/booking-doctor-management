@@ -49,7 +49,7 @@ function DoctorInfo() {
           }
         )
       })
-      averageRating /= result.length;
+      if (result.length !== 0) averageRating /= result.length;
       setAverageRating(averageRating);
       setAllRates(tempData);
     };
@@ -123,7 +123,7 @@ function DoctorInfo() {
                           <div className="prov-bio">
                             <span className="bio-text">
                               <section>
-                                {doctor.description}
+                                <div className="html-content" dangerouslySetInnerHTML={{ __html: doctor.description }} />
                               </section>
                             </span>
                           </div>

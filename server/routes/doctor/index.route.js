@@ -4,6 +4,7 @@ const appointmentRoutes = require("./appointment.route");
 const medicineRoutes = require("./medicine.route");
 const serviceRoutes = require("./service.route");
 const invoiceRoutes = require("./invoice.route");
+const patientProfilesRoutes = require("./patientProfiles.route");
 
 module.exports = (app) => {
   app.use("/api/doctor/auth", authDoctorRoutes);
@@ -17,4 +18,6 @@ module.exports = (app) => {
   app.use("/api/doctor/service", serviceRoutes);
 
   app.use("/api/doctor/invoice", invoiceRoutes);
+
+  app.use("/api/doctor/patient-profiles", patientProfilesRoutes);
 }

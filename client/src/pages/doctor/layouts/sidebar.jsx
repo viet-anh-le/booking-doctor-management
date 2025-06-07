@@ -1,6 +1,6 @@
 import "./style.css"
 import { Link } from "react-router-dom";
-import { OpenAIOutlined, WechatWorkOutlined, CalendarOutlined } from "@ant-design/icons"
+import { OpenAIOutlined, WechatWorkOutlined, UsergroupAddOutlined } from "@ant-design/icons"
 
 function SideBar() {
   return (
@@ -41,21 +41,19 @@ function SideBar() {
           </div>
           <div role="button" tabIndex="0" className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
             <div className="grid place-items-center mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-              </svg>
+              <UsergroupAddOutlined style={{ fontSize: '150%' }}/>
             </div>
-            <Link to="#">Statistic</Link>
+            <Link to="/doctor/patient-profiles">Patient Profiles</Link>
           </div>
           <div role="button" tabIndex="0" className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
             <div className="grid place-items-center mr-4">
-              <OpenAIOutlined style={{ fontSize: '150%'}}/>
+              <OpenAIOutlined style={{ fontSize: '150%' }} />
             </div>
             <Link to="/doctor/AIDisease">AI Disease Detection</Link>
           </div>
           <div role="button" tabIndex="0" className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
             <div className="grid place-items-center mr-4">
-              <WechatWorkOutlined style={{ fontSize: '150%'}}/> 
+              <WechatWorkOutlined style={{ fontSize: '150%' }} />
             </div>
             <Link to="/doctor/chat">Chat</Link>
           </div>
