@@ -37,14 +37,17 @@ button{
 
 .hBWCUB {
   max-width: 1075px;
-  margin-left: 10%;
+  margin-left: auto;
   margin-right: auto;
   display: flex;
   width: 94%;
 }
 
-.hBWCUB .header-flex-item-1 {
+.header-flex-item-1 {
   width: 174px;
+  position: absolute;
+  top: 20%;
+  left: 5%;
 }
 
 .hBWCUB .header-flex-item-1 img {
@@ -92,7 +95,7 @@ button{
 
 .oxVOu li.nav-item-main {
   height: 50px;
-  width: 12rem;
+  width: 100%;
   border-bottom: none;
   display: inline-block;
   padding: 0px;

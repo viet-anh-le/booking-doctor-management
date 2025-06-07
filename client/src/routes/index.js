@@ -38,6 +38,7 @@ import DoctorInfo from "../pages/client/listDoctor/DoctorInfo";
 import Profile from "../pages/doctor/UserProfile/Profile";
 import PatientProfiles from "../pages/doctor/PatientProfiles/PatientProfiles";
 import PatientLog from "../pages/doctor/PatientProfiles/Log";
+import ListDoctorv2 from "../pages/client/listDoctor/listv2";
 
 export const routes = [
   //Client
@@ -70,6 +71,10 @@ export const routes = [
             element: React.createElement(ListDoctor)
           } 
         ]
+      },
+      {
+        path: "list-doctor",
+        element: React.createElement(ListDoctorv2)
       },
       {
         path: "doctorInfo/:id",

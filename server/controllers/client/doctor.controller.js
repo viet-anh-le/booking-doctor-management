@@ -11,6 +11,51 @@ module.exports.index = async (req, res) => {
   })
 }
 
+// [GET] /listdoctor?query
+module.exports.getByQuery = async (req, res) => {
+  const hospitalId = req.query.hospitalId;
+  const keyword = req.query.query?.toLowerCase()?.trim();
+  let find = {
+    deleted: false
+  }
+  if (hospitalId) find.address = hospitalId;
+
+  // Lấy tất cả doctor theo điều kiện ban đầu
+  const doctors = await Doctor.find(find);
+  if (keyword){
+
+  }
+  
+  // Lọc doctor dựa trên keyword nếu có
+  const filteredDoctors = await Promise.all(
+    doctors.map(async (doc) => {
+      let hospital = null;
+      if (doc.address) {
+        hospital = await Hospital.findById(doc.address);
+      }
+
+      const nameMatch = doc.fullName?.toLowerCase().includes(keyword);
+      const specMatch = doc.specialization?.some(spec => spec.toLowerCase().includes(keyword));
+      const hospitalMatch = hospital?.name?.toLowerCase().includes(keyword);
+
+      // Nếu không có keyword, hoặc keyword khớp bất kỳ field nào
+      if (!keyword || nameMatch || specMatch || hospitalMatch) {
+        return {
+          ...doc.toObject(),
+          address: hospital
+        };
+      }
+
+      return null; // Không match
+    })
+  );
+
+  // Bỏ qua các kết quả null
+  const doctorsWithHospitals = filteredDoctors.filter(d => d !== null);
+
+  res.json(doctorsWithHospitals);
+}
+
 // [GET] /listdoctor/:spec
 module.exports.getBySpec = async (req, res) => {
   let find = {

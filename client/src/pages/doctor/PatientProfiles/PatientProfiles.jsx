@@ -26,7 +26,7 @@ function PatientProfiles() {
   return (
     <>
       <div className="m-[3%]">
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+        <Row gutter={[16, 16]}>
           {patientProfiles.map((profile, index) => (
             <Col key={index} span={6}>
               <Card

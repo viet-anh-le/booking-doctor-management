@@ -7,4 +7,6 @@ router.get('/doctorInfo/:id', controller.index);
 
 router.get('/:spec', controller.getBySpec);
 
+router.get('/', controller.getByQuery);
+
 module.exports = router
