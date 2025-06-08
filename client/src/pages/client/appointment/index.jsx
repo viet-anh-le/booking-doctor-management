@@ -78,12 +78,40 @@ function Appointment() {
   );
 
   const onFinish = async (values) => {
+    let clientId = selectedProfile?._id;
+    // 1) Nếu thêm mới, gọi API tạo profile
+    if (isAddNew) {
+      const createProfileRes = await fetch(`${serverURL}/api/accounts/profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: values.username,  
+          phone: values.phone,
+          bhyt: values.bhyt
+        }),
+        credentials: "include"
+      });
+      const createProfileResult = await createProfileRes.json();
+      if (createProfileResult.status !== 200) {
+        return;
+      }
+      clientId = createProfileResult.data._id;
+      console.log(createProfileResult);
+
+      // 2) Gọi API đẩy profile mới vào account hiện tại
+      await fetch(`${serverURL}/api/accounts/${userAccount._id}/add-profile`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profileId: clientId }),
+        credentials: "include"
+      });
+    }
     // Tạo FormData để gửi cả dữ liệu text & file
     const formData = new FormData();
 
     // Thêm thông tin bệnh nhân vào FormData
     formData.append("doctor_id", doctor._id);
-    formData.append("client_id", selectedProfile._id);
+    formData.append("client_id", clientId);
     formData.append("client_age", values.age);
     formData.append("client_gender", values.gender);
     formData.append("spec", appointmentData.spec);
@@ -98,7 +126,6 @@ function Appointment() {
       formData.append(`images`, file.originFileObj);
     });
 
-    // dispatch(setFormData(formData));
     const response = await fetch(`${serverURL}/api/doctor/appointment/create/${doctor._id}`, {
       method: "POST",
       body: formData,

@@ -34,8 +34,12 @@ body{
 }
 
 .auth-container .auth-bg-wrapper.login {
-  background-image: url(https://img.webmd.com/vim/live/webmd/consumer_assets/images/care-header/family_bg.jpg);
-  border-top-left-radius: 5%;
+  min-height: 800px;
+  background-color: var(--auth-form-bg-gray);
+  background-image: url(https://img.webmd.com/vim/live/webmd/consumer_assets/images/care-header/bg_pattern.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   border-bottom-left-radius: 5%;
 }
 
@@ -49,7 +53,7 @@ body{
   padding: 36px 62px;
   min-height: 640px;
   height: 100%;
-  background: var(--auth-form-bg-gray) url(https://img.webmd.com/vim/live/webmd/consumer_assets/images/care-header/bg_pattern.svg) no-repeat center / cover;
+  background-size: cover;
 }
 
 .auth-container .auth-form-wrapper {

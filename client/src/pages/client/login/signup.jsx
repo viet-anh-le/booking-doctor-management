@@ -11,6 +11,7 @@ function SignUp() {
   const passwordRef = useRef("");
   const dobRef = useRef("");
   const phoneRef = useRef("");
+  const bhytRef = useRef("");
 
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPhone, setErrorPhone] = useState("");
@@ -80,7 +81,8 @@ function SignUp() {
             email: emailRef.current.value,
             password: passwordRef.current.value,
             dob: dobRef.current.value,
-            phone: phoneRef.current.value
+            phone: phoneRef.current.value,
+            bhyt: bhytRef.current.value
           }),
           credentials: "include"
         })
@@ -131,6 +133,15 @@ function SignUp() {
                   ref={passwordRef}
                 />
                 {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
+              </div>
+              <div className="webmd-input--medium">
+                <input
+                  className="webmd-input__inner"
+                  placeholder="BHYT"
+                  name="bhyt"
+                  ref={bhytRef}
+                />
+                {errorPhone && <p style={{ color: "red" }}>{errorPhone}</p>}
               </div>
               <div className="webmd-input--medium">
                 <input

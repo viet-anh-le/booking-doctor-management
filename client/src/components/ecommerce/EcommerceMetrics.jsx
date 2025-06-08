@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -6,7 +7,23 @@ import {
 } from "../../icons";
 import Badge from "../ui/badge/Badge";
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
 export default function EcommerceMetrics() {
+  const [userThisMonth, setUserThisMonth] = useState(0);
+  useEffect(() => {
+    const fetchApi = async () => {
+      const response = await fetch(`${serverURL}/api/admin/stat/count-user`,
+        {
+          method: "GET",
+          credential: "include",
+        }
+      );
+      const result = await response.json();
+      console.log(result);
+    };
+    fetchApi();
+  }, [])
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       {/* <!-- Metric Item Start --> */}

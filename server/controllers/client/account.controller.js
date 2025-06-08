@@ -66,3 +66,23 @@ module.exports.create = async (req, res) => {
     })
   }
 }
+
+//[POST] /api/accounts/profile
+module.exports.createProfile = async (req, res) => {
+  console.log(req.body);
+  const newProfile = new Account(req.body);
+  await newProfile.save();
+  res.json({ status: 200, data: newProfile });
+};
+
+//[PATCH] /api/accounts/:userId/add-profile
+module.exports.addProfileToUser = async (req, res) => {
+  const { userId } = req.params;
+  const { profileId } = req.body;
+  await Account.updateOne(
+    { _id: userId },
+    { $addToSet: { profiles: profileId } }
+  );
+  res.json({ status: 200, message: "Added profile" });
+};
+
