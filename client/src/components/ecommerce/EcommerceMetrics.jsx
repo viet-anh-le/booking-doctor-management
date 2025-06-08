@@ -11,6 +11,9 @@ const serverURL = import.meta.env.VITE_SERVER_URL;
 
 export default function EcommerceMetrics() {
   const [userThisMonth, setUserThisMonth] = useState(0);
+  const [userChange, setUserChange] = useState(0);
+  const [appThisMonth, setAppThisMonth] = useState(0);
+  const [appChange, setAppChange] = useState(0);
   useEffect(() => {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/admin/stat/count-user`,
@@ -20,9 +23,23 @@ export default function EcommerceMetrics() {
         }
       );
       const result = await response.json();
-      console.log(result);
+      setUserThisMonth(result.thisMonth);
+      setUserChange(result.change);
     };
     fetchApi();
+
+    const fetchApp = async () => {
+      const response = await fetch(`${serverURL}/api/admin/stat/count-appointment`,
+        {
+          method: "GET",
+          credential: "include",
+        }
+      );
+      const result = await response.json();
+      setAppThisMonth(result.thisMonth);
+      setAppChange(result.change);
+    };
+    fetchApp();
   }, [])
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
@@ -38,12 +55,12 @@ export default function EcommerceMetrics() {
               Customers
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              3,782
+              {userThisMonth}
             </h4>
           </div>
-          <Badge color="success">
-            <ArrowUpIcon />
-            11.01%
+          <Badge color={userChange > 0 ? "success" : "error"}>
+            {userChange > 0? <ArrowUpIcon /> : <ArrowDownIcon />}
+            {userChange.toFixed(2)}%
           </Badge>
         </div>
       </div>
@@ -57,16 +74,16 @@ export default function EcommerceMetrics() {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Orders
+              Number of booking
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5,359
+              {appThisMonth}
             </h4>
           </div>
 
-          <Badge color="error">
-            <ArrowDownIcon />
-            9.05%
+          <Badge color={appChange > 0 ? "success" : "error"}>
+            {appChange > 0? <ArrowUpIcon /> : <ArrowDownIcon />}
+            {appChange.toFixed(2)}%
           </Badge>
         </div>
       </div>

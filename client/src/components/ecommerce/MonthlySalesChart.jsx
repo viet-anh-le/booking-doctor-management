@@ -2,9 +2,11 @@ import Chart from "react-apexcharts";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "../../icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function MonthlySalesChart() {
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
+export default function MonthlySalesChart({ data }) {
   const options = {
     colors: ["#465fff"],
     chart: {
@@ -84,10 +86,11 @@ export default function MonthlySalesChart() {
       },
     },
   };
+
   const series = [
     {
       name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+      data: data
     },
   ];
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +106,7 @@ export default function MonthlySalesChart() {
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Monthly Sales
+          Monthly Bookings
         </h3>
         <div className="relative inline-block">
           <button className="dropdown-toggle" onClick={toggleDropdown}>

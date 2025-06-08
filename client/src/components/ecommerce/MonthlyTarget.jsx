@@ -1,11 +1,87 @@
 import Chart from "react-apexcharts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "../../icons";
+import { Modal, Form, InputNumber } from "antd";
 
-export default function MonthlyTarget() {
-  const series = [75.55];
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
+export default function MonthlyTarget({ data }) {
+  const [form] = Form.useForm();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [target, setTarget] = useState(0);
+  const [series, setSeries] = useState([0]);
+  const [dailyBooking, setDailyBooking] = useState(0);
+  const thisMonth = new Date().getMonth();
+  const [cur, setCur] = useState(data[thisMonth]);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = async () => {
+    setIsModalOpen(false);
+
+    const fetchApi = async () => {
+      const values = await form.validateFields();
+      const response = await fetch(`${serverURL}/api/admin/stat/target/create`, {
+        method: "PATCH",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+          ...values,
+          month: new Date().getMonth() + 1,
+          year: new Date().getFullYear()
+        }),
+        credentials: "include"
+      })
+      const result = await response.json();
+      console.log(result);
+    }
+    fetchApi();
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  useEffect(() => {
+    const fetchApi = async () => {
+      const response = await fetch(`${serverURL}/api/admin/stat/target`,
+        {
+          method: "GET",
+          credential: "include",
+        }
+      );
+      const result = await response.json();
+      if (result) setTarget(result.target);
+    };
+    fetchApi();
+
+    const fetchAppDaily = async () => {
+      const response = await fetch(`${serverURL}/api/admin/stat/daily`,
+        {
+          method: "GET",
+          credential: "include",
+        }
+      );
+      const result = await response.json();
+      if (result) setDailyBooking(result.count);
+    };
+    fetchAppDaily();
+  }, [])
+
+  useEffect(() => {
+    setCur(data[thisMonth])
+  }, [data]);
+
+  useEffect(() => {
+    if (target > 0 && typeof cur === 'number') {
+      setSeries([(cur / target * 100).toFixed(2)]);
+    } else {
+      setSeries([0]);
+    }
+  }, [cur, target]);
   const options = {
     colors: ["#465FFF"],
     chart: {
@@ -84,23 +160,42 @@ export default function MonthlyTarget() {
               className="w-40 p-2"
             >
               <DropdownItem
-                onItemClick={closeDropdown}
+                onItemClick={showModal}
                 className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
-                View More
-              </DropdownItem>
-              <DropdownItem
-                onItemClick={closeDropdown}
-                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-              >
-                Delete
+                Set New Target
               </DropdownItem>
             </Dropdown>
           </div>
+          <Modal
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+          >
+            <Form
+              form={form}
+              initialValues={{
+                target: target
+              }}
+            >
+              <Form.Item
+                name="target"
+                label="Target"
+                rules={[
+                  {
+                    required: true
+                  }
+                ]}
+              >
+                <InputNumber />
+              </Form.Item>
+            </Form>
+          </Modal>
         </div>
         <div className="relative ">
           <div className="max-h-[330px]" id="chartDarkStyle">
             <Chart
+              key={series[0]}
               options={options}
               series={series}
               type="radialBar"
@@ -108,13 +203,9 @@ export default function MonthlyTarget() {
             />
           </div>
 
-          <span className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-[95%] rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-            +10%
-          </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You earn $3287 today, it's higher than last month. Keep up your good
-          work!
+          There are {dailyBooking} bookings today
         </p>
       </div>
 
@@ -124,21 +215,7 @@ export default function MonthlyTarget() {
             Target
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M7.26816 13.6632C7.4056 13.8192 7.60686 13.9176 7.8311 13.9176C7.83148 13.9176 7.83187 13.9176 7.83226 13.9176C8.02445 13.9178 8.21671 13.8447 8.36339 13.6981L12.3635 9.70076C12.6565 9.40797 12.6567 8.9331 12.3639 8.6401C12.0711 8.34711 11.5962 8.34694 11.3032 8.63973L8.5811 11.36L8.5811 2.5C8.5811 2.08579 8.24531 1.75 7.8311 1.75C7.41688 1.75 7.0811 2.08579 7.0811 2.5L7.0811 11.3556L4.36354 8.63975C4.07055 8.34695 3.59568 8.3471 3.30288 8.64009C3.01008 8.93307 3.01023 9.40794 3.30321 9.70075L7.26816 13.6632Z"
-                fill="#D92D20"
-              />
-            </svg>
+            {target}
           </p>
         </div>
 
@@ -149,21 +226,7 @@ export default function MonthlyTarget() {
             Revenue
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M7.60141 2.33683C7.73885 2.18084 7.9401 2.08243 8.16435 2.08243C8.16475 2.08243 8.16516 2.08243 8.16556 2.08243C8.35773 2.08219 8.54998 2.15535 8.69664 2.30191L12.6968 6.29924C12.9898 6.59203 12.9899 7.0669 12.6971 7.3599C12.4044 7.6529 11.9295 7.65306 11.6365 7.36027L8.91435 4.64004L8.91435 13.5C8.91435 13.9142 8.57856 14.25 8.16435 14.25C7.75013 14.25 7.41435 13.9142 7.41435 13.5L7.41435 4.64442L4.69679 7.36025C4.4038 7.65305 3.92893 7.6529 3.63613 7.35992C3.34333 7.06693 3.34348 6.59206 3.63646 6.29926L7.60141 2.33683Z"
-                fill="#039855"
-              />
-            </svg>
+            {cur}
           </p>
         </div>
 
@@ -174,21 +237,7 @@ export default function MonthlyTarget() {
             Today
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M7.60141 2.33683C7.73885 2.18084 7.9401 2.08243 8.16435 2.08243C8.16475 2.08243 8.16516 2.08243 8.16556 2.08243C8.35773 2.08219 8.54998 2.15535 8.69664 2.30191L12.6968 6.29924C12.9898 6.59203 12.9899 7.0669 12.6971 7.3599C12.4044 7.6529 11.9295 7.65306 11.6365 7.36027L8.91435 4.64004L8.91435 13.5C8.91435 13.9142 8.57856 14.25 8.16435 14.25C7.75013 14.25 7.41435 13.9142 7.41435 13.5L7.41435 4.64442L4.69679 7.36025C4.4038 7.65305 3.92893 7.6529 3.63613 7.35992C3.34333 7.06693 3.34348 6.59206 3.63646 6.29926L7.60141 2.33683Z"
-                fill="#039855"
-              />
-            </svg>
+            {dailyBooking}
           </p>
         </div>
       </div>
