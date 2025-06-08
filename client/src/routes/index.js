@@ -39,6 +39,7 @@ import Profile from "../pages/doctor/UserProfile/Profile";
 import PatientProfiles from "../pages/doctor/PatientProfiles/PatientProfiles";
 import PatientLog from "../pages/doctor/PatientProfiles/Log";
 import ListDoctorv2 from "../pages/client/listDoctor/listv2";
+import PaySuccess from "../pages/client/Other/PaySuccess";
 
 export const routes = [
   //Client
@@ -49,6 +50,10 @@ export const routes = [
   {
     path: "/signup",
     element: React.createElement(SignUp)
+  },
+  {
+    path: "/pay-success",
+    element: React.createElement(PaySuccess)
   },
   {
     path: "/",

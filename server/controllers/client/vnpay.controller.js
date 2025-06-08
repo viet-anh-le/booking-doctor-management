@@ -88,11 +88,15 @@ module.exports.check = async (req, res) => {
       const appointmentId = req.query.appointmentId;
       await Appointment.updateOne({
         _id: appointmentId
-      }, { statusPaid: true,
-          services: ['683d4911cc0b92e7e08538ca']
-       });
+      }, {
+        statusPaid: true,
+        services: ['683d4911cc0b92e7e08538ca']
+      });
+      res.redirect("http://localhost:5173/pay-success")
     }
-    res.redirect("http://localhost:5173/dashboard")
+    else{
+      res.redirect("http://localhost:5173/pay-fail")
+    }
   } catch (error) {
     return res.status(500).json({
       success: false,

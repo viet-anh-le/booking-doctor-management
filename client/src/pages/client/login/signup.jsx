@@ -1,35 +1,97 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import "./style.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
 function SignUp() {
+  const navigate = useNavigate();
   const nameRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const dobRef = useRef("");
   const phoneRef = useRef("");
 
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorPhone, setErrorPhone] = useState("");
+  const [dobError, setDobError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPhone = (phone) => {
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const isAtLeast18YearsOld = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+  
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const hasHadBirthdayThisYear =
+      today.getMonth() > birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+  
+    return age > 18 || (age === 18 && hasHadBirthdayThisYear);
+  };  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const fetchApi = async () => {
-      const response = await fetch(`${serverURL}/api/accounts/create`, {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({
-          fullName: nameRef.current.value,
-          email: emailRef.current.value,
-          password: passwordRef.current.value,
-          dob: dobRef.current.value,
-          phone: phoneRef.current.value
-        }),
-        credentials: "include"
-      })
-      const result = await response.json();
-      console.log(result);
+    if (!isValidEmail(emailRef.current.value)) {
+      setErrorEmail("Please type valid email");
     }
-    fetchApi();
+    else {
+      setErrorEmail("");
+    }
+    if (!isValidPhone(phoneRef.current.value)) {
+      setErrorPhone("Please type valid phone");
+    }
+    else {
+      setErrorPhone("");
+    }
+    if (!isAtLeast18YearsOld(dobRef.current.value)) {
+      setDobError("You are under 18");
+    } else {
+      setDobError("");
+    }
+    if (!nameRef.current.value) {
+      setNameError("Please type name");
+    } else {
+      setNameError("");
+    }
+  
+    if (!passwordRef.current.value) {
+      setPasswordError("Please type password");
+    } else {
+      setPasswordError("");
+    }
+    if (isValidPhone(phoneRef.current.value) && isValidEmail(emailRef.current.value) && isAtLeast18YearsOld(dobRef.current.value) && nameRef.current.value && passwordRef.current.value) {
+      const fetchApi = async () => {
+        const response = await fetch(`${serverURL}/api/accounts/create`, {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            fullName: nameRef.current.value,
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+            dob: dobRef.current.value,
+            phone: phoneRef.current.value
+          }),
+          credentials: "include"
+        })
+        const result = await response.json();
+        console.log(result);
+        if (result.status === 200) {
+          navigate("/login");
+        }
+      }
+      fetchApi();
+    }
   }
 
   return (
@@ -47,7 +109,9 @@ function SignUp() {
                   placeholder="Full Name"
                   name="fullName"
                   ref={nameRef}
-                /></div>
+                />
+                {nameError && <p style={{ color: "red" }}>{nameError}</p>}
+              </div>
               <div className="webmd-input--medium">
                 <input
                   className="webmd-input__inner"
@@ -55,7 +119,9 @@ function SignUp() {
                   placeholder="Email"
                   name="email"
                   ref={emailRef}
-                /></div>
+                />
+                {errorEmail && <p style={{ color: "red" }}>{errorEmail}</p>}
+              </div>
               <div className="webmd-input--medium">
                 <input
                   className="webmd-input__inner"
@@ -63,7 +129,9 @@ function SignUp() {
                   placeholder="Password"
                   name="password"
                   ref={passwordRef}
-                /></div>
+                />
+                {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
+              </div>
               <div className="webmd-input--medium">
                 <input
                   className="webmd-input__inner"
@@ -71,7 +139,9 @@ function SignUp() {
                   placeholder="Date of birth (mm/dd/yyyy)"
                   name="dob"
                   ref={dobRef}
-                /></div>
+                />
+                {dobError && <p style={{ color: "red" }}>{dobError}</p>}
+              </div>
               <div className="webmd-input--medium">
                 <input
                   className="webmd-input__inner"
@@ -79,8 +149,13 @@ function SignUp() {
                   placeholder="Phone number"
                   name="phone"
                   ref={phoneRef}
-                /></div>
-              <button className="webmd-button webmd-button--primary webmd-button--large is-stretch auth-form-submit-btn" type="submit">
+                />
+                {errorPhone && <p style={{ color: "red" }}>{errorPhone}</p>}
+              </div>
+              <button
+                className="webmd-button webmd-button--primary webmd-button--large is-stretch auth-form-submit-btn"
+                type="submit"
+              >
                 <span> Sign Up </span>
               </button>
 

@@ -26,7 +26,6 @@ module.exports = (app) => {
   );
 
   app.use("/api/accounts", 
-    authMiddleware.requireAuth,
     accountRoutes
   );
 
