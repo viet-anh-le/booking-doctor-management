@@ -12,7 +12,10 @@ export default function UserMetaCard({ userRole }) {
       setAccount(doctorAccount);
       setAddress(`${doctorAccount.hospital.name}, ${doctorAccount.hospital.district}, ${doctorAccount.hospital.province}`);
     }
-    else if (userRole === "admin") console.log("Admin role selected");
+    else if (userRole === "admin"){
+      setAccount(userAccount);
+      console.log(userAccount);
+    }
   }, []);
   return (
     account &&
@@ -31,10 +34,13 @@ export default function UserMetaCard({ userRole }) {
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {account.role}
                 </p>
+                {userRole === "doctor" &&
                 <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
+                }
+                {account.role === "doctor" && 
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {address}
-                </p>
+                </p>}
               </div>
             </div>
             <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">

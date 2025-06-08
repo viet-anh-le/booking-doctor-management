@@ -3,6 +3,8 @@ import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link } from "react-router";
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
 function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -12,6 +14,23 @@ function UserDropdown() {
 
   function closeDropdown() {
     setIsOpen(false);
+  }
+
+  const handleLogout = () => {
+    const fetchApi = async () => {
+      const response = await fetch(`${serverURL}/api/admin/auth/logout`,
+        {
+          method: "GET",
+          credentials: "include"
+        }
+      );
+      const result = await response.json();
+      localStorage.clear();
+      if (result.status === 200) {
+        console.log("Log out thanh cong");
+      }
+    }
+    fetchApi();
   }
   return (
     <div className="relative">
@@ -25,9 +44,8 @@ function UserDropdown() {
 
         <span className="block mr-1 font-medium text-theme-sm">Musharof</span>
         <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           width="18"
           height="20"
           viewBox="0 0 18 20"
@@ -63,7 +81,7 @@ function UserDropdown() {
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              to="/profile"
+              to="/admin/profile"
               className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg
@@ -136,7 +154,8 @@ function UserDropdown() {
           </li>
         </ul>
         <Link
-          to="/signin"
+          onClick={handleLogout}
+          to="/admin/signin"
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg

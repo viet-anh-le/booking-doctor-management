@@ -31,7 +31,9 @@ export default function UserInfoCard({ userRole }) {
       setAccount(doctorAccount);
       setText(doctorAccount.description);
     }
-    else if (userRole === "admin") console.log("Admin role selected");
+    else if (userRole === "admin") {
+      setAccount(userAccount);
+    }
   }, []);
   const showModal = () => {
     setIsModalOpen(true);
@@ -43,7 +45,7 @@ export default function UserInfoCard({ userRole }) {
       const { password, ...updatedValues } = values;
       console.log(values);
       const fetchApi = async () => {
-        const response = await fetch(`${serverURL}/api/doctor/auth/edit/${account._id}`, {
+        const response = await fetch(`${serverURL}/api/${userRole}/auth/edit/${account._id}`, {
           method: "PATCH",
           headers: {
             "Content-type": "application/json"
@@ -120,16 +122,17 @@ export default function UserInfoCard({ userRole }) {
               </p>
             </div>
           </div>
-          <div className="mt-7 w-[100%]">
-            <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-              Bio
-            </p>
-            <Editor
-              value={account.description}
-              style={{ height: '320px' }}
-              readOnly
-            />
-          </div>
+          {userRole === "doctor" &&
+            <div className="mt-7 w-[100%]">
+              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                Bio
+              </p>
+              <Editor
+                value={account.description}
+                style={{ height: '320px' }}
+                readOnly
+              />
+            </div>}
         </div>
 
         <button
@@ -223,20 +226,22 @@ export default function UserInfoCard({ userRole }) {
             </Form.Item>
           </Form.Item>
 
-          <Form.Item
-            label="Bio"
-            name="description"
-            wrapperCol={24}
-          >
-            <Editor
-              value={text}
-              onTextChange={(e) => {
-                setText(e.htmlValue);
-                form.setFieldsValue({ description: e.htmlValue });
-              }}
-              style={{ height: '320px' }}
-            />
-          </Form.Item>
+          {userRole === "doctor" &&
+            <Form.Item
+              label="Bio"
+              name="description"
+              wrapperCol={24}
+            >
+              <Editor
+                value={text}
+                onTextChange={(e) => {
+                  setText(e.htmlValue);
+                  form.setFieldsValue({ description: e.htmlValue });
+                }}
+                style={{ height: '320px' }}
+              />
+            </Form.Item>
+          }
         </Form>
       </Modal>
     </div>

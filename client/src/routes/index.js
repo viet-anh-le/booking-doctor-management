@@ -40,6 +40,8 @@ import PatientProfiles from "../pages/doctor/PatientProfiles/PatientProfiles";
 import PatientLog from "../pages/doctor/PatientProfiles/Log";
 import ListDoctorv2 from "../pages/client/listDoctor/listv2";
 import PaySuccess from "../pages/client/Other/PaySuccess";
+import SignIn from "../pages/admin/Login/SignIn";
+import AdminProfile from "../pages/admin/Profile/Profile";
 
 export const routes = [
   //Client
@@ -156,9 +158,17 @@ export const routes = [
   },
   //Admin
   {
+    path: "/admin/signin",
+    element: React.createElement(SignIn),
+  },
+  {
     path: "/admin",
     element: React.createElement(AppLayout),
     children: [
+      {
+        path: "profile",
+        element: React.createElement(AdminProfile)
+      },
       {
         path: "",
         element: React.createElement(Home)
