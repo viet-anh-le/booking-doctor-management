@@ -21,7 +21,13 @@ const appointmentSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    deletedAt: Date
+    deletedAt: Date,
+    updated: [
+      {
+        updatedAt: Date,
+        action: String
+      }
+    ]
   }, {
     timestamps: true
   }

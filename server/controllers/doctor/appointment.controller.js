@@ -73,23 +73,44 @@ module.exports.create = async (req, res) => {
 
 // [PATCH] /doctor/appointment/edit/:id
 module.exports.edit = async (req, res) => {
+  const { updated: updatedFromBody, ...restBody } = req.body;
+
+  let updated;
+  const contentType = req.headers['content-type'];
+  console.log(contentType);
+  if (contentType && contentType.includes('multipart/form-data')) {
+    if (req.body.updated) {
+      updated = JSON.parse(req.body.updated);
+      updated.updatedAt = new Date();
+    }
+  }
+  else if (contentType && contentType.includes('application/json')) {
+    updated = updatedFromBody;
+    updated.updatedAt = new Date();
+  }
+
   if (req.body.services) {
     const services = JSON.parse(req.body.services);
-    console.log(services);
-    await Appointment.updateOne({
-      _id: req.params.id
-    }, {
-      ...req.body,
-      services: services,
-    });
-    res.json({status: 200});
-    return;
+    await Appointment.updateOne(
+      { _id: req.params.id },
+      {
+        ...restBody,
+        services: services,
+        $push: { updated }
+      }
+    );
+    return res.json({ status: 200 });
   }
-  await Appointment.updateOne({
-    _id: req.params.id
-  }, req.body);
-  res.json({
-    status: 200
-  })
+
+  await Appointment.updateOne(
+    { _id: req.params.id },
+    {
+      ...restBody,
+      $push: { updated }
+    }
+  );
+
+  res.json({ status: 200 });
+
 }
 

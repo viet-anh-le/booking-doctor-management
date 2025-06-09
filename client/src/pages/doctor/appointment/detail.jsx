@@ -71,6 +71,7 @@ function Detail() {
   const appointmentId = useParams().id;
   const [currentAppointment, setCurrentAppointment] = useState({});
   const [services, setServices] = useState([]);
+  const [serviceIds, setServiceIds] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [currentInvoice, setCurrentInvoice] = useState(undefined);
   useEffect(() => {
@@ -84,7 +85,7 @@ function Detail() {
         setCurrentAppointment(result);
         console.log("result = ", result);
         if (result.appointment.status == "pending" || result.appointment.status == "reject") setIsAccept(false);
-        setServices(result.appointment.services);
+        setServiceIds(result.appointment.services);
       }
     }
     fetchCurrentAppointment();
@@ -95,8 +96,7 @@ function Detail() {
         credentials: "include"
       })
       const result = await response.json();
-      if (result) {
-        console.log(result);
+      if (result){
         setServices(result);
       }
     }
@@ -109,7 +109,7 @@ function Detail() {
       })
       const result = await response.json();
       if (result.status === 200) {
-        console.log(result);
+        console.log("result invoice = ", result);
         setCurrentInvoice(result.invoice);
         setTotalAmount(result.invoice.total);
       }
@@ -117,10 +117,7 @@ function Detail() {
     fetchInvoice();
   }, []);
 
-  const serviceIds = useMemo(() => {
-    console.log("check servicesIds", currentAppointment.appointment?.services);
-    return currentAppointment.appointment?.services;
-  }, [currentAppointment]);
+  
 
   const images = currentAppointment.appointment?.symptomImages || [];
   const [data, setData] = useState([]);
@@ -289,8 +286,8 @@ function Detail() {
   //Process invoice
   const [dataSource_invoice, setDataSource_invoice] = useState([]);
   useEffect(() => {
-    const serviceInvoice = serviceIds?.map((service_id, idx) => {
-      const serviceData = services.find((s) => s._id === service_id.trim());
+    const serviceInvoice = serviceIds?.map((id, idx) => {
+      const serviceData = services.find((s) => s._id === id);
       if (serviceData){
         return {
           key: idx,
@@ -322,9 +319,11 @@ function Detail() {
     console.log(values);
     const formData = new FormData();
 
-    formData.append("services", JSON.stringify(values.services));
-    console.log("services = ", JSON.stringify(values.services));
-    formData.append("result", values.result);
+    formData.set("date", values.date);
+    formData.set("services", JSON.stringify(values.services));
+    setServiceIds(values.services);
+    formData.set("result", values.result);
+    if (values.date !== currentAppointment.appointment?.date) formData.set("updated", JSON.stringify({action: "changed appointment date"}));
 
     const invoiceLen = dataSource_invoice.length;
     let totalAmountTemp = 0;
@@ -359,7 +358,7 @@ function Detail() {
     const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
       method: "PATCH",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ status: "resolve" }),
+      body: JSON.stringify({ status: "resolve", updated: {action: `accepted appointment ${currentAppointment.appointment._id}`} }),
     })
     const result = await response.json();
     if (result.status === 200) {
@@ -373,7 +372,7 @@ function Detail() {
     const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
       method: "PATCH",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ status: "reject" }),
+      body: JSON.stringify({ status: "reject", updated: {action: `rejected appointment ${currentAppointment.appointment._id}`} }),
     })
     const result = await response.json();
     if (result.status === 200) {
@@ -386,12 +385,12 @@ function Detail() {
     const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
       method: "PATCH",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ status: "fulfilled" }),
+      body: JSON.stringify({ status: "fulfilled", updated: {action: `sent invoice to client`} }),
     })
     const result = await response.json();
-    if (result.status === 200) {
-      navigate(-1);
-    }
+    // if (result.status === 200) {
+    //   navigate(-1);
+    // }
 
     if (!currentInvoice) {
       const fetchInvoice = async () => {
@@ -439,7 +438,7 @@ function Detail() {
   }
   return (
     <>
-      <div className="appointment-card-wrap">
+      <div className="appointment-card-wrap m-10">
         <h2>Patient information</h2>
         <Form
           {...layout}
@@ -559,7 +558,7 @@ function Detail() {
       {
         (currentAppointment.appointment?.status == "resolve" || currentAppointment.appointment?.status == "fulfilled") &&
         <>
-          <div className="appointment-card-wrap">
+          <div className="appointment-card-wrap m-10">
             <h2>Information to be filled completely in appointment</h2>
             <Form
               {...layout}
@@ -610,7 +609,7 @@ function Detail() {
               </Form.Item>
             </Form>
           </div>
-          <div className="appointment-card-wrap">
+          <div className="appointment-card-wrap m-10">
             <h2>Prescription</h2>
             <Form
               form={form}
@@ -636,7 +635,7 @@ function Detail() {
               </FormItem>
             </Form>
           </div>
-          <div className="appointment-card-wrap">
+          <div className="appointment-card-wrap m-10">
             <h2>Medical Invoice</h2>
             <Form
               labelCol={{ span: 12 }}

@@ -21,7 +21,7 @@ module.exports.index = async (req, res) => {
         ppu: service.ppu
       }));
       return {
-        invoiceId: invoice._id,
+        app_id: invoice.app_id,
         date: appointment.date,
         services: servicesData,
         total: invoice.total,

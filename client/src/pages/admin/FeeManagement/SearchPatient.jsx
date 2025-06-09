@@ -173,7 +173,7 @@ function SearchPatient() {
           style={{ maxWidth: 1000, margin: "auto" }}
           onFinish={handleFinish}
         >
-          <Form.Item label="Patient name" name="name" rules={[{ required: true, message: 'Please input!' }]}>
+          <Form.Item label="Patient name" name="name">
             <Input style={{ minHeight: 40 }} />
           </Form.Item>
           <Form.Item label="Patinent ID" name="id">

@@ -44,12 +44,9 @@ const navItems = [
     path: "invoice",
   },
   {
-    name: "Pages",
+    name: "Appointment Logs",
     icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
+    path: "appointment-logs"
   },
 ];
 

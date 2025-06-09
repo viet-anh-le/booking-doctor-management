@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Col, Row, Card, Avatar } from 'antd';
 import { AiOutlineMedicineBox } from "react-icons/ai";
+import { FcApproval } from "react-icons/fc";
 const serverURL = import.meta.env.VITE_SERVER_URL;
 
 function Dashboard() {
@@ -33,8 +34,29 @@ function Dashboard() {
     hospitals &&
     <>
       <main>
-        <div className="urgent-care">
-          <img src="/assets/img/ah_navicent_pc_desktop_mobile_banner.webp" alt="urgent care" />
+        <div
+          className="urgent-care bg-cover bg-center h-[400px] flex items-center justify-center text-center"
+          style={{ backgroundImage: "url('/assets/img/background_doctor.webp')" }}
+        >
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">
+              Connecting people to leading healthcare facilities
+            </h2>
+            <ul className="space-y-2 pl-30">
+              <li className="flex items-center gap-2">
+                <FcApproval />
+                Quick booking appointment
+              </li>
+              <li className="flex items-center gap-2">
+                <FcApproval />
+                Schedule an appointment by the hour
+              </li>
+              <li className="flex items-center gap-2">
+                <FcApproval />
+                Telehealth consultation
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="text-2xl font-medium text-center mb-10 partner">

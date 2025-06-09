@@ -42,6 +42,8 @@ import ListDoctorv2 from "../pages/client/listDoctor/listv2";
 import PaySuccess from "../pages/client/Other/PaySuccess";
 import SignIn from "../pages/admin/Login/SignIn";
 import AdminProfile from "../pages/admin/Profile/Profile";
+import AppointmentLog from "../pages/admin/Appointments/Appointment";
+import LogDetail from "../pages/admin/Appointments/LogDetail";
 
 export const routes = [
   //Client
@@ -220,6 +222,14 @@ export const routes = [
       {
         path: "invoice",
         element: React.createElement(SearchPatient),
+      },
+      {
+        path: "appointment-logs",
+        element: React.createElement(AppointmentLog),
+      },
+      {
+        path: "appointment-logs/:id",
+        element: React.createElement(LogDetail),
       }
     ]
   },

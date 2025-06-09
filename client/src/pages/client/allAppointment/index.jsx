@@ -159,6 +159,7 @@ function AllAppointment() {
         acc[formattedDate] = {
           key: formattedDate,
           date: formattedDate,
+          rawDate: appointment.appointment.date,
           appointments: []
         };
       }
@@ -171,7 +172,8 @@ function AllAppointment() {
       return acc;
     }, {});
 
-    const groupedArray = Object.values(groupedData);
+    let groupedArray = Object.values(groupedData);
+    groupedArray.sort((a, b) => dayjs(b.rawDate).valueOf() - dayjs(a.rawDate).valueOf());
     const tempData = [];
     const tempFilter = [];
     const tempFilterDoctor = new Set();

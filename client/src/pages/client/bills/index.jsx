@@ -29,14 +29,14 @@ function ManageBills() {
           uniqueDates.add(formattedDate);
           return ({
             key: index,
-            id: item.invoiceId,
+            app_id: item.app_id,
             date: item.date,
             total: item.total,
             due: item.due,
             status: item.status,
             services: item.services.map((service, idx) => ({
               ...service,
-              key: `${item.invoiceId}-service-${idx}` // Thêm unique key cho mỗi service
+              key: `${item.app_id}-service-${idx}` // Thêm unique key cho mỗi service
             }))
           });
         });
@@ -78,11 +78,11 @@ function ManageBills() {
   };
   const columns = [
     {
-      title: 'Invoice ID',
-      dataIndex: 'id',
-      key: 'id',
-      sorter: (a, b) => a.id.localeCompare(b.id),
-      sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
+      title: 'Appointment Id',
+      dataIndex: 'app_id',
+      key: 'app_id',
+      sorter: (a, b) => a.app_id.localeCompare(b.app_id),
+      sortOrder: sortedInfo.columnKey === 'app_id' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
@@ -122,10 +122,6 @@ function ManageBills() {
         {
           text: 'Unpaid',
           value: 'unpaid',
-        },
-        {
-          text: 'Overdue',
-          value: 'overdue',
         }
       ],
       onFilter: (value, record) => {
@@ -138,8 +134,6 @@ function ManageBills() {
           return <Tag color="green">Paid</Tag>
         if (status == "unpaid")
           return <Tag color="yellow">Unpaid</Tag>
-        if (status == "overdue")
-          return <Tag color="red">Unpaid</Tag>
       }
     },
     {
@@ -200,7 +194,6 @@ function ManageBills() {
             width={1000}
           >
             <div>
-              <h2>{`Payment Due Date: ${dayjs(currentRecord.due).format("DD/MM/YYYY")}`}</h2>
               <Table
                 dataSource={currentRecord.services}
                 columns={columns_invoice}
@@ -225,10 +218,6 @@ function ManageBills() {
                               {
                                 value: "unpaid",
                                 label: "unpaid"
-                              },
-                              {
-                                value: "overdue",
-                                label: "overdue"
                               }
                             ]}
                           ></Radio.Group>

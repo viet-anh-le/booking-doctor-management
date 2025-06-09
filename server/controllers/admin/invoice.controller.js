@@ -11,13 +11,10 @@ module.exports.index = async (req, res) => {
     const client = await Account.findOne({
       bhyt: req.query.bhyt
     })
-    if (client) {
+    if (client && req.query.client_id) {
       if (req.query.client_id !== client._id.toString()){
         return res.status(404).json(records);
       }
-    }
-    else{
-      return res.status(404).json(records);
     }
     if (req.query.phone) {
       if (req.query.phone !== client.phone) return res.status(404).json(records);
