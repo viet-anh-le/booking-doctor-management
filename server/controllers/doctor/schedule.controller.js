@@ -18,14 +18,14 @@ module.exports.index = async (req, res) => {
     doctor_id: doctorId,
   }
 
-  if (startDate && endDate){
+  if (startDate && endDate) {
     find.date = {
       $gte: dayjs(startDate, "DD/MM/YYYY").toDate(),
       $lte: dayjs(endDate, "DD/MM/YYYY").toDate()
     }
   }
 
-  if (selectedDate){
+  if (selectedDate) {
     find.date = dayjs(selectedDate, "DD/MM/YYYY").toDate()
   }
   const plan = await Schedule.find(find);
@@ -88,7 +88,7 @@ module.exports.delete = async (req, res) => {
   const find = {
     _id: { $in: idsDeleted }
   }
-  
+
   await Schedule.deleteMany(find);
 
   return (
@@ -97,4 +97,26 @@ module.exports.delete = async (req, res) => {
       message: "DELETE SUCCESS"
     })
   )
+}
+
+//[PATCH] /doctor/schedule/edit/:id
+module.exports.edit = async (req, res) => {
+  const scheduleId = req.params.id;
+
+  try {
+    const schedule = await Schedule.findById(scheduleId);
+    if (!schedule) {
+      return res.status(404).json({ status: 404, message: 'Schedule not found' });
+    }
+
+    await Schedule.updateOne({
+      _id: scheduleId
+    }, { $inc: { sumBooking: -1 } });
+    await schedule.save();
+    return res.json({ status: 200, message: 'Schedule updated successfully' });
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: 500, message: 'Server error' });
+  }
 }

@@ -376,7 +376,16 @@ function Detail() {
     })
     const result = await response.json();
     if (result.status === 200) {
-      navigate(-1);
+      if (currentAppointment.appointment.schedule_id){
+        const response = await fetch(`${serverURL}/api/doctor/schedule/edit/${currentAppointment.appointment.schedule_id}`, {
+          method: "PATCH",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({}),
+        })
+        const result = await response.json();
+        if (result.status === 200)
+        navigate(-1);
+      }
     }
   }
   //End handle Deny Appointment

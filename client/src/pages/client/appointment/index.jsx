@@ -85,7 +85,7 @@ function Appointment() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fullName: values.username,  
+          fullName: values.username,
           phone: values.phone,
           bhyt: values.bhyt
         }),
@@ -118,7 +118,7 @@ function Appointment() {
     formData.append("date", appointmentData.date);
     formData.append("time", appointmentData.time);
     formData.append("reason", values.reason);
-    formData.append("scheduleId", appointmentData.scheduleId);
+    formData.append("schedule_id", appointmentData.scheduleId);
     formData.append("statusPaid", false);
 
     // Thêm ảnh vào FormData
@@ -147,27 +147,27 @@ function Appointment() {
         })
         const result = await response.json();
         console.log(result);
-        window.location.href = result.paymentUrl;
 
+        const roomRes = await fetch(`${serverURL}/api/chat/createRoom`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            doctorId: doctor._id,
+            clientId: userAccount._id
+          }),
+          credentials: "include"
+        });
+
+        const roomResult = await roomRes.json();
+        console.log("Room result:", roomResult);
+
+        const alert = document.querySelector(".alert");
+        alert.classList.remove("hidden");
+        window.location.href = result.paymentUrl;
       }
       fetchApi();
-      const roomRes = await fetch(`${serverURL}/api/chat/createRoom`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          doctorId: doctor._id,
-          clientId: userAccount._id
-        }),
-        credentials: "include"
-      });
-
-      const roomResult = await roomRes.json();
-      console.log("Room result:", roomResult);
-
-      const alert = document.querySelector(".alert");
-      alert.classList.remove("hidden");
     }
   };
 

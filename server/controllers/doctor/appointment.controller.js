@@ -52,16 +52,9 @@ module.exports.detail = async (req, res) => {
 // [POST] /doctor/appointment/create/:id
 module.exports.create = async (req, res) => {
   const record = new Appointment({
-    doctor_id: req.body.doctor_id,
-    client_id: req.body.client_id,
-    client_age: req.body.client_age,
-    client_gender: req.body.client_gender,
-    spec: req.body.spec,
+    ...req.body,
     date: dayjs(req.body.date, "DD/MM/YYYY").toDate(),
-    time: req.body.time,
-    reason: req.body.reason,
-    symptomImages: req.body.images,
-    status: "pending"
+    status: "pending",
   });
   await record.save();
   res.json({
