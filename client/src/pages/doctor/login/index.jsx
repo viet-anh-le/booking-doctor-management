@@ -33,7 +33,7 @@ function DoctorLogIn() {
           ...result.user,
           hospital: hospital
         }));
-        navigate("dashboard");
+        navigate("appointment");
       }
     } 
     fetchApi();

@@ -61,3 +61,20 @@ module.exports.edit = async (req, res) => {
   })
 }
 
+// [GET] /auth/me
+module.exports.me = async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const account = await DoctorAccount.findOne({ token, deleted: false });
+  if (!account) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+
+  res.json({
+    status: 200,
+    user: account
+  });
+};

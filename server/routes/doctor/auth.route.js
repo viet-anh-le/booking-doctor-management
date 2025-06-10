@@ -9,4 +9,6 @@ router.get('/logout', controller.logout);
 
 router.patch('/edit/:id', controller.edit);
 
+router.get('/me', controller.me);
+
 module.exports = router

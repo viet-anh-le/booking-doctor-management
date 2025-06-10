@@ -29,7 +29,7 @@ module.exports.login = async (req, res) => {
 
   res.cookie("token", user.token, {
     httpOnly: true,
-    secure: true, // 🔥 BẮT BUỘC khi chạy trên HTTPS (ví dụ Vercel)
+    secure: true,
     sameSite: "None", // 🔥 BẮT BUỘC khi frontend và backend khác domain
     maxAge: 24 * 60 * 60 * 1000 // ví dụ: 1 ngày
   }); //Lưu token vào cookie
@@ -47,3 +47,22 @@ module.exports.logout = (req, res) => {
     message: "Log out success"
   })
 }
+
+// [GET] /auth/me
+module.exports.me = async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const account = await Account.findOne({ token, deleted: false });
+  if (!account) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+
+  res.json({
+    status: 200,
+    user: account
+  });
+};
+

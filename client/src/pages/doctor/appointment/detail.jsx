@@ -323,7 +323,12 @@ function Detail() {
     formData.set("services", JSON.stringify(values.services));
     setServiceIds(values.services);
     formData.set("result", values.result);
-    if (values.date !== currentAppointment.appointment?.date) formData.set("updated", JSON.stringify({action: "changed appointment date"}));
+    console.log("values date", dayjs(values.date));
+    console.log("current date", dayjs(currentAppointment.appointment?.date));
+    if (!dayjs(values.date).isSame(dayjs(currentAppointment.appointment?.date), 'day')){
+      formData.set("updated", JSON.stringify({action: "changed appointment date"}));
+      console.log("Da chay vao day");
+    } 
 
     const invoiceLen = dataSource_invoice.length;
     let totalAmountTemp = 0;

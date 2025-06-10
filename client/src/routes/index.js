@@ -1,4 +1,7 @@
 import React from "react";
+import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
+import DoctorPrivateRoute from "../components/PrivateRoute/DoctorPrivateRoute";
+import AdminPrivateRoute from "../components/PrivateRoute/AdminPrivateRoute";
 import LayoutDefault from "../pages/client/layouts/LayoutDefault";
 import Dashboard from "../pages/client/dashboard";
 import LogIn from "../pages/client/login/index"
@@ -7,7 +10,6 @@ import Appointment from "../pages/client/appointment";
 import ListDoctor from "../pages/client/listDoctor";
 import SignUp from "../pages/client/login/signup";
 import DoctorLogIn from "../pages/doctor/login";
-import DoctorDashboard from "../pages/doctor/dashboard";
 import DoctorLayoutDefault from "../pages/doctor/layouts/LayoutDefault";
 import DoctorAppointment from "../pages/doctor/appointment";
 import DoctorSchedule from "../pages/doctor/schedule";
@@ -80,7 +82,7 @@ export const routes = [
           {
             path: ":spec",
             element: React.createElement(ListDoctor)
-          } 
+          }
         ]
       },
       {
@@ -93,19 +95,35 @@ export const routes = [
       },
       {
         path: "appointment",
-        element: React.createElement(Appointment)
+        element: React.createElement(
+          PrivateRoute,
+          {},
+          React.createElement(Appointment)
+        )
       },
       {
         path: "all-appointment",
-        element: React.createElement(AllAppointment)
+        element: React.createElement(
+          PrivateRoute,
+          {},
+          React.createElement(AllAppointment)
+        )
       },
       {
         path: "chat",
-        element: React.createElement(Chat)
+        element: React.createElement(
+          PrivateRoute,
+          {},
+          React.createElement(Chat)
+        )
       },
       {
         path: "manage-billing",
-        element: React.createElement(ManageBills)
+        element: React.createElement(
+          PrivateRoute,
+          {},
+          React.createElement(ManageBills)
+        )
       }
     ]
   },
@@ -119,46 +137,78 @@ export const routes = [
     element: React.createElement(DoctorLayoutDefault),
     children: [
       {
-        path: "dashboard",
-        element: React.createElement(DoctorDashboard)
-      },
-      {
         path: "appointment",
-        element: React.createElement(DoctorAppointment)
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(DoctorAppointment)
+        )
       },
       {
         path: "appointment/detail/:id",
-        element: React.createElement(Detail)
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(Detail)
+        )
       },
       {
         path: "schedule",
-        element: React.createElement(DoctorSchedule)
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(DoctorSchedule)
+        )
       },
       {
         path: "schedule/create",
-        element: React.createElement(DoctorScheduleCreate),
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(DoctorScheduleCreate)
+        )
       },
       {
         path: "AIDisease",
-        element: React.createElement(AIDiseaseDetection),
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(AIDiseaseDetection)
+        )
       },
       {
         path: "profile",
-        element: React.createElement(Profile),
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(Profile)
+        )
       },
       {
         path: "patient-profiles",
-        element: React.createElement(PatientProfiles),
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(PatientProfiles)
+        )
       },
       {
         path: "patient-profiles/:id",
-        element: React.createElement(PatientLog),
+        element: React.createElement(
+          DoctorPrivateRoute,
+          {},
+          React.createElement(PatientLog)
+        )
       }
     ]
   },
   {
     path: "/doctor/chat",
-    element: React.createElement(DoctorChat)
+    element: React.createElement(
+      DoctorPrivateRoute,
+      {},
+      React.createElement(DoctorChat)
+    )
   },
   //Admin
   {
@@ -171,75 +221,147 @@ export const routes = [
     children: [
       {
         path: "profile",
-        element: React.createElement(AdminProfile)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(AdminProfile)
+        )
       },
       {
         path: "",
-        element: React.createElement(Home)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(Home)
+        )
       },
       {
         path: "doctor-infors",
-        element: React.createElement(DoctorInfors)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(DoctorInfors)
+        )
       },
       {
         path: "add-doctor",
-        element: React.createElement(AddDoctor)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(AddDoctor)
+        )
       },
       {
         path: "doctorDetail/:doctorId",
-        element: React.createElement(DoctorDetail)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(DoctorDetail)
+        )
       },
       {
         path: "edit-doctor/:doctorId",
-        element: React.createElement(EditDoctor)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(EditDoctor)
+        )
       },
       {
         path: "hospitalList",
-        element: React.createElement(Hospital)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(Hospital)
+        )
       },
       {
         path: "add-hospital",
-        element: React.createElement(AddHospital)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(AddHospital)
+        )
       },
       {
         path: "edit-hospital/:hospitalId",
-        element: React.createElement(EditHospital),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(EditHospital)
+        )
       },
       {
         path: "add-clinic",
-        element: React.createElement(AddClinic)
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(AddClinic)
+        )
       },
       {
         path: "departments/:hospitalId",
-        element: React.createElement(Departments),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(Departments)
+        )
       },
       {
         path: "add-department/:hospitalId",
-        element: React.createElement(AddDepartment),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(AddDepartment)
+        )
       },
       {
         path: "services/:departmentId",
-        element: React.createElement(Services),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(Services)
+        )
       },
       {
         path: "add-service/:departmentId",
-        element: React.createElement(AddService),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(AddService)
+        )
       },
       {
         path: "invoice",
-        element: React.createElement(SearchPatient),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(SearchPatient)
+        )
       },
       {
         path: "appointment-logs",
-        element: React.createElement(AppointmentLog),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(AppointmentLog)
+        )
       },
       {
         path: "appointment-logs/:id",
-        element: React.createElement(LogDetail),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(LogDetail)
+        )
       },
       {
         path: "patient-infors",
-        element: React.createElement(PatientInfors),
+        element: React.createElement(
+          AdminPrivateRoute,
+          {},
+          React.createElement(PatientInfors)
+        )
       }
     ]
   },

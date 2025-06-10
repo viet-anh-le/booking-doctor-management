@@ -51,6 +51,8 @@ module.exports.detail = async (req, res) => {
 
 // [POST] /doctor/appointment/create/:id
 module.exports.create = async (req, res) => {
+  console.log(req.body);
+  req.body.symptomImages = req.body.images;
   const record = new Appointment({
     ...req.body,
     date: dayjs(req.body.date, "DD/MM/YYYY").toDate(),
@@ -67,7 +69,7 @@ module.exports.create = async (req, res) => {
 // [PATCH] /doctor/appointment/edit/:id
 module.exports.edit = async (req, res) => {
   const { updated: updatedFromBody, ...restBody } = req.body;
-
+  console.log(req.body);
   let updated;
   const contentType = req.headers['content-type'];
   console.log(contentType);

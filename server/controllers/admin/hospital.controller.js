@@ -28,7 +28,7 @@ module.exports.create = async (req, res) => {
 // [PATCH] /hospital/edit/:id
 module.exports.edit = async (req, res) => {
   const {logo, ...updateData} = req.body;
-  if (req.body.logo) updateData.logo = req.body.logo[0];
+  if (logo !== "undefined") updateData.logo = req.body.logo[0];
   await Hospital.updateOne({
     _id: req.params.id
   }, updateData);
