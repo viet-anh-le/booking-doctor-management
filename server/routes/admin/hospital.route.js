@@ -10,5 +10,7 @@ const controller = require("../../controllers/admin/hospital.controller");
 
 router.get('/:type', controller.index);
 router.post('/create', upload.array("logo", 1), uploadCloud.upload, controller.create);
+router.patch('/edit/:id', upload.array("logo", 1), uploadCloud.upload, controller.edit);
+router.patch('/delete/:id', controller.delete);
 
 module.exports = router

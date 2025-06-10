@@ -44,6 +44,8 @@ import SignIn from "../pages/admin/Login/SignIn";
 import AdminProfile from "../pages/admin/Profile/Profile";
 import AppointmentLog from "../pages/admin/Appointments/Appointment";
 import LogDetail from "../pages/admin/Appointments/LogDetail";
+import EditHospital from "../pages/admin/Hospital/Edit";
+import PatientInfors from "../pages/admin/PatientInfors/PatientInfors";
 
 export const routes = [
   //Client
@@ -200,6 +202,10 @@ export const routes = [
         element: React.createElement(AddHospital)
       },
       {
+        path: "edit-hospital/:hospitalId",
+        element: React.createElement(EditHospital),
+      },
+      {
         path: "add-clinic",
         element: React.createElement(AddClinic)
       },
@@ -230,6 +236,10 @@ export const routes = [
       {
         path: "appointment-logs/:id",
         element: React.createElement(LogDetail),
+      },
+      {
+        path: "patient-infors",
+        element: React.createElement(PatientInfors),
       }
     ]
   },
