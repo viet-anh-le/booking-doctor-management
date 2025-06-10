@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import "./style.css"
 import { Link, useNavigate } from "react-router-dom";
+import { Alert } from "antd";
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
@@ -18,6 +19,7 @@ function SignUp() {
   const [dobError, setDobError] = useState("");
   const [nameError, setNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [insuranceError, setInsuranceError] = useState("");
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,14 +34,20 @@ function SignUp() {
   const isAtLeast18YearsOld = (dob) => {
     const birthDate = new Date(dob);
     const today = new Date();
-  
+
     const age = today.getFullYear() - birthDate.getFullYear();
     const hasHadBirthdayThisYear =
       today.getMonth() > birthDate.getMonth() ||
       (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
-  
+
     return age > 18 || (age === 18 && hasHadBirthdayThisYear);
-  };  
+  };
+
+  const isValidInsurance = (value) => {
+    const insuranceRegex = /^[A-Za-z]{2}\d{13}$/;
+    return insuranceRegex.test(value);
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -60,18 +68,24 @@ function SignUp() {
     } else {
       setDobError("");
     }
+    if (!isValidInsurance(bhytRef.current.value)) {
+      setInsuranceError("Please type valid insurance");
+    }
+    else {
+      setInsuranceError("");
+    }
     if (!nameRef.current.value) {
       setNameError("Please type name");
     } else {
       setNameError("");
     }
-  
+
     if (!passwordRef.current.value) {
       setPasswordError("Please type password");
     } else {
       setPasswordError("");
     }
-    if (isValidPhone(phoneRef.current.value) && isValidEmail(emailRef.current.value) && isAtLeast18YearsOld(dobRef.current.value) && nameRef.current.value && passwordRef.current.value) {
+    if (isValidPhone(phoneRef.current.value) && isValidEmail(emailRef.current.value) && isAtLeast18YearsOld(dobRef.current.value) && isValidInsurance(bhytRef.current.value) && nameRef.current.value && passwordRef.current.value) {
       const fetchApi = async () => {
         const response = await fetch(`${serverURL}/api/accounts/create`, {
           method: "POST",
@@ -91,6 +105,10 @@ function SignUp() {
         if (result.status === 200) {
           navigate("/login");
         }
+        else {
+          const alert = document.querySelector(".alert");
+          alert.classList.remove("hidden");
+        }
       }
       fetchApi();
     }
@@ -104,6 +122,9 @@ function SignUp() {
           <div className="auth-form-wrapper">
             <h3>Sign Up</h3>
             <form onSubmit={handleSubmit}>
+              <div className="alert hidden z-9999">
+                <Alert message="Invalid registration information" type="error" />
+              </div>
               <div className="webmd-input--medium">
                 <input
                   className="webmd-input__inner"
@@ -137,11 +158,11 @@ function SignUp() {
               <div className="webmd-input--medium">
                 <input
                   className="webmd-input__inner"
-                  placeholder="BHYT"
+                  placeholder="Insurance"
                   name="bhyt"
                   ref={bhytRef}
                 />
-                {errorPhone && <p style={{ color: "red" }}>{errorPhone}</p>}
+                {insuranceError && <p style={{ color: "red" }}>{insuranceError}</p>}
               </div>
               <div className="webmd-input--medium">
                 <input

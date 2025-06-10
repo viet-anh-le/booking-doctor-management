@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ChevronLeftIcon } from "../../icons";
-import { Form, Input, Checkbox, Button } from "antd";
+import { Form, Input, Checkbox, Button, Alert } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { fetchAccountData } from "../../actions/account";
 import { useDispatch } from "react-redux";
@@ -36,6 +36,10 @@ export default function SignInForm() {
         dispatch(fetchAccountData(result1));
         navigate("/admin");
       }
+      else {
+        const alert = document.querySelector(".alert");
+        alert.classList.remove("hidden");
+      }
     }
     fetchApi();
   }
@@ -61,6 +65,9 @@ export default function SignInForm() {
             </p>
           </div>
           <div>
+            <div className="alert hidden z-9999 pb-5">
+              <Alert message="Wrong email or password" type="error" />
+            </div>
             <Form
               layout="vertical"
               onFinish={handleFinish}

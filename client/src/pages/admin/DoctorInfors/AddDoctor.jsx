@@ -205,7 +205,13 @@ export default function AddDoctor() {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Identification" name="cccd" rules={[{ required: true, message: 'Please input!' }]}>
+            <Form.Item label="Identification" name="cccd" rules={[
+              { required: true, message: 'Please input your Identification number!' },
+              {
+                pattern: /^\d{12}$/,
+                message: 'Identification number must be exactly 12 digits',
+              },
+            ]}>
               <Input style={{ minHeight: 40 }} />
             </Form.Item>
           </Col>
@@ -264,7 +270,13 @@ export default function AddDoctor() {
           <Input style={{ minHeight: 40 }} />
         </Form.Item>
 
-        <Form.Item label="Phone" name="phone" rules={[{ required: true, message: 'Please input!' }]}>
+        <Form.Item label="Phone" name="phone" rules={[
+          { required: true, message: 'Please input your phone number!' },
+          {
+            pattern: /^\d{10}$/,
+            message: 'Phone number must be exactly 10 digits',
+          },
+        ]}>
           <Input style={{ minHeight: 40 }} />
         </Form.Item>
 

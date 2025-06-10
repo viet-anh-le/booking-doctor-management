@@ -107,8 +107,8 @@ function ManageBills() {
       title: 'Amount',
       dataIndex: 'total',
       key: 'total',
-      sorter: (a, b) => a.amount - b.amount,
-      sortOrder: sortedInfo.columnKey === 'amount' ? sortedInfo.order : null,
+      sorter: (a, b) => a.total - b.total,
+      sortOrder: sortedInfo.columnKey === 'total' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {

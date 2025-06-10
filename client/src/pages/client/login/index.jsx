@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom"
 import { fetchAccountData } from "../../../actions/account";
+import { Alert } from "antd";
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
@@ -18,7 +19,7 @@ function LogIn() {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/auth/login`, {
         method: "POST",
-        headers: {"Content-type": "application/json"},
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify({
           email: email,
           password: password,
@@ -27,7 +28,7 @@ function LogIn() {
         credentials: "include"
       })
       const result = await response.json();
-      if (result.message === "SUCCESS"){
+      if (result.message === "SUCCESS") {
         const response1 = await fetch(`${serverURL}/api/accounts/${email}`, {
           method: "GET",
           credentials: "include"
@@ -36,7 +37,11 @@ function LogIn() {
         dispatch(fetchAccountData(result1));
         navigate("/dashboard");
       }
-    } 
+      else {
+        const alert = document.querySelector(".alert");
+        alert.classList.remove("hidden");
+      }
+    }
     fetchApi();
   }
   return (
@@ -45,8 +50,8 @@ function LogIn() {
         <div className="auth-container">
           <div className="auth-bg-wrapper login"></div>
           <div className="auth-form-wrapper">
-            <p className="signin-signup-section"> Don't have an account? 
-              <Link 
+            <p className="signin-signup-section"> Don't have an account?
+              <Link
                 className="auth-form-login-sign-btn"
                 to="/signup"
               >
@@ -54,21 +59,25 @@ function LogIn() {
               </Link>
             </p>
             <h3>Log In</h3>
+
             <form onSubmit={handleSubmit}>
+              <div className="alert hidden z-9999">
+                <Alert message="Wrong email or password" type="error" />
+              </div>
               <div className="webmd-input--medium">
-                <input 
-                  className="webmd-input__inner" 
-                  type="email" 
-                  placeholder="Email" 
+                <input
+                  className="webmd-input__inner"
+                  type="email"
+                  placeholder="Email"
                   name="email"
-                  onChange={(e) => setEmail(e.target.value)}/></div>
+                  onChange={(e) => setEmail(e.target.value)} /></div>
               <div className="webmd-input--medium">
-                <input 
-                  className="webmd-input__inner" 
-                  type="password" 
-                  placeholder="Password" 
+                <input
+                  className="webmd-input__inner"
+                  type="password"
+                  placeholder="Password"
                   name="password"
-                  onChange={(e) => setPassword(e.target.value)}/></div>
+                  onChange={(e) => setPassword(e.target.value)} /></div>
               <a className="forgot-password-btn" href="https://member.webmd.com/password-reset">
                 <span> Forgot Password?</span>
               </a>
@@ -76,11 +85,11 @@ function LogIn() {
                 <span> Log In </span>
               </button>
               <label className="webmd-checkbox" role="checkbox" aria-checked="false">
-                <input 
-                  className="webmd-checkbox__original" 
+                <input
+                  className="webmd-checkbox__original"
                   type="checkbox"
-                  onClick={(e) => setRemember(e.target.checked)}/>
-                  <span className="webmd-checkbox__label">Remember me</span>
+                  onClick={(e) => setRemember(e.target.checked)} />
+                <span className="webmd-checkbox__label">Remember me</span>
               </label>
             </form>
           </div>

@@ -14,9 +14,9 @@ function AppointmentLog() {
         credentials: "include"
       });
       const result = await response.json();
-      console.log(result);
+      const sortedResult = result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setData(
-        result.map(item => ({
+        sortedResult.map(item => ({
           ...item,
           key: item._id
         }))

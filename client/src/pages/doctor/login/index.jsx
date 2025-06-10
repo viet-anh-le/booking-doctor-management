@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"
 import { fetchDoctorAccountData } from "../../../actions/doctor_account";
+import { Alert } from "antd";
 
 const serverURL = import.meta.env.VITE_SERVER_URL
 
@@ -18,7 +19,7 @@ function DoctorLogIn() {
     const fetchApi = async () => {
       const response = await fetch(`${serverURL}/api/doctor/auth/login`, {
         method: "POST",
-        headers: {"Content-type": "application/json"},
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify({
           email: email,
           password: password,
@@ -27,7 +28,7 @@ function DoctorLogIn() {
         credentials: "include"
       })
       const result = await response.json();
-      if (result.message === "SUCCESS"){
+      if (result.message === "SUCCESS") {
         const hospital = result.hospital;
         dispatch(fetchDoctorAccountData({
           ...result.user,
@@ -35,7 +36,11 @@ function DoctorLogIn() {
         }));
         navigate("appointment");
       }
-    } 
+      else {
+        const alert = document.querySelector(".alert");
+        alert.classList.remove("hidden");
+      }
+    }
     fetchApi();
   }
   return (
@@ -46,20 +51,23 @@ function DoctorLogIn() {
           <div className="auth-form-wrapper">
             <h3>Log In</h3>
             <form onSubmit={handleSubmit}>
+              <div className="alert hidden z-9999">
+                <Alert message="Wrong email or password" type="error" />
+              </div>
               <div className="webmd-input--medium">
-                <input 
-                  className="webmd-input__inner" 
-                  type="email" 
-                  placeholder="Email" 
+                <input
+                  className="webmd-input__inner"
+                  type="email"
+                  placeholder="Email"
                   name="email"
-                  onChange={(e) => setEmail(e.target.value)}/></div>
+                  onChange={(e) => setEmail(e.target.value)} /></div>
               <div className="webmd-input--medium">
-                <input 
-                  className="webmd-input__inner" 
-                  type="password" 
-                  placeholder="Password" 
+                <input
+                  className="webmd-input__inner"
+                  type="password"
+                  placeholder="Password"
                   name="password"
-                  onChange={(e) => setPassword(e.target.value)}/></div>
+                  onChange={(e) => setPassword(e.target.value)} /></div>
               <a className="forgot-password-btn" href="https://member.webmd.com/password-reset">
                 <span> Forgot Password?</span>
               </a>
@@ -67,11 +75,11 @@ function DoctorLogIn() {
                 <span> Log In </span>
               </button>
               <label className="webmd-checkbox" role="checkbox" aria-checked="false">
-                <input 
-                  className="webmd-checkbox__original" 
+                <input
+                  className="webmd-checkbox__original"
                   type="checkbox"
-                  onClick={(e) => setRemember(e.target.checked)}/>
-                  <span className="webmd-checkbox__label">Remember me</span>
+                  onClick={(e) => setRemember(e.target.checked)} />
+                <span className="webmd-checkbox__label">Remember me</span>
               </label>
             </form>
           </div>

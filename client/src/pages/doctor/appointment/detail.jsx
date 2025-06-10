@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Form, Input, InputNumber, Radio, Image, Space, DatePicker, Table, Typography, Popconfirm, Select } from "antd";
+import { Button, Form, Input, InputNumber, Radio, Image, Space, DatePicker, Table, Typography, Popconfirm, Select, Alert } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import dayjs from "dayjs";
 import { useEffect, useState, useMemo } from "react";
@@ -96,7 +96,7 @@ function Detail() {
         credentials: "include"
       })
       const result = await response.json();
-      if (result){
+      if (result) {
         setServices(result);
       }
     }
@@ -117,7 +117,7 @@ function Detail() {
     fetchInvoice();
   }, []);
 
-  
+
 
   const images = currentAppointment.appointment?.symptomImages || [];
   const [data, setData] = useState([]);
@@ -288,7 +288,7 @@ function Detail() {
   useEffect(() => {
     const serviceInvoice = serviceIds?.map((id, idx) => {
       const serviceData = services.find((s) => s._id === id);
-      if (serviceData){
+      if (serviceData) {
         return {
           key: idx,
           name: serviceData.name,
@@ -325,10 +325,10 @@ function Detail() {
     formData.set("result", values.result);
     console.log("values date", dayjs(values.date));
     console.log("current date", dayjs(currentAppointment.appointment?.date));
-    if (!dayjs(values.date).isSame(dayjs(currentAppointment.appointment?.date), 'day')){
-      formData.set("updated", JSON.stringify({action: "changed appointment date"}));
+    if (!dayjs(values.date).isSame(dayjs(currentAppointment.appointment?.date), 'day')) {
+      formData.set("updated", JSON.stringify({ action: "changed appointment date" }));
       console.log("Da chay vao day");
-    } 
+    }
 
     const invoiceLen = dataSource_invoice.length;
     let totalAmountTemp = 0;
@@ -363,7 +363,7 @@ function Detail() {
     const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
       method: "PATCH",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ status: "resolve", updated: {action: `accepted appointment ${currentAppointment.appointment._id}`} }),
+      body: JSON.stringify({ status: "resolve", updated: { action: `accepted appointment ${currentAppointment.appointment._id}` } }),
     })
     const result = await response.json();
     if (result.status === 200) {
@@ -377,11 +377,11 @@ function Detail() {
     const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
       method: "PATCH",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ status: "reject", updated: {action: `rejected appointment ${currentAppointment.appointment._id}`} }),
+      body: JSON.stringify({ status: "reject", updated: { action: `rejected appointment ${currentAppointment.appointment._id}` } }),
     })
     const result = await response.json();
     if (result.status === 200) {
-      if (currentAppointment.appointment.schedule_id){
+      if (currentAppointment.appointment.schedule_id) {
         const response = await fetch(`${serverURL}/api/doctor/schedule/edit/${currentAppointment.appointment.schedule_id}`, {
           method: "PATCH",
           headers: { "Content-type": "application/json" },
@@ -389,7 +389,7 @@ function Detail() {
         })
         const result = await response.json();
         if (result.status === 200)
-        navigate(-1);
+          navigate(-1);
       }
     }
   }
@@ -399,12 +399,9 @@ function Detail() {
     const response = await fetch(`${serverURL}/api/doctor/appointment/edit/${currentAppointment.appointment._id}`, {
       method: "PATCH",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ status: "fulfilled", updated: {action: `sent invoice to client`} }),
+      body: JSON.stringify({ status: "fulfilled", updated: { action: `sent invoice to client` } }),
     })
     const result = await response.json();
-    // if (result.status === 200) {
-    //   navigate(-1);
-    // }
 
     if (!currentInvoice) {
       const fetchInvoice = async () => {
@@ -427,7 +424,7 @@ function Detail() {
       }
       fetchInvoice();
     }
-    else{
+    else {
       const fetchInvoice = async () => {
         const response = await fetch(`${serverURL}/api/doctor/invoice/edit/${currentInvoice._id}`, {
           method: "PATCH",
@@ -446,6 +443,11 @@ function Detail() {
       }
       fetchInvoice();
     }
+
+    if (result.status === 200) {
+      const alert = document.querySelector(".alert");
+      alert.classList.remove("hidden");
+    }
   }
   if (!currentAppointment || !currentAppointment.appointment) {
     return <div>Loading...</div>;
@@ -454,6 +456,15 @@ function Detail() {
     <>
       <div className="appointment-card-wrap m-10">
         <h2>Patient information</h2>
+        <div className="alert absolute -right-0 hidden z-9999">
+          <Alert
+            message="Success"
+            description="Result sent to patient!"
+            type="success"
+            showIcon
+            closable
+          />
+        </div>
         <Form
           {...layout}
           initialValues={

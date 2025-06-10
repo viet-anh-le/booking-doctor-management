@@ -1,5 +1,5 @@
 import "./style.css"
-import { Button, Form, Input, InputNumber, Image, Upload, Radio, Alert, Card, List } from "antd";
+import { Button, Form, Input, InputNumber, Image, Upload, Radio, Alert, Card, List, Select } from "antd";
 import { useSelector } from "react-redux";
 import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
@@ -114,7 +114,7 @@ function Appointment() {
     formData.append("client_id", clientId);
     formData.append("client_age", values.age);
     formData.append("client_gender", values.gender);
-    formData.append("spec", appointmentData.spec);
+    formData.append("spec", values.spec);
     formData.append("date", appointmentData.date);
     formData.append("time", appointmentData.time);
     formData.append("reason", values.reason);
@@ -176,6 +176,11 @@ function Appointment() {
   const userAccount = useSelector(state => state.accountReducer);
   console.log(appointmentData);
   const doctor = appointmentData.doctor;
+  const options = doctor.specialization.map((item) => ({
+    label: item,
+    value: item
+  }))
+  const [selectedSpec, setSelectedSpec] = useState(undefined);
   const [profiles, setProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [isSelected, setIsSelected] = useState(false);
@@ -198,6 +203,7 @@ function Appointment() {
   const handleAddNew = () => {
     setIsAddNew(true);
     setIsSelected(true);
+    setSelectedProfile({});
     form.setFieldsValue({
       username: "",
       email: "",
@@ -248,7 +254,7 @@ function Appointment() {
                   </h2>
                 </div>
                 <div className="appointment-time">{`${appointmentData.day}, ${appointmentData.date} - ${appointmentData.time} ${appointmentData.time <= 12 ? "AM" : "PM"}`}</div>
-                <div className="appointment-spec">{appointmentData.spec}</div>
+                <div className="appointment-spec">{selectedSpec ? selectedSpec : appointmentData.spec}</div>
               </div>
             </article>
           </div>
@@ -299,7 +305,8 @@ function Appointment() {
                   username: selectedProfile?.fullName,
                   email: userAccount?.email,
                   phone: selectedProfile?.phone,
-                  bhyt: selectedProfile?.bhyt
+                  bhyt: selectedProfile?.bhyt,
+                  spec: appointmentData.spec === "Unknown" ? "" : appointmentData.spec
                 }
               }
             >
@@ -330,8 +337,14 @@ function Appointment() {
               </Form.Item>
               <Form.Item
                 name="bhyt"
-                label="BHYT"
-                required
+                label="Insurance"
+                rules={[
+                  { required: true, message: 'Vui lòng nhập mã BHYT' },
+                  {
+                    pattern: /^[A-Za-z]{2}\d{13}$/,
+                    message: 'wrong insurance format',
+                  },
+                ]}
               >
                 <Input disabled={!isAddNew} />
               </Form.Item>
@@ -368,6 +381,20 @@ function Appointment() {
                   ]}
                 ></Radio.Group>
               </FormItem>
+              <Form.Item
+                name="spec"
+                label="Specialization"
+                rules={[
+                  {
+                    required: true
+                  }
+                ]}
+              >
+                <Select 
+                  placeholder="Select specialization" options={options} onChange={(value) => setSelectedSpec(value)}
+                  disabled={appointmentData.spec !== "Unknown"}
+                />
+              </Form.Item>
               <Form.Item
                 name="reason"
                 label="Reason for examination"

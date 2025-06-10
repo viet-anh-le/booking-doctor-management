@@ -1,7 +1,8 @@
-import { Space, Table, Tag, List } from 'antd';
+import { Space, Table, Tag, List, Input, Button } from 'antd';
+import Highlighter from 'react-highlight-words';
 import { ComponentCard } from "../../../components/common/ComponentCard.jsx";
-import { useEffect, useState } from 'react';
-import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useEffect, useState, useRef } from 'react';
+import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
 import { Link, useLocation } from 'react-router-dom';
 const serverURL = import.meta.env.VITE_SERVER_URL;
 function DoctorBasicTables() {
@@ -29,31 +30,123 @@ function DoctorBasicTables() {
     }
     fetchApi();
   }
+  //Handle Search
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = clearFilters => {
+    clearFilters();
+    setSearchText('');
+  };
+  const getColumnSearchProps = dataIndex => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />,
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    filterDropdownProps: {
+      onOpenChange(open) {
+        if (open) {
+          setTimeout(() => {
+            var _a;
+            return (_a = searchInput.current) === null || _a === void 0 ? void 0 : _a.select();
+          }, 100);
+        }
+      },
+    },
+    render: text =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
   const columns = [
-    {
-      title: 'Doctor',
-      dataIndex: 'fullName',
-      key: 'fullName',
-      render: (_, record) => (
-        <div className="px-5 py-4 sm:px-6 text-start">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 overflow-hidden rounded-full">
-              <img
-                width={40}
-                height={40}
-                src={record.avatar}
-                alt={record.fullName}
-              />
-            </div>
-            <div>
-              <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                {record.fullName}
-              </span>
+    Object.assign(
+      {
+        title: 'Doctor',
+        dataIndex: 'fullName',
+        key: 'fullName',
+        render: (_, record) => (
+          <div className="px-5 py-4 sm:px-6 text-start">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 overflow-hidden rounded-full">
+                <img
+                  width={40}
+                  height={40}
+                  src={record.avatar}
+                  alt={record.fullName}
+                />
+              </div>
+              <div>
+                <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                  {record.fullName}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      )
-    },
+        )
+      },
+      getColumnSearchProps('fullName'),
+    ),
     {
       title: 'Department',
       dataIndex: 'specialization',
@@ -78,8 +171,23 @@ function DoctorBasicTables() {
     },
     {
       title: 'Status',
-      key: 'status',
-      dataIndex: 'status',
+      key: 'deleted',
+      dataIndex: 'deleted',
+      filters: [
+        {
+          text: 'Active',
+          value: false,
+        },
+        {
+          text: 'Deleted',
+          value: true,
+        }
+      ],
+      onFilter: (value, record) => {
+        if (value === record.deleted)
+          return true;
+        return false
+      },
       render: (_, record) => (
         <>
           <Tag color={record.deleted ? "red" : "green"} key={record.name}>
